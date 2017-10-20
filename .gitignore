@@ -6,3 +6,15 @@
 /AuctionClient/nbproject/private/
 /ProxyAgent/nbproject/private/
 
+/AdministrationPanelClient/build/
+/AuctionClient/dist/
+/AuctionClient/build/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/build/
+/AdministrationPanelClient/dist/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/dist/
+/OnlineAuctionSystem/OnlineAuctionSystem-war/build/
+/ProxyAgent/build/
+/OnlineAuctionSystem/build/
+/ProxyAgent/dist/
+/OnlineAuctionSystem/OnlineAuctionSystem-war/dist/
+/OnlineAuctionSystem/dist/

@@ -1,6 +1,7 @@
 Online Auction System
 ======================
 
+### Table of contents
 - [NUS IS2103 Course Project](#NUS)
 - [Setting Up](#Setup)
 
