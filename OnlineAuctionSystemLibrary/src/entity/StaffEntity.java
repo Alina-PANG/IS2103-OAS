@@ -56,10 +56,11 @@ public class StaffEntity implements Serializable {
     public StaffEntity() {
     }
 
-    public StaffEntity(Long id, String firstName, String lastName, String username, String password, EmployeeAccessRightEnum accessRight) {
+    public StaffEntity(Long id, String firstName, String lastName, String identificationNumber, String username, String password, EmployeeAccessRightEnum accessRight) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.identificationNumber = identificationNumber;
         this.username = username;
         this.password = password;
         this.accessRight = accessRight;
@@ -118,7 +119,7 @@ public class StaffEntity implements Serializable {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.password = password;
+        this.setPassword(password);
     }
 
     /**
@@ -168,4 +169,19 @@ public class StaffEntity implements Serializable {
         return "entity.StaffEntity[ id=" + id + " ]";
     }
 
+    /**
+     * @return the identificationNumber
+     */
+    public String getIdentificationNumber() {
+        return identificationNumber;
+    }
+
+    /**
+     * @param identificationNumber the identificationNumber to set
+     */
+    public void setIdentificationNumber(String identificationNumber) {
+        this.identificationNumber = identificationNumber;
+    }
+
+ 
 }

@@ -39,11 +39,11 @@ public class AddressEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 50, unique = true, nullable = false)
+    @Column(length = 64, unique = true, nullable = false)
     private String addressLine;
     @Column(length = 6)
     private String postCode;
-    private boolean isDisabled;
+    private Boolean isDisabled;
     @OneToMany(mappedBy = "addressEntity")
     private List<BidEntity> bidEntities;
     @ManyToOne(optional = false)
@@ -126,14 +126,14 @@ public class AddressEntity implements Serializable {
     /**
      * @return the isDisabled
      */
-    public boolean isIsDisabled() {
+    public Boolean isIsDisabled() {
         return isDisabled;
     }
 
     /**
      * @param isDisabled the isDisabled to set
      */
-    public void setIsDisabled(boolean isDisabled) {
+    public void setIsDisabled(Boolean isDisabled) {
         this.isDisabled = isDisabled;
     }
 

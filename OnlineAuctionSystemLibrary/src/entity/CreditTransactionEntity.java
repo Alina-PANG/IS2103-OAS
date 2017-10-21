@@ -48,7 +48,7 @@ public class CreditTransactionEntity implements Serializable {
     private TransactionTypeEnum transactionTypeEnum;
     @Max(100)
     @Min(0)
-    private int unitOfPurchase;
+    private Integer unitOfPurchase;
     @ManyToOne
     private CreditPackageEntity creditPackageEntity;
     @ManyToOne(optional = false)
@@ -58,7 +58,7 @@ public class CreditTransactionEntity implements Serializable {
     public CreditTransactionEntity() {
     }
 
-    public CreditTransactionEntity(Long id, BigDecimal totalValue, TransactionTypeEnum transactionTypeEnum, int unitOfPurchase, CreditPackageEntity creditPackageEntity, CustomerEntity customerEntity) {
+    public CreditTransactionEntity(Long id, BigDecimal totalValue, TransactionTypeEnum transactionTypeEnum, Integer unitOfPurchase, CreditPackageEntity creditPackageEntity, CustomerEntity customerEntity) {
         this.id = id;
         this.totalValue = totalValue;
         this.transactionTypeEnum = transactionTypeEnum;
@@ -131,14 +131,14 @@ public class CreditTransactionEntity implements Serializable {
     /**
      * @return the unitOfPurchase
      */
-    public int getUnitOfPurchase() {
+    public Integer getUnitOfPurchase() {
         return unitOfPurchase;
     }
 
     /**
      * @param unitOfPurchase the unitOfPurchase to set
      */
-    public void setUnitOfPurchase(int unitOfPurchase) {
+    public void setUnitOfPurchase(Integer unitOfPurchase) {
         this.unitOfPurchase = unitOfPurchase;
     }
 
