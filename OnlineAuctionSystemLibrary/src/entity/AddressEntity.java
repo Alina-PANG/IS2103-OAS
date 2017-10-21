@@ -53,8 +53,7 @@ public class AddressEntity implements Serializable {
     public AddressEntity() {
     }
 
-    public AddressEntity(Long id, String addressLine, String postCode, boolean isDisabled, List<BidEntity> bidEntities, CustomerEntity customerEntity) {
-        this.id = id;
+    public AddressEntity(String addressLine, String postCode, boolean isDisabled, List<BidEntity> bidEntities, CustomerEntity customerEntity) {
         this.addressLine = addressLine;
         this.postCode = postCode;
         this.isDisabled = isDisabled;

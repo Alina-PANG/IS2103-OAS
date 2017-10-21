@@ -25,7 +25,7 @@ public interface StaffEntityControllerRemote {
 
     public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException;
 
-    public EmployeeAccessRightEnum staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException;
+    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException;
 
     public void changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException;
 

@@ -5,10 +5,34 @@
  */
 package administrationpanelclient;
 
+import ejb.session.stateless.AuctionEntityControllerRemote;
+import ejb.session.stateless.BidEntityControllerRemote;
+import ejb.session.stateless.CreditPackageEntityControllerRemote;
+import ejb.session.stateless.StaffEntityControllerRemote;
+import entity.StaffEntity;
+
 /**
  *
  * @author alina
  */
 public class FinanceStaffModule {
+    // Define entity controllers
+    private CreditPackageEntityControllerRemote creditPackageEntityController;
+
+    // Define entities
+    private StaffEntity currentStaffEntity;
+
+    public FinanceStaffModule() {
+    }
+
+    public FinanceStaffModule(CreditPackageEntityControllerRemote creditPackageEntityController, StaffEntity currentStaffEntity) {
+        this.creditPackageEntityController = creditPackageEntityController;
+        this.currentStaffEntity = currentStaffEntity;
+    }
+
+    void menu() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
 }

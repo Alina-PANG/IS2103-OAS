@@ -56,8 +56,7 @@ public class StaffEntity implements Serializable {
     public StaffEntity() {
     }
 
-    public StaffEntity(Long id, String firstName, String lastName, String identificationNumber, String username, String password, EmployeeAccessRightEnum accessRight) {
-        this.id = id;
+    public StaffEntity(String firstName, String lastName, String identificationNumber, String username, String password, EmployeeAccessRightEnum accessRight) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.identificationNumber = identificationNumber;
