@@ -82,8 +82,7 @@ public class CustomerEntity implements Serializable {
         this.creditBalance = new BigDecimal(0);
     }
 
-    public CustomerEntity(Long id, String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, List<CreditTransactionEntity> creditTransactionEntities, List<BidEntity> bidEntities, List<AddressEntity> addressEntities, CustomerTypeEnum customerTypeEnum) {
-        this.id = id;
+    public CustomerEntity(String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, List<CreditTransactionEntity> creditTransactionEntities, List<BidEntity> bidEntities, List<AddressEntity> addressEntities, CustomerTypeEnum customerTypeEnum) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contactNumber = contactNumber;

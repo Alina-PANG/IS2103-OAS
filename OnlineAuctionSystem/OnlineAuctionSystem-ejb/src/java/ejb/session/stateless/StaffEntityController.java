@@ -80,7 +80,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public EmployeeAccessRightEnum staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException {
+    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException {
         // retrieve staff
         Query query = em.createQuery("SELECT s FROM STAFFENTITY s WHERE :name = s.username");
         query.setParameter("name", username);
@@ -88,7 +88,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         try {
             StaffEntity staff = (StaffEntity) query.getSingleResult();
             if (staff.getPassword().equals(password)) {
-                return staff.getAccessRight();
+                return staff;
             } else {
                 throw new IncorrectPasswordException("Incorrect Password!");
             }

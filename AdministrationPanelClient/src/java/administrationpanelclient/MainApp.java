@@ -11,24 +11,26 @@ import ejb.session.stateless.CreditPackageEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
 import java.util.Scanner;
+import util.exception.GeneralException;
+import util.exception.IncorrectPasswordException;
+import util.exception.StaffNotFoundException;
 
 /**
  *
  * @author alina
  */
 public class MainApp {
-    
+
     // Define entity controllers
     private StaffEntityControllerRemote staffEntityController;
     private CreditPackageEntityControllerRemote creditPackageEntityController;
     private BidEntityControllerRemote bidEntityController;
     private AuctionEntityControllerRemote auctionEntityController;
-    
+
     // Define entities
     private StaffEntity currentStaffEntity;
-    
+
     // Define java classes being called
-    private EmployeeModule employee;
     private SystemAdministratorModule systemAdministrator;
     private FinanceStaffModule financeStaff;
     private SalesStaffModule salesStaff;
@@ -42,43 +44,45 @@ public class MainApp {
         this.bidEntityController = bidEntityController;
         this.auctionEntityController = auctionEntityController;
     }
-    
-    public void runApp(){
+
+    public void runApp() {
         // define attributes
         Scanner sc = new Scanner(System.in);
-        Integer response = 0;
-        
+        int response1 = 0;
+        int response2 = 0;
+
         // while loop to collect response
-        while(true){
+        while (true) {
             menu01();
-            response = sc.nextInt();
-            
-            switch(response){
-                case 1: 
+            response1 = sc.nextInt();
+
+            switch (response1) {
+                case 1:
                     doLogin();
-                    employee = new EmployeeModule();
+                    postLoginOperation();
                     break;
                 case 2:
                     break;
                 default:
-                    System.out.println("[Warning] Wrong response! Please response accordingly.");
+                    System.out.println("[Warning] Please input a valid response number.");
                     break;
             }
-            
-            if(response == 2)
+
+            if (response1 == 2) {
                 break;
+            }
         }
     }
-    
-    private void menu01(){
+
+    private void menu01() {
         System.out.println("******* [OAS System] Employee Homepage *******");
         System.out.println("1. Login");
         System.out.println("2. Exit");
         System.out.println("Please input the operation that you want to perform:");
         System.out.print("> ");
     }
-    
-    private void menu02(){
+
+    private void menu02() {
         System.out.println("******* [OAS System] Employee Basic Operation *******");
         System.out.println("1. Enter Employee Portal");
         System.out.println("2. Change Password");
@@ -86,20 +90,93 @@ public class MainApp {
         System.out.println("Please input the operation that you want to perform:");
         System.out.print("> ");
     }
-    
-    private void doLogin(){
+
+    private void doLogin() {
         // define attributes
         Scanner sc = new Scanner(System.in);
         String username, password;
-        
+
         // login
         System.out.println("******* [OAS System] Employee Login *******");
         System.out.println("Username: ");
         username = sc.nextLine().trim();
         System.out.println("Password: ");
         password = sc.nextLine().trim();
-        
-                
-        
+
+        try {
+            currentStaffEntity = staffEntityController.staffLogin(username, password);
+            System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + " !");
+        } catch (StaffNotFoundException | IncorrectPasswordException ex) {
+            System.out.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
+        }
+    }
+
+    private void postLoginOperation() {
+        Scanner sc = new Scanner(System.in);
+        int response2 = 0;
+
+        while (true) {
+            menu02();
+            response2 = sc.nextInt();
+
+            switch (response2) {
+                case 1:
+                    redirectAccordingToRole();
+                    break;
+                case 2:
+                    changePassword();
+                    break;
+                case 3:
+                    break;
+                default:
+                    System.out.println("[Warning] Please input a valid response number.");
+            }
+            
+            if(response2 == 3)
+                break;
+        }
+    }
+
+    private void redirectAccordingToRole() {
+        switch(currentStaffEntity.getAccessRight()){
+            case MANAGER:
+                systemAdministrator = new SystemAdministratorModule(staffEntityController, currentStaffEntity);
+                systemAdministrator.menu();
+                break;
+            case FINANCESTAFF:
+                financeStaff = new FinanceStaffModule(creditPackageEntityController, currentStaffEntity);
+                financeStaff.menu();
+                break;
+            case SALESSTAFF:
+                salesStaff = new SalesStaffModule(bidEntityController, auctionEntityController, currentStaffEntity);
+                salesStaff.menu();
+                break;
+        }
+    }
+
+    private void changePassword() {
+        Scanner sc = new Scanner(System.in);
+        String currentPw;
+        String newPw1 = "a", newPw2 = "b";
+
+        System.out.println("******* [OAS System] Change Password *******");
+        System.out.println("Please input your old password: ");
+        currentPw = sc.nextLine().trim();
+        while (!newPw1.equals(newPw2)) {
+            System.out.println("Please input your new password: ");
+            newPw1 = sc.nextLine().trim();
+            System.out.println("Pleas input your new password again: ");
+            newPw2 = sc.nextLine().trim();
+
+            if (!newPw1.equals(newPw2)) {
+                System.out.println("[Warning] The two passwords you input are inconsistent with each other!");
+            }
+        }
+
+        try {
+            staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
+        } catch (IncorrectPasswordException | StaffNotFoundException | GeneralException ex) {
+            System.out.println("[Warning] An error has occured while changing password: " + ex.getMessage());
+        }
     }
 }

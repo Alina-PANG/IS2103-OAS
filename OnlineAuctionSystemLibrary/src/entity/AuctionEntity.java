@@ -67,8 +67,7 @@ public class AuctionEntity implements Serializable {
     public AuctionEntity() {
     }
 
-    public AuctionEntity(Long id, Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
-        this.id = id;
+    public AuctionEntity(Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
         this.startingTime = startingTime;
         this.endingTime = endingTime;
         this.status = status;

@@ -58,8 +58,7 @@ public class CreditTransactionEntity implements Serializable {
     public CreditTransactionEntity() {
     }
 
-    public CreditTransactionEntity(Long id, BigDecimal totalValue, TransactionTypeEnum transactionTypeEnum, Integer unitOfPurchase, CreditPackageEntity creditPackageEntity, CustomerEntity customerEntity) {
-        this.id = id;
+    public CreditTransactionEntity(BigDecimal totalValue, TransactionTypeEnum transactionTypeEnum, Integer unitOfPurchase, CreditPackageEntity creditPackageEntity, CustomerEntity customerEntity) {
         this.totalValue = totalValue;
         this.transactionTypeEnum = transactionTypeEnum;
         this.unitOfPurchase = unitOfPurchase;

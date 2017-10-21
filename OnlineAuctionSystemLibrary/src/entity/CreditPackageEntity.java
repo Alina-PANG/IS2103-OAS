@@ -48,8 +48,7 @@ public class CreditPackageEntity implements Serializable {
     public CreditPackageEntity() {
     }
 
-    public CreditPackageEntity(Long id, BigDecimal value, BigDecimal price, String name) {
-        this.id = id;
+    public CreditPackageEntity(BigDecimal value, BigDecimal price, String name) {
         this.value = value;
         this.price = price;
         this.name = name;
