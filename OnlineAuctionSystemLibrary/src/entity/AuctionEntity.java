@@ -51,7 +51,7 @@ public class AuctionEntity implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Future
     private Date endingTime;
-    private boolean status;
+    private Boolean status;
     @Column(precision = 18, scale = 4)
     private BigDecimal reservePrice;
     @Column(precision = 18, scale = 4)
@@ -67,7 +67,7 @@ public class AuctionEntity implements Serializable {
     public AuctionEntity() {
     }
 
-    public AuctionEntity(Long id, Date startingTime, Date endingTime, boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
+    public AuctionEntity(Long id, Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
         this.id = id;
         this.startingTime = startingTime;
         this.endingTime = endingTime;
@@ -146,14 +146,14 @@ public class AuctionEntity implements Serializable {
     /**
      * @return the status
      */
-    public boolean isStatus() {
+    public Boolean isStatus() {
         return status;
     }
 
     /**
      * @param status the status to set
      */
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

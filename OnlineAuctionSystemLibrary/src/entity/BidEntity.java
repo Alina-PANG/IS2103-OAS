@@ -39,7 +39,7 @@ public class BidEntity implements Serializable {
     private Long id;
     @Column(precision = 18, scale = 4)
     private BigDecimal amount;
-    private boolean isWinningBid;
+    private Boolean isWinningBid;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AuctionEntity auctionEntity;
@@ -53,7 +53,7 @@ public class BidEntity implements Serializable {
     public BidEntity() {
     }
 
-    public BidEntity(Long id, BigDecimal amount, boolean isWinningBid, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntities) {
+    public BidEntity(Long id, BigDecimal amount, Boolean isWinningBid, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntities) {
         this.id = id;
         this.amount = amount;
         this.isWinningBid = isWinningBid;
@@ -114,14 +114,14 @@ public class BidEntity implements Serializable {
     /**
      * @return the isWinningBid
      */
-    public boolean isIsWinningBid() {
+    public Boolean isIsWinningBid() {
         return isWinningBid;
     }
 
     /**
      * @param isWinningBid the isWinningBid to set
      */
-    public void setIsWinningBid(boolean isWinningBid) {
+    public void setIsWinningBid(Boolean isWinningBid) {
         this.isWinningBid = isWinningBid;
     }
 

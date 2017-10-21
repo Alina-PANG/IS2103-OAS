@@ -5,17 +5,37 @@
  */
 package administrationpanelclient;
 
+import ejb.session.stateless.AuctionEntityControllerRemote;
+import ejb.session.stateless.BidEntityControllerRemote;
+import ejb.session.stateless.CreditPackageEntityControllerRemote;
+import ejb.session.stateless.StaffEntityControllerRemote;
+import javax.ejb.EJB;
+
 /**
  *
  * @author alina
  */
 public class Main {
 
+    @EJB
+    private static StaffEntityControllerRemote staffEntityController;
+
+    @EJB
+    private static CreditPackageEntityControllerRemote creditPackageEntityController;
+
+    @EJB
+    private static BidEntityControllerRemote bidEntityController;
+
+    @EJB
+    private static AuctionEntityControllerRemote auctionEntityController;
+
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        MainApp mainApp = new MainApp(staffEntityController, creditPackageEntityController, bidEntityController, auctionEntityController);
+        mainApp.runApp();
     }
     
 }

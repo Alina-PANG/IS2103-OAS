@@ -63,11 +63,11 @@ public class CustomerEntity implements Serializable {
     private String email;
     @Column(precision = 18, scale = 4)
     private BigDecimal creditBalance;
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     private List<CreditTransactionEntity> creditTransactionEntities;
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     private List<BidEntity> bidEntities;
-    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customerEntity", cascade = CascadeType.ALL)
     private List<AddressEntity> addressEntities;
     @Enumerated(EnumType.STRING)
     private CustomerTypeEnum customerTypeEnum;
