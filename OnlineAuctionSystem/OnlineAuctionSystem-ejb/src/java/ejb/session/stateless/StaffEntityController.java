@@ -12,10 +12,11 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import util.enumeration.EmployeeAccessRightEnum;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 import util.exception.StaffAlreadyExistException;
@@ -67,22 +68,24 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException {
+    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException, DuplicateException {
         // retrieve staff
-        Query query = em.createQuery("SELECT s FROM STAFFENTITY s WHERE s.identificationNumber == :num");
+        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.identificationNumber == :num");
         query.setParameter("num", number);
 
         try {
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with identification number = " + number + " is not found!");
+        } catch (NonUniqueResultException ex){
+            throw new DuplicateException("There are more than one staff with same identification number -> error!");
         }
     }
 
     @Override
     public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException {
         // retrieve staff
-        Query query = em.createQuery("SELECT s FROM STAFFENTITY s WHERE :name = s.username");
+        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE :name = s.username");
         query.setParameter("name", username);
 
         try {
@@ -98,11 +101,14 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public void changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException {
+    public StaffEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException {
         StaffEntity staff = retrieveStaffById(id);
 
         if (staff.getPassword().equals(currentPw)) {
             staff.setPassword(newPw);
+            em.flush();
+            em.refresh(staff);
+            return staff;
         } else {
             throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
         }
@@ -133,7 +139,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     
     @Override
     public List<StaffEntity> viewAllEmployee () throws GeneralException{
-        Query query = em.createQuery("SELECT * FROM STAFFENTITY s");
+        Query query = em.createQuery("SELECT * FROM StaffEntity s");
         try{
         return (List<StaffEntity>) query.getResultList();
         } catch (Exception ex){

@@ -98,9 +98,9 @@ public class MainApp {
 
         // login
         System.out.println("******* [OAS System] Employee Login *******");
-        System.out.println("Username: ");
+        System.out.print("Username: ");
         username = sc.nextLine().trim();
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         password = sc.nextLine().trim();
 
         try {
@@ -174,7 +174,7 @@ public class MainApp {
         }
 
         try {
-            staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
+            currentStaffEntity = staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
         } catch (IncorrectPasswordException | StaffNotFoundException | GeneralException ex) {
             System.out.println("[Warning] An error has occured while changing password: " + ex.getMessage());
         }
