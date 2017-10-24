@@ -8,6 +8,7 @@ package ejb.session.singleton;
 import ejb.session.stateless.AuctionEntityControllerLocal;
 import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.StaffEntityControllerLocal;
+import entity.StaffEntity;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -15,6 +16,10 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.enumeration.EmployeeAccessRightEnum;
+import util.exception.GeneralException;
+import util.exception.StaffAlreadyExistException;
+import util.exception.StaffNotFoundException;
 
 /**
  *
@@ -33,7 +38,7 @@ public class DataInitializationSessionBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityController;
-    
+
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
@@ -47,13 +52,14 @@ public class DataInitializationSessionBean {
     }
 
     private void initializeDataStaff() {
-       staffEntityController.createNewStaffEntity(new StaffEntity("Anthony", "Young", "1215125121", "manager", "password", "MANAGER"));
+        try {
+            staffEntityController.createNewStaffEntity(new StaffEntity("Anthony", "Young", "1215125121", "manager", "password", EmployeeAccessRightEnum.MANAGER));
+        } catch (StaffAlreadyExistException | GeneralException ex) {
+        }
     }
 
-    
-    
 }
 
-    //private void initializeDataAuction() {
-      //  AuctionEntity auction = new AuctionEntity(Long id, Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities);
-    }
+//private void initializeDataAuction() {
+//  AuctionEntity auction = new AuctionEntity(Long id, Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities);
+    //}

@@ -5,11 +5,22 @@
  */
 package ejb.session.stateless;
 
+import entity.AuctionEntity;
+import entity.BidEntity;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import util.exception.AuctionAlreadyExistException;
+import util.exception.DuplicateException;
+import util.exception.GeneralException;
+import util.exception.AuctionNotFoundException;
 
 /**
  *
@@ -23,11 +34,108 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
-    public void persist(Object object) {
-        em.persist(object);
+    @Override
+    public AuctionEntity persist(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException {
+        try {
+            em.persist(ae);
+            em.flush();
+            em.refresh(ae);
+
+            return ae;
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+                throw new AuctionAlreadyExistException("Auction with same identification number already exist!");
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+    }
+    
+    /**
+     *
+     * @param id
+     * @return
+     * @throws util.exception.AuctionNotFoundException
+     * @throws GeneralException
+     */
+    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException, GeneralException {
+        // retrieve the ae
+        AuctionEntity ae = em.find(AuctionEntity.class, id);
+
+        // check and throw exception
+        if (ae == null) {
+            throw new AuctionNotFoundException("Auction with id = " + id + " does not exist!");
+        } else {
+            return ae;
+        }
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    
+    public AuctionEntity retrieveAuctionByProductCode(String number) throws AuctionNotFoundException, DuplicateException {
+        // retrieve ae
+        Query query = em.createQuery("SELECT s FROM AuctionEntity s WHERE s.productCode == :num");
+        query.setParameter("num", number);
+
+        try {
+            return (AuctionEntity) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw new AuctionNotFoundException("Auction with product code = " + number + " is not found!");
+        } catch (NonUniqueResultException ex){
+            throw new DuplicateException("There are more than one ae with same product code -> error!");
+        }
+    }
+
+    @Override
+    public void switchStatus(Long id, boolean status){
+        AuctionEntity ae = retrieveAuctionById(id);
+        
+        ae.setStatus(status);
+    }
+    
+    
+    
+    public AuctionEntity updateAuction (AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException{
+        AuctionEntity oldAuction = retrieveAuctionById(newAuction.getId());
+
+        oldAuction.setStartingTime(newAuction.getStartingTime());
+        oldAuction.setEndingTime(newAuction.getEndingTime());
+        oldAuction.setStatus(newAuction.getStatus());
+        oldAuction.setReservePrice(newAuction.getReservePrice());
+        oldAuction.setWinningBid(newAuction.getWinningBid());
+        oldAuction.setProductCode(newAuction.getProductCode());
+        oldAuction.setProductName(newAuction.getProductName());
+        oldAuction.setProductDescription(newAuction.getProductDescription());
+        
+        em.flush();
+        em.refresh(oldAuction);
+        
+        return oldAuction;
+    }
+
+    
+    public void deleteEmployee(Long id) throws AuctionNotFoundException, GeneralException{
+        AuctionEntity ae = retrieveAuctionById(id);
+        
+        em.remove(ae);
+    }
+    
+    /**
+     *
+     * @return
+     * @throws GeneralException
+     */
+    @Override
+    public List<BidEntity> viewAllBids () throws GeneralException{
+        Query query = em.createQuery("SELECT * FROM BidEntity s");
+        try{
+        return (List<BidEntity>) query.getResultList();
+        } catch (Exception ex){
+            throw new GeneralException ("An unexpected exception happens: "+ex.getMessage());
+        }
+    }
+
+
     
 }

@@ -1,6 +1,5 @@
 /OnlineAuctionSystem/nbproject/private/
 /OnlineAuctionSystem/OnlineAuctionSystem-war/nbproject/private/
-/OnlineAuctionSystem/OnlineAuctionSystem-ejb/setup/glassfish-resources.xml
 /OnlineAuctionSystem/OnlineAuctionSystem-ejb/nbproject/private/
 /AdministrationPanelClient/nbproject/private/
 /AuctionClient/nbproject/private/
@@ -8,3 +7,5 @@
 /OnlineAuctionSystemLibrary/nbproject/private/
 /OnlineAuctionSystemLibrary/build/
 /OnlineAuctionSystemLibrary/dist/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/build/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/dist/

@@ -7,7 +7,7 @@ package ejb.session.stateless;
 
 import entity.StaffEntity;
 import java.util.List;
-import util.enumeration.EmployeeAccessRightEnum;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 import util.exception.StaffAlreadyExistException;
@@ -23,11 +23,11 @@ public interface StaffEntityControllerRemote {
 
     public StaffEntity retrieveStaffById(Long id) throws StaffNotFoundException, GeneralException;
 
-    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException;
+    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException, DuplicateException;
 
     public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException;
 
-    public void changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException;
+    public StaffEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException;
 
     public StaffEntity updateEmployee(StaffEntity newStaff) throws StaffNotFoundException, GeneralException;
 

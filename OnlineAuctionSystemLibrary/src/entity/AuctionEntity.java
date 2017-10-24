@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
     "status",
     "reservePrice",
     "winningBid",
+    "productCode",
     "productName",
     "productDescription",
     "winningCustomerId",
@@ -56,6 +57,8 @@ public class AuctionEntity implements Serializable {
     private BigDecimal reservePrice;
     @Column(precision = 18, scale = 4)
     private BigDecimal winningBid;
+    @Column(length = 32, unique = true)
+    private String productCode;
     @Column(length = 32)
     private String productName;
     @Column(length = 300)
@@ -146,7 +149,7 @@ public class AuctionEntity implements Serializable {
      * @return the status
      */
     public Boolean isStatus() {
-        return status;
+        return getStatus();
     }
 
     /**
@@ -238,6 +241,27 @@ public class AuctionEntity implements Serializable {
      */
     public void setBidEntities(List<BidEntity> bidEntities) {
         this.bidEntities = bidEntities;
+    }
+
+    /**
+     * @return the status
+     */
+    public Boolean getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the productCode
+     */
+    public String getProductCode() {
+        return productCode;
+    }
+
+    /**
+     * @param productCode the productCode to set
+     */
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
 }
