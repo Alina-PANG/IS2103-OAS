@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
     "endingTime",
     "status",
     "reservePrice",
-    "winningBid",
+  //  "winningBid",
     "productCode",
     "productName",
     "productDescription",
@@ -41,6 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "bidEntities"
 })
 public class AuctionEntity implements Serializable {
+
+
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -55,8 +57,7 @@ public class AuctionEntity implements Serializable {
     private Boolean status;
     @Column(precision = 18, scale = 4)
     private BigDecimal reservePrice;
-    @Column(precision = 18, scale = 4)
-    private BigDecimal winningBid;
+   // private Long winningBidId;
     @Column(length = 32, unique = true)
     private String productCode;
     @Column(length = 32)
@@ -64,25 +65,23 @@ public class AuctionEntity implements Serializable {
     @Column(length = 300)
     private String productDescription;
     private Long winningCustomerId;
-    @OneToMany(mappedBy="auctionEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "auctionEntity", cascade = CascadeType.ALL)
     private List<BidEntity> bidEntities;
 
     public AuctionEntity() {
     }
 
-    public AuctionEntity(Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, BigDecimal winningBid, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
+    public AuctionEntity(Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
         this.startingTime = startingTime;
         this.endingTime = endingTime;
         this.status = status;
         this.reservePrice = reservePrice;
-        this.winningBid = winningBid;
+       // this.winningBidId = winningBid;
         this.productName = productName;
         this.productDescription = productDescription;
         this.winningCustomerId = winningCustomerId;
         this.bidEntities = bidEntities;
     }
-
-
 
     public Long getId() {
         return id;
@@ -128,7 +127,7 @@ public class AuctionEntity implements Serializable {
      * @param startingTime the startingTime to set
      */
     public void setStartingTime(Date startingTime) {
-        this.startingTime = startingTime;
+        this.setStartingTime(startingTime);
     }
 
     /**
@@ -142,7 +141,7 @@ public class AuctionEntity implements Serializable {
      * @param endingTime the endingTime to set
      */
     public void setEndingTime(Date endingTime) {
-        this.endingTime = endingTime;
+        this.setEndingTime(endingTime);
     }
 
     /**
@@ -175,18 +174,17 @@ public class AuctionEntity implements Serializable {
 
     /**
      * @return the winningBid
-     */
-    public BigDecimal getWinningBid() {
-        return winningBid;
+     
+    public Long getWinningBidId() {
+        return winningBidId;
     }
 
     /**
-     * @param winningBid the winningBid to set
-     */
-    public void setWinningBid(BigDecimal winningBid) {
-        this.winningBid = winningBid;
-    }
-
+     * @param winningBidId the winningBidId to set
+     
+    public void setWinningBidId(Long winningBidId) {
+        this.winningBidId = winningBidId;
+    }*/
     /**
      * @return the productName
      */

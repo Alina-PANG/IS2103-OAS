@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.EmployeeAccessRightEnum;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.StaffAlreadyExistException;
 import util.exception.StaffNotFoundException;
@@ -45,16 +46,19 @@ public class DataInitializationSessionBean {
     @PostConstruct
     public void postConstruct() {
         try {
-            staffEntityController.retrieveStaffById(new Long(1));
-        } catch (StaffNotFoundException | GeneralException ex) {
-            initializeDataStaff();
+            staffEntityController.retrieveStaffByIdentificationNumber("123");
+        } catch (StaffNotFoundException| DuplicateException ex) {
+            initializeDataStaff1();
         }
     }
+    
+    
 
-    private void initializeDataStaff() {
+    private void initializeDataStaff1() {
         try {
-            staffEntityController.createNewStaffEntity(new StaffEntity("Anthony", "Young", "1215125121", "manager", "password", EmployeeAccessRightEnum.MANAGER));
+            staffEntityController.createNewStaffEntity(new StaffEntity("Anthony", "Young", "123", "manager", "password", EmployeeAccessRightEnum.MANAGER));
         } catch (StaffAlreadyExistException | GeneralException ex) {
+            System.out.println("Error in Singleton");
         }
     }
 

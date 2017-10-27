@@ -59,7 +59,6 @@ public class MainApp {
             switch (response1) {
                 case 1:
                     doLogin();
-                    postLoginOperation();
                     break;
                 case 2:
                     break;
@@ -105,7 +104,8 @@ public class MainApp {
 
         try {
             currentStaffEntity = staffEntityController.staffLogin(username, password);
-            System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + " !");
+            System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "!");
+            postLoginOperation();
         } catch (StaffNotFoundException | IncorrectPasswordException ex) {
             System.out.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }
@@ -141,7 +141,7 @@ public class MainApp {
         switch(currentStaffEntity.getAccessRight()){
             case MANAGER:
                 systemAdministrator = new SystemAdministratorModule(staffEntityController, currentStaffEntity);
-                systemAdministrator.menu();
+                systemAdministrator.doMenu();
                 break;
             case FINANCESTAFF:
                 financeStaff = new FinanceStaffModule(creditPackageEntityController, currentStaffEntity);
@@ -165,7 +165,7 @@ public class MainApp {
         while (!newPw1.equals(newPw2)) {
             System.out.println("Please input your new password: ");
             newPw1 = sc.nextLine().trim();
-            System.out.println("Pleas input your new password again: ");
+            System.out.println("Please input your new password again: ");
             newPw2 = sc.nextLine().trim();
 
             if (!newPw1.equals(newPw2)) {
@@ -175,6 +175,7 @@ public class MainApp {
 
         try {
             currentStaffEntity = staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
+            System.out.println("[System] Password Changed Successfully!");
         } catch (IncorrectPasswordException | StaffNotFoundException | GeneralException ex) {
             System.out.println("[Warning] An error has occured while changing password: " + ex.getMessage());
         }

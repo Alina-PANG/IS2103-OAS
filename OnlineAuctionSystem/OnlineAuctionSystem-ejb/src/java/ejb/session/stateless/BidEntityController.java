@@ -5,11 +5,16 @@
  */
 package ejb.session.stateless;
 
+import entity.BidEntity;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import util.exception.GeneralException;
+import util.exception.BidAlreadyExistException;
+import util.exception.BidNotFoundException;
 
 /**
  *
@@ -23,11 +28,34 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
-    public void persist(Object object) {
-        em.persist(object);
+    @Override
+    public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException {
+        try {
+            em.persist(bid);
+            em.flush();
+            em.refresh(bid);
+
+            return bid;
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+                throw new BidAlreadyExistException("Bid with same identification number already exist!");
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-    
+    @Override
+    public BidEntity retrieveById(Long id) throws BidNotFoundException {
+        BidEntity bid = em.find(BidEntity.class, id);
+
+        if (bid == null) {
+            throw new BidNotFoundException("Bid with id = " + id + " is not found!");
+        } else {
+            return bid;
+        }
+    }
 }
