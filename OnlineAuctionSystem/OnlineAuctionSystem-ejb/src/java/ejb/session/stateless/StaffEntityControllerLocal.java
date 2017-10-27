@@ -26,7 +26,7 @@ public interface StaffEntityControllerLocal {
 
     public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException, DuplicateException;
 
-    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException;
+    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException, DuplicateException;
 
     public StaffEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, StaffNotFoundException, GeneralException;
 
@@ -35,4 +35,6 @@ public interface StaffEntityControllerLocal {
     public void deleteEmployee(Long id) throws StaffNotFoundException, GeneralException;
 
     public List<StaffEntity> viewAllEmployee() throws GeneralException;
+
+    public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException, DuplicateException;
 }

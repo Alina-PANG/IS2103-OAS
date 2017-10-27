@@ -9,12 +9,12 @@ package util.exception;
  *
  * @author alina
  */
-public class AuctionNorFoundException extends Exception {
+public class BidAlreadyExistException extends Exception{
 
-    public AuctionNorFoundException() {
+    public BidAlreadyExistException() {
     }
 
-    public AuctionNorFoundException(String message) {
+    public BidAlreadyExistException(String message) {
         super(message);
     }
     

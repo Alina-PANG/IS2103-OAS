@@ -70,7 +70,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     @Override
     public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException, DuplicateException {
         // retrieve staff
-        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.identificationNumber == :num");
+        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.identificationNumber = :num");
         query.setParameter("num", number);
 
         try {
@@ -81,15 +81,26 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             throw new DuplicateException("There are more than one staff with same identification number -> error!");
         }
     }
-
-    @Override
-    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException {
+    
+        @Override
+    public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException, DuplicateException {
         // retrieve staff
-        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE :name = s.username");
-        query.setParameter("name", username);
+        Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.username = :username");
+        query.setParameter("username", username);
 
         try {
-            StaffEntity staff = (StaffEntity) query.getSingleResult();
+            return (StaffEntity) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw new StaffNotFoundException("Staff with username = " + username + " is not found!");
+        } catch (NonUniqueResultException ex){
+            throw new DuplicateException("There are more than one staff with same username -> error!");
+        }
+    }
+
+    @Override
+    public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException, DuplicateException {
+        try {
+            StaffEntity staff = retrieveStaffByUsername(username);
             if (staff.getPassword().equals(password)) {
                 return staff;
             } else {
@@ -108,6 +119,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             staff.setPassword(newPw);
             em.flush();
             em.refresh(staff);
+            
             return staff;
         } else {
             throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
@@ -121,6 +133,8 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
 
         oldStaff.setIdentificationNumber(newStaff.getIdentificationNumber());
         oldStaff.setLastName(newStaff.getLastName());
+        oldStaff.setUsername(newStaff.getUsername());
+        oldStaff.setPassword(newStaff.getPassword());
         oldStaff.setAccessRight(newStaff.getAccessRight());
         oldStaff.setFirstName(newStaff.getFirstName());
         

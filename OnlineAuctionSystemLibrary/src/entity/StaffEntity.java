@@ -118,7 +118,7 @@ public class StaffEntity implements Serializable {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.setPassword(password);
+        this.password = password;
     }
 
     /**
