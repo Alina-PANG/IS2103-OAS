@@ -117,7 +117,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         oldAuction.setEndingTime(newAuction.getEndingTime());
         oldAuction.setStatus(newAuction.getStatus());
         oldAuction.setReservePrice(newAuction.getReservePrice());
-        oldAuction.setWinningBidId(newAuction.getWinningBidId());
+       // oldAuction.setWinningBidId(newAuction.getWinningBidId());
         oldAuction.setProductCode(newAuction.getProductCode());
         oldAuction.setProductName(newAuction.getProductName());
         oldAuction.setProductDescription(newAuction.getProductDescription());
@@ -154,7 +154,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
         }
     }
-
+/*
     public BidEntity getWinningBid(Long aid) throws AuctionNotFoundException, GeneralException, BidNotFoundException {
         AuctionEntity a = retrieveAuctionById(aid);
 
@@ -184,5 +184,5 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             bNew.setIsWinningBid(Boolean.TRUE);
             return false;
         }
-    }
+    }*/
 }

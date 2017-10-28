@@ -10,7 +10,9 @@ import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CreditPackageEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 import util.exception.StaffNotFoundException;
@@ -54,22 +56,26 @@ public class MainApp {
         // while loop to collect response
         while (true) {
             menu01();
-            response1 = sc.nextInt();
+            try {
+                response1 = sc.nextInt();
+                switch (response1) {
+                    case 1:
+                        doLogin();
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        System.out.println("[Warning] Please input a valid response number.");
+                        break;
+                }
 
-            switch (response1) {
-                case 1:
-                    doLogin();
+                if (response1 == 2) {
                     break;
-                case 2:
-                    break;
-                default:
-                    System.out.println("[Warning] Please input a valid response number.");
-                    break;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("[Warning] Please input a valid response number.");
             }
 
-            if (response1 == 2) {
-                break;
-            }
         }
     }
 
@@ -106,7 +112,7 @@ public class MainApp {
             currentStaffEntity = staffEntityController.staffLogin(username, password);
             System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "!");
             postLoginOperation();
-        } catch (StaffNotFoundException | IncorrectPasswordException ex) {
+        } catch (StaffNotFoundException | IncorrectPasswordException | DuplicateException ex) {
             System.out.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }
     }
@@ -114,42 +120,47 @@ public class MainApp {
     private void postLoginOperation() {
         Scanner sc = new Scanner(System.in);
         int response2 = 0;
+        
+        try {
+            while (true) {
+                menu02();
+                response2 = sc.nextInt();
 
-        while (true) {
-            menu02();
-            response2 = sc.nextInt();
+                switch (response2) {
+                    case 1:
+                        redirectAccordingToRole();
+                        break;
+                    case 2:
+                        changePassword();
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        System.out.println("[Warning] Please input a valid response number.");
+                }
 
-            switch (response2) {
-                case 1:
-                    redirectAccordingToRole();
+                if (response2 == 3) {
                     break;
-                case 2:
-                    changePassword();
-                    break;
-                case 3:
-                    break;
-                default:
-                    System.out.println("[Warning] Please input a valid response number.");
+                }
             }
-            
-            if(response2 == 3)
-                break;
+        } catch (InputMismatchException ex) {
+            System.out.println("[Warning] Please input a valid response number.");
         }
     }
 
     private void redirectAccordingToRole() {
-        switch(currentStaffEntity.getAccessRight()){
+        switch (currentStaffEntity.getAccessRight()) {
             case MANAGER:
                 systemAdministrator = new SystemAdministratorModule(staffEntityController, currentStaffEntity);
                 systemAdministrator.doMenu();
                 break;
             case FINANCESTAFF:
                 financeStaff = new FinanceStaffModule(creditPackageEntityController, currentStaffEntity);
-                financeStaff.menu();
+                financeStaff.doMenu();
                 break;
             case SALESSTAFF:
                 salesStaff = new SalesStaffModule(bidEntityController, auctionEntityController, currentStaffEntity);
-                salesStaff.menu();
+                salesStaff.doMenu();
                 break;
         }
     }
