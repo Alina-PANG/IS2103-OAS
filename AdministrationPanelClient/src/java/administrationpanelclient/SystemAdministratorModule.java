@@ -84,33 +84,32 @@ public class SystemAdministratorModule {
     private void createNewEmployee() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("******* [System Administrator] Create New Employee *******");
-        System.out.print("First Name: ");
-        String firstName = sc.nextLine().trim();
-        System.out.print("Last Name: ");
-        String lastName = sc.nextLine().trim();
-        System.out.print("Identification Number: ");
-        String idNum = sc.nextLine().trim();
-        System.out.print("Username: ");
-        String username = sc.nextLine().trim();
-        System.out.print("Password: ");
-        String password = sc.nextLine().trim();
-        System.out.print("Acess Right: ");
-        EmployeeAccessRightEnum accessRight = null;
-        do {
-            try {
-                accessRight = EmployeeAccessRightEnum.valueOf(sc.nextLine().trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid input, Please retry."); //This is given on invalid input.  Put whatever type of error message you want here.
-                accessRight = null;
-            }
-        } while (accessRight != null);
-
         try {
-            staffEntityController.createNewStaffEntity(new StaffEntity(firstName, lastName, idNum, username, password, accessRight));
-        } catch (StaffAlreadyExistException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.out.println("******* [System Administrator] Create New Employee *******");
+            System.out.print("Acess Right (manager/financestaff/salesstaff): ");
+            EmployeeAccessRightEnum accessRight = null;
+            accessRight = EmployeeAccessRightEnum.valueOf(sc.nextLine().trim().toUpperCase());
+            System.out.print("First Name: ");
+            String firstName = sc.nextLine().trim();
+            System.out.print("Last Name: ");
+            String lastName = sc.nextLine().trim();
+            System.out.print("Identification Number: ");
+            String idNum = sc.nextLine().trim();
+            System.out.print("Username: ");
+            String username = sc.nextLine().trim();
+            System.out.print("Password: ");
+            String password = sc.nextLine().trim();
+
+            try {
+                StaffEntity staff = staffEntityController.createNewStaffEntity(new StaffEntity(firstName, lastName, idNum, username, password, accessRight));
+                System.out.println("[System] Staff with id = " + staff.getId() + " has been created successfully!");
+            } catch (StaffAlreadyExistException | GeneralException ex) {
+                System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("[Warning] Invalid input, Please retry."); //This is given on invalid input.  Put whatever type of error message you want here.
         }
+
     }
 
     private void updateEmployee() {
@@ -125,9 +124,10 @@ public class SystemAdministratorModule {
 
             while (true) {
                 viewEmployeeDetails(staff);
-                System.out.println("7. Cancel");
-                System.out.println("Input the number you want to change:");
+                System.out.println("7. Finish");
+                System.out.print("Input the number you want to change:");
                 option = sc.nextInt();
+                sc.nextLine();
 
                 switch (option) {
                     case 1:
@@ -173,6 +173,7 @@ public class SystemAdministratorModule {
                 }
             }
             staffEntityController.updateEmployee(staff);
+            System.out.println("[System] Staff with id = " + staff.getId() + " has been updated successfully!");
         } catch (StaffNotFoundException | GeneralException ex) {
             System.out.println("[Warning] An error has occured while updating employee: " + ex.getMessage());
         }
@@ -209,6 +210,7 @@ public class SystemAdministratorModule {
         try {
             StaffEntity staff = findEmployee();
             staffEntityController.deleteEmployee(staff.getId());
+            System.out.println("[System] Staff with id = " + staff.getId() + " has been deleted successfully!");
         } catch (GeneralException | StaffNotFoundException ex) {
             System.out.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
         }
@@ -217,10 +219,10 @@ public class SystemAdministratorModule {
     private void viewAllEmployee() {
         try {
             List<StaffEntity> list = staffEntityController.viewAllEmployee();
+            System.out.printf("%4s%15s%15s%30s%15s\n", "ID|", "FIRSTNAME|", "LASTNAME|", "IDENTIFICATION_NUMBER|", "ACCESSRIGHT");
 
             for (StaffEntity staff : list) {
-                System.out.printf("%4s%15s%15s%15s%10s\n", "ID", "FIRSTNAME", "LASTNAME", "IDENTIFICATION_NUMBER", "ACCESSRIGHT");
-                System.out.printf("%4s%15s%15s%15s%10s\n", staff.getId(), staff.getFirstName(), staff.getLastName(), staff.getIdentificationNumber(), staff.getAccessRight());
+                System.out.printf("%4s%15s%15s%30s%10s\n", staff.getId() + "|", staff.getFirstName() + "|", staff.getLastName() + "|", staff.getIdentificationNumber() + "|", staff.getAccessRight());
             }
         } catch (GeneralException ex) {
             System.out.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());

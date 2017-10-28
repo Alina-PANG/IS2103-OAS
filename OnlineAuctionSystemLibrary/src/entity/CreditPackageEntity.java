@@ -42,8 +42,8 @@ public class CreditPackageEntity implements Serializable {
     private BigDecimal price;
     @Column(length = 32, unique = true, nullable = false)
     private String name;
-    @OneToMany(mappedBy="creditPackageEntity")
-    private List<CreditTransactionEntity> creditTransactionEntities;
+  //  @OneToMany(mappedBy="creditPackageEntity")
+  //  private List<CreditTransactionEntity> creditTransactionEntities;
 
     public CreditPackageEntity() {
     }
@@ -131,16 +131,16 @@ public class CreditPackageEntity implements Serializable {
 
     /**
      * @return the creditTransactionEntities
-     */
+     
     public List<CreditTransactionEntity> getCreditTransactionEntities() {
         return creditTransactionEntities;
     }
 
     /**
      * @param creditTransactionEntities the creditTransactionEntities to set
-     */
+     
     public void setCreditTransactionEntities(List<CreditTransactionEntity> creditTransactionEntities) {
         this.creditTransactionEntities = creditTransactionEntities;
     }
-
+*/
 }

@@ -74,9 +74,26 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
         }
     }
 
-    //public CreditPackageEntity updateCreditPackage(String name) throws CreditPackageNotFoundException, GeneralException, DuplicateException {
-      //  CreditPackageEntity cp = retrieveCreditPackageByName(name);
+    public CreditPackageEntity updateCreditPackage(CreditPackageEntity newCp) throws CreditPackageNotFoundException, GeneralException, CreditPackageAlreadyExistException {
+        CreditPackageEntity cp = retrieveCreditPackageById(newCp.getId());
         
-    //}
+        cp.setName(newCp.getName());
+        cp.setPrice(newCp.getPrice());
+        cp.setValue(newCp.getValue());
+        try{
+            em.flush();
+            em.refresh(newCp);
+            
+            return cp;
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+                throw new CreditPackageAlreadyExistException("Credit Package with same name has already exist!");
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+    }
 
 }

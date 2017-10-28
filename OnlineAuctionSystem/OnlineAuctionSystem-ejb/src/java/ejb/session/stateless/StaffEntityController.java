@@ -77,12 +77,12 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with identification number = " + number + " is not found!");
-        } catch (NonUniqueResultException ex){
+        } catch (NonUniqueResultException ex) {
             throw new DuplicateException("There are more than one staff with same identification number -> error!");
         }
     }
-    
-        @Override
+
+    @Override
     public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException, DuplicateException {
         // retrieve staff
         Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.username = :username");
@@ -92,22 +92,18 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with username = " + username + " is not found!");
-        } catch (NonUniqueResultException ex){
+        } catch (NonUniqueResultException ex) {
             throw new DuplicateException("There are more than one staff with same username -> error!");
         }
     }
 
     @Override
     public StaffEntity staffLogin(String username, String password) throws StaffNotFoundException, IncorrectPasswordException, DuplicateException {
-        try {
-            StaffEntity staff = retrieveStaffByUsername(username);
-            if (staff.getPassword().equals(password)) {
-                return staff;
-            } else {
-                throw new IncorrectPasswordException("Incorrect Password!");
-            }
-        } catch (NoResultException ex) {
-            throw new StaffNotFoundException("Username does not exist!");
+        StaffEntity staff = retrieveStaffByUsername(username);
+        if (staff.getPassword().equals(password)) {
+            return staff;
+        } else {
+            throw new IncorrectPasswordException("Incorrect Password!");
         }
     }
 
@@ -119,7 +115,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             staff.setPassword(newPw);
             em.flush();
             em.refresh(staff);
-            
+
             return staff;
         } else {
             throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
@@ -128,7 +124,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
 
     // manager can only update the firstname, lastname, accessRight, identificationNumber. others are cretical information, and must be hidden from the manager.
     @Override
-    public StaffEntity updateEmployee(StaffEntity newStaff) throws StaffNotFoundException, GeneralException{
+    public StaffEntity updateEmployee(StaffEntity newStaff) throws StaffNotFoundException, GeneralException {
         StaffEntity oldStaff = retrieveStaffById(newStaff.getId());
 
         oldStaff.setIdentificationNumber(newStaff.getIdentificationNumber());
@@ -137,27 +133,37 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         oldStaff.setPassword(newStaff.getPassword());
         oldStaff.setAccessRight(newStaff.getAccessRight());
         oldStaff.setFirstName(newStaff.getFirstName());
-        
-        em.flush();
-        em.refresh(oldStaff);
-        
+
+        try {
+            em.flush();
+            em.refresh(oldStaff);
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+                throw new GeneralException("Staff with same identification number already exist!");
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+
         return oldStaff;
     }
 
     @Override
-    public void deleteEmployee(Long id) throws StaffNotFoundException, GeneralException{
+    public void deleteEmployee(Long id) throws StaffNotFoundException, GeneralException {
         StaffEntity staff = retrieveStaffById(id);
-        
+
         em.remove(staff);
     }
-    
+
     @Override
-    public List<StaffEntity> viewAllEmployee () throws GeneralException{
-        Query query = em.createQuery("SELECT * FROM StaffEntity s");
-        try{
-        return (List<StaffEntity>) query.getResultList();
-        } catch (Exception ex){
-            throw new GeneralException ("An unexpected exception happens: "+ex.getMessage());
+    public List<StaffEntity> viewAllEmployee() throws GeneralException {
+        Query query = em.createQuery("SELECT s FROM StaffEntity s");
+        try {
+            return (List<StaffEntity>) query.getResultList();
+        } catch (Exception ex) {
+            throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
         }
     }
 }

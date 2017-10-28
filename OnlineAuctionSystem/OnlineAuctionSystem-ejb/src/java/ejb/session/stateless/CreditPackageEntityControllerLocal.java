@@ -5,11 +5,18 @@
  */
 package ejb.session.stateless;
 
+import entity.CreditPackageEntity;
+import util.exception.CreditPackageAlreadyExistException;
+import util.exception.CreditPackageNotFoundException;
+import util.exception.GeneralException;
+
 
 /**
  *
  * @author alina
  */
 public interface CreditPackageEntityControllerLocal {
+
+    public CreditPackageEntity updateCreditPackage(CreditPackageEntity newCp) throws CreditPackageNotFoundException, GeneralException, CreditPackageAlreadyExistException;
     
 }
