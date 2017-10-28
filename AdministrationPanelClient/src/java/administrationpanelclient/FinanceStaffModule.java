@@ -55,23 +55,29 @@ public class FinanceStaffModule {
 
         try {
             while (true) {
+                System.out.println("");
                 menu();
                 response = sc.nextInt();
                 switch (response) {
                     case 1:
+                        System.out.println("");
                         createCreditPackage();
                         break;
                     case 2:
+                        System.out.println("");
                         updateCreditPackage();
                         break;
                     case 3:
+                        System.out.println("");
                         System.out.println("******* [Finance Staff] View Credit Package Details *******");
                         viewCreditPackageDetails();
                         break;
                     case 4:
+                        System.out.println("");
                         deleteCreditPackage();
                         break;
                     case 5:
+                        System.out.println("");
                         viewAllCreditPackage();
                         break;
                     case 6:
