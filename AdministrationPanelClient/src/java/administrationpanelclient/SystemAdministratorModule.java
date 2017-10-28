@@ -7,6 +7,7 @@ package administrationpanelclient;
 
 import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import util.enumeration.EmployeeAccessRightEnum;
@@ -39,32 +40,36 @@ public class SystemAdministratorModule {
 
         while (true) {
             menu();
-            int choice = sc.nextInt();
-            switch (choice) {
-                case 1:
-                    createNewEmployee();
+            try {
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        createNewEmployee();
+                        break;
+                    case 2:
+                        updateEmployee();
+                        break;
+                    case 3:
+                        System.out.println("******* [System Administrator] View Employee Details *******");
+                        viewEmployeeDetails();
+                        break;
+                    case 4:
+                        deleteEmployee();
+                        break;
+                    case 5:
+                        viewAllEmployee();
+                        break;
+                    case 6:
+                        break;
+                    default:
+                        System.out.println("[Warning] Please input a valid response number.");
+                        break;
+                }
+                if (choice == 6) {
                     break;
-                case 2:
-                    updateEmployee();
-                    break;
-                case 3:
-                    System.out.println("******* [System Administrator] View Employee Details *******");
-                    viewEmployeeDetails();
-                    break;
-                case 4:
-                    deleteEmployee();
-                    break;
-                case 5:
-                    viewAllEmployee();
-                    break;
-                case 6:
-                    break;
-                default:
-                    System.out.println("[Warning] Please input a valid response number.");
-                    break;
-            }
-            if (choice == 6) {
-                break;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("[Warning] Please input a valid response number.");
             }
         }
     }
@@ -176,10 +181,12 @@ public class SystemAdministratorModule {
             System.out.println("[System] Staff with id = " + staff.getId() + " has been updated successfully!");
         } catch (StaffNotFoundException | GeneralException ex) {
             System.out.println("[Warning] An error has occured while updating employee: " + ex.getMessage());
+        }catch (InputMismatchException ex) {
+            System.out.println("[Warning] Please input a valid response number.");
         }
     }
 
-    private StaffEntity findEmployee() throws GeneralException, StaffNotFoundException {
+    private StaffEntity findEmployee() throws GeneralException, StaffNotFoundException, InputMismatchException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please input the id of the employee: ");
         Long id = sc.nextLong();
@@ -197,7 +204,7 @@ public class SystemAdministratorModule {
     }
 
     private void viewEmployeeDetails(StaffEntity staff) {
-        System.out.println("0. Id: " + staff.getId());
+        System.out.println("[Staff] id=" + staff.getId() + " content: ");
         System.out.println("1. First Name: " + staff.getFirstName());
         System.out.println("2. Last Name: " + staff.getLastName());
         System.out.println("3. Identification Number: " + staff.getIdentificationNumber());
