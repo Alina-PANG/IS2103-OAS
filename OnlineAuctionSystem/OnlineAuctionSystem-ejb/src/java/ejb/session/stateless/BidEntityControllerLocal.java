@@ -20,5 +20,7 @@ public interface BidEntityControllerLocal {
     public BidEntity retrieveById(Long id) throws BidNotFoundException;
 
     public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException;
+
+    public void deleteBid(Long id) throws BidNotFoundException;
     
 }

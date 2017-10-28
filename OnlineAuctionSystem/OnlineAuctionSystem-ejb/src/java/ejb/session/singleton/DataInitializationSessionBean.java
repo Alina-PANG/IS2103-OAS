@@ -9,9 +9,12 @@ import ejb.session.stateless.AuctionEntityControllerLocal;
 import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.CreditPackageEntityControllerLocal;
 import ejb.session.stateless.StaffEntityControllerLocal;
+import entity.AuctionEntity;
 import entity.CreditPackageEntity;
 import entity.StaffEntity;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -20,6 +23,8 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.EmployeeAccessRightEnum;
+import util.enumeration.StatusEnum;
+import util.exception.AuctionAlreadyExistException;
 import util.exception.CreditPackageAlreadyExistException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
@@ -46,8 +51,6 @@ public class DataInitializationSessionBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityController;
-    
-    
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
@@ -56,22 +59,26 @@ public class DataInitializationSessionBean {
     public void postConstruct() {
         try {
             staffEntityController.retrieveStaffByIdentificationNumber("01");
-        } catch (StaffNotFoundException| DuplicateException ex) {
-            initializeDataStaff1();
+        } catch (StaffNotFoundException | DuplicateException ex) {
+            initializeDataStaff();
         }
     }
-    
-    
 
-    private void initializeDataStaff1() {
+    private void initializeDataStaff() {
         try {
             staffEntityController.createNewStaffEntity(new StaffEntity("Anthony", "Young", "01", "manager", "password", EmployeeAccessRightEnum.MANAGER));
             staffEntityController.createNewStaffEntity(new StaffEntity("Yue", "Ling", "02", "yueling", "000000", EmployeeAccessRightEnum.FINANCESTAFF));
             staffEntityController.createNewStaffEntity(new StaffEntity("Wei Liang", "Tan", "03", "weiliang", "000000", EmployeeAccessRightEnum.SALESSTAFF));
+
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(5), new BigDecimal(5), "5 for 5", false));
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(10), new BigDecimal(9), "9 for 10", false));
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
-        } catch (StaffAlreadyExistException | GeneralException | CreditPackageAlreadyExistException ex) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+            auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2017"), StatusEnum.CLOSED, new BigDecimal(77), "Totoro", "Cute Totoro!"));
+            auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2018"), StatusEnum.CLOSED, new BigDecimal(10), "Cup", "Drink Water"));
+            auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), StatusEnum.CLOSED, new BigDecimal(92), "Apple", "Sweet Apple"));
+        } catch (StaffAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException ex) {
             System.out.println("Error in Singleton");
         }
     }
