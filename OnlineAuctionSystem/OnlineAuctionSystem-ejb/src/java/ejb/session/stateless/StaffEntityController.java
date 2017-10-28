@@ -68,7 +68,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException, DuplicateException {
+    public StaffEntity retrieveStaffByIdentificationNumber(String number) throws StaffNotFoundException {
         // retrieve staff
         Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.identificationNumber = :num");
         query.setParameter("num", number);
@@ -77,13 +77,11 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with identification number = " + number + " is not found!");
-        } catch (NonUniqueResultException ex) {
-            throw new DuplicateException("There are more than one staff with same identification number -> error!");
-        }
+        } 
     }
 
     @Override
-    public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException, DuplicateException {
+    public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException {
         // retrieve staff
         Query query = em.createQuery("SELECT s FROM StaffEntity s WHERE s.username = :username");
         query.setParameter("username", username);
@@ -92,9 +90,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with username = " + username + " is not found!");
-        } catch (NonUniqueResultException ex) {
-            throw new DuplicateException("There are more than one staff with same username -> error!");
-        }
+        } 
     }
 
     @Override

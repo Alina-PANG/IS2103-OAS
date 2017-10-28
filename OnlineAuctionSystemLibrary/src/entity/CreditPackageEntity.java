@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -42,16 +42,21 @@ public class CreditPackageEntity implements Serializable {
     private BigDecimal price;
     @Column(length = 32, unique = true, nullable = false)
     private String name;
+    @ManyToMany
+    private List<CustomerEntity> customerEntities;
+    private Boolean isDisabled;
   //  @OneToMany(mappedBy="creditPackageEntity")
-  //  private List<CreditTransactionEntity> creditTransactionEntities;
+  // private List<CreditTransactionEntity> creditTransactionEntities;
 
     public CreditPackageEntity() {
+        isDisabled = false;
     }
 
-    public CreditPackageEntity(BigDecimal value, BigDecimal price, String name) {
+    public CreditPackageEntity(BigDecimal value, BigDecimal price, String name, Boolean isDisabled) {
         this.value = value;
         this.price = price;
         this.name = name;
+        this.isDisabled = isDisabled;
     }
 
     public Long getId() {
@@ -130,17 +135,45 @@ public class CreditPackageEntity implements Serializable {
     }
 
     /**
+     * @return the isDisabled
+     */
+    public Boolean getIsDisabled() {
+        return isDisabled;
+    }
+
+    /**
+     * @param isDisabled the isDisabled to set
+     */
+    public void setIsDisabled(Boolean isDisabled) {
+        this.isDisabled = isDisabled;
+    }
+
+    /**
+     * @return the customerEntities
+     */
+    public List<CustomerEntity> getCustomerEntities() {
+        return customerEntities;
+    }
+
+    /**
+     * @param customerEntities the customerEntities to set
+     */
+    public void setCustomerEntities(List<CustomerEntity> customerEntities) {
+        this.customerEntities = customerEntities;
+    }
+
+    /**
      * @return the creditTransactionEntities
      
     public List<CreditTransactionEntity> getCreditTransactionEntities() {
         return creditTransactionEntities;
-    }
+    }*/
 
     /**
      * @param creditTransactionEntities the creditTransactionEntities to set
      
     public void setCreditTransactionEntities(List<CreditTransactionEntity> creditTransactionEntities) {
         this.creditTransactionEntities = creditTransactionEntities;
-    }
-*/
+    }*/
+
 }
