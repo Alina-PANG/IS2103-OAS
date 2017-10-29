@@ -58,10 +58,4 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             return bid;
         }
     }
-    
-    public void deleteBid(Long id) throws BidNotFoundException {
-        BidEntity bid = retrieveById(id);
-        
-        em.remove(bid);
-    }
 }

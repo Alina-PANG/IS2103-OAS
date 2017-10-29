@@ -73,14 +73,13 @@ public class MainApp {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("[Warning] Invalid type!");
+                System.out.println("[Warning] Please input a valid response number.");
             }
 
         }
     }
 
     private void menu01() {
-        System.out.println("");
         System.out.println("******* [OAS System] Employee Homepage *******");
         System.out.println("1. Login");
         System.out.println("2. Exit");
@@ -89,7 +88,6 @@ public class MainApp {
     }
 
     private void menu02() {
-        System.out.println("");
         System.out.println("******* [OAS System] Employee Basic Operation *******");
         System.out.println("1. Enter Employee Portal");
         System.out.println("2. Change Password");
@@ -104,7 +102,6 @@ public class MainApp {
         String username, password;
 
         // login
-        System.out.println("");
         System.out.println("******* [OAS System] Employee Login *******");
         System.out.print("Username: ");
         username = sc.nextLine().trim();
@@ -173,7 +170,6 @@ public class MainApp {
         String currentPw;
         String newPw1 = "a", newPw2 = "b";
 
-        System.out.println("");
         System.out.println("******* [OAS System] Change Password *******");
         System.out.println("Please input your old password: ");
         currentPw = sc.nextLine().trim();

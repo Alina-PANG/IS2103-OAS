@@ -7,7 +7,7 @@ package ejb.session.stateless;
 
 import entity.AuctionEntity;
 import entity.BidEntity;
-import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -15,12 +15,12 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolationException;
-import util.enumeration.StatusEnum;
 import util.exception.AuctionAlreadyExistException;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidNotFoundException;
@@ -35,23 +35,13 @@ import util.exception.BidNotFoundException;
 public class AuctionEntityController implements AuctionEntityControllerRemote, AuctionEntityControllerLocal {
 
     @EJB
-    private CustomerEntityControllerLocal customerEntityController;
-
-    @EJB
     private BidEntityControllerLocal bidEntityController;
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
-    /**
-     *
-     * @param ae
-     * @return
-     * @throws AuctionAlreadyExistException
-     * @throws GeneralException
-     */
     @Override
-    public AuctionEntity createNewAuction(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException {
+    public AuctionEntity persist(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException {
         try {
             em.persist(ae);
             em.flush();
@@ -66,14 +56,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        } catch (ConstraintViolationException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
-                throw new AuctionAlreadyExistException("Auction with same identification number already exist!");
-            } else {
-                throw new GeneralException("Start and End Date and time cannot be later than today!");
-            }
         }
     }
 
@@ -85,7 +67,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      * @throws GeneralException
      */
     @Override
-    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException {
+    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException, GeneralException {
         // retrieve the ae
         AuctionEntity ae = em.find(AuctionEntity.class, id);
 
@@ -98,16 +80,26 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     @Override
-    public List<AuctionEntity> retrieveAuctionByProductName(String name) throws AuctionNotFoundException {
+    public AuctionEntity retrieveAuctionByProductCode(String number) throws AuctionNotFoundException, DuplicateException {
         // retrieve ae
-        Query query = em.createQuery("SELECT s FROM AuctionEntity s WHERE LOWER(s.productName) LIKE :name");
-        query.setParameter("name", name);
+        Query query = em.createQuery("SELECT s FROM AuctionEntity s WHERE s.productCode = :num");
+        query.setParameter("num", number);
 
         try {
-            return (List<AuctionEntity>) query.getResultList();
+            return (AuctionEntity) query.getSingleResult();
         } catch (NoResultException ex) {
-            throw new AuctionNotFoundException("Auction with product name like " + name + " is not found!");
+            throw new AuctionNotFoundException("Auction with product code = " + number + " is not found!");
+        } catch (NonUniqueResultException ex) {
+            throw new DuplicateException("There are more than one ae with same product code -> error!");
         }
+    }
+
+    @Override
+    public void switchStatus(Long id, boolean status) throws AuctionNotFoundException, GeneralException {
+        AuctionEntity ae;
+
+        ae = retrieveAuctionById(id);
+        ae.setStatus(status);
     }
 
     /**
@@ -118,30 +110,20 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      * @throws GeneralException
      */
     @Override
-    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException {
+    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException {
         AuctionEntity oldAuction = retrieveAuctionById(newAuction.getId());
 
         oldAuction.setStartingTime(newAuction.getStartingTime());
         oldAuction.setEndingTime(newAuction.getEndingTime());
         oldAuction.setStatus(newAuction.getStatus());
         oldAuction.setReservePrice(newAuction.getReservePrice());
-        // oldAuction.setWinningBidId(newAuction.getWinningBidId());
-        //oldAuction.setProductCode(newAuction.getProductCode());
+       // oldAuction.setWinningBidId(newAuction.getWinningBidId());
+        oldAuction.setProductCode(newAuction.getProductCode());
         oldAuction.setProductName(newAuction.getProductName());
         oldAuction.setProductDescription(newAuction.getProductDescription());
 
-        try {
-            em.flush();
-            em.refresh(oldAuction);
-        } catch (PersistenceException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
-                throw new AuctionAlreadyExistException("Auction with same identification number already exist!");
-            } else {
-                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
-            }
-        }
+        em.flush();
+        em.refresh(oldAuction);
 
         return oldAuction;
     }
@@ -153,85 +135,54 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      * @throws GeneralException
      */
     @Override
-    public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException {
+    public void deleteEmployee(Long id) throws AuctionNotFoundException, GeneralException {
         AuctionEntity ae = retrieveAuctionById(id);
 
-        if (ae.getCustomerEntities() != null && ae.getCustomerEntities().size() != 0 && ae.getStatus().equals(StatusEnum.ACTIVE)) {
-            // disable the ae
-            ae.setStatus(StatusEnum.DISABLED);
-
-            // refund and delete the bid
-            List<BidEntity> bidList = ae.getBidEntities();
-            for (BidEntity bid : bidList) {
-                CustomerEntity c = bid.getCustomerEntity();
-                c.setCreditBalance(c.getCreditBalance().add(bid.getAmount()));
-                try {
-                    bidEntityController.deleteBid(bid.getId());
-                } catch (BidNotFoundException ex) {
-                }
-            }
-            return false;
-        } else {
-            em.remove(ae);
-            return true;
-        }
+        em.remove(ae);
     }
 
-    public List<AuctionEntity> viewAllAuction() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al");
-
-        try {
-            return (List<AuctionEntity>) query.getResultList();
-        } catch (NoResultException ex) {
-            throw new GeneralException("No auction listing exists!");
-        }
-    }
-
-    
-           public List<AuctionEntity> viewAllAuctionNoWinning() throws GeneralException{
-                 Query query = em.createQuery("SELECT al FROM AuctionEntity al");
-               
-              try {
-            return (List<AuctionEntity>) query.getResultList();
-        } catch (NoResultException ex) {
-            throw new GeneralException("No auction listing exists!");
-        }
-           }
     /**
      *
      * @return @throws GeneralException
-     *
-     * @Override public List<BidEntity> viewAllBids() throws GeneralException {
-     * Query query = em.createQuery("SELECT * FROM BidEntity s"); try { return
-     * (List<BidEntity>) query.getResultList(); } catch (Exception ex) { throw
-     * new GeneralException("An unexpected exception happens: " +
-     * ex.getMessage()); } } /* public BidEntity getWinningBid(Long aid) throws
-     * AuctionNotFoundException, GeneralException, BidNotFoundException {
-     * AuctionEntity a = retrieveAuctionById(aid);
-     *
-     * BidEntity bOld = bidEntityController.retrieveById(a.getWinningBidId());
-     * return bOld; }
-     *
-     * public boolean isWinningBid(Long bid, Long aid, Long cid) throws
-     * AuctionNotFoundException, GeneralException, BidNotFoundException {
-     * AuctionEntity a = retrieveAuctionById(aid); BidEntity bNew =
-     * bidEntityController.retrieveById(bid); try { BidEntity bOld =
-     * bidEntityController.retrieveById(a.getWinningBidId()); BigDecimal
-     * oldAmount = bOld.getAmount(); BigDecimal newAmount = bNew.getAmount(); if
-     * (newAmount.compareTo(oldAmount) > 0) { a.setWinningBidId(bid);
-     * a.setWinningCustomerId(cid); bOld.setIsWinningBid(Boolean.FALSE);
-     * bNew.setIsWinningBid(Boolean.TRUE); return true; } else { return false; }
-     * } catch (BidNotFoundException ex) { a.setWinningBidId(bid);
-     * a.setWinningCustomerId(cid); bNew.setIsWinningBid(Boolean.TRUE); return
-     * false; } }
      */
-    /*
     @Override
-    public void switchStatus(Long id, boolean status) throws AuctionNotFoundException, GeneralException {
-        AuctionEntity ae;
-
-        ae = retrieveAuctionById(id);
-        ae.setStatus(status);
+    public List<BidEntity> viewAllBids() throws GeneralException {
+        Query query = em.createQuery("SELECT * FROM BidEntity s");
+        try {
+            return (List<BidEntity>) query.getResultList();
+        } catch (Exception ex) {
+            throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
+        }
     }
-     */
+/*
+    public BidEntity getWinningBid(Long aid) throws AuctionNotFoundException, GeneralException, BidNotFoundException {
+        AuctionEntity a = retrieveAuctionById(aid);
+
+        BidEntity bOld = bidEntityController.retrieveById(a.getWinningBidId());
+        return bOld;
+    }
+
+    public boolean isWinningBid(Long bid, Long aid, Long cid) throws AuctionNotFoundException, GeneralException, BidNotFoundException {
+        AuctionEntity a = retrieveAuctionById(aid);
+        BidEntity bNew = bidEntityController.retrieveById(bid);
+        try {
+            BidEntity bOld = bidEntityController.retrieveById(a.getWinningBidId());
+            BigDecimal oldAmount = bOld.getAmount();
+            BigDecimal newAmount = bNew.getAmount();
+            if (newAmount.compareTo(oldAmount) > 0) {
+                a.setWinningBidId(bid);
+                a.setWinningCustomerId(cid);
+                bOld.setIsWinningBid(Boolean.FALSE);
+                bNew.setIsWinningBid(Boolean.TRUE);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (BidNotFoundException ex) {
+            a.setWinningBidId(bid);
+            a.setWinningCustomerId(cid);
+            bNew.setIsWinningBid(Boolean.TRUE);
+            return false;
+        }
+    }*/
 }

@@ -39,30 +39,24 @@ public class SystemAdministratorModule {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("");
             menu();
             try {
                 int choice = sc.nextInt();
                 switch (choice) {
                     case 1:
-                        System.out.println("");
                         createNewEmployee();
                         break;
                     case 2:
-                        System.out.println("");
                         updateEmployee();
                         break;
                     case 3:
-                        System.out.println("");
                         System.out.println("******* [System Administrator] View Employee Details *******");
                         viewEmployeeDetails();
                         break;
                     case 4:
-                        System.out.println("");
                         deleteEmployee();
                         break;
                     case 5:
-                        System.out.println("");
                         viewAllEmployee();
                         break;
                     case 6:
@@ -75,7 +69,7 @@ public class SystemAdministratorModule {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("[Warning] Invalid Type!");
+                System.out.println("[Warning] Please input a valid response number.");
             }
         }
     }

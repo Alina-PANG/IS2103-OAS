@@ -20,17 +20,17 @@ import util.exception.GeneralException;
  * @author alina
  */
 public interface AuctionEntityControllerRemote {
-  
-    public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
+        public AuctionEntity persist(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException;
 
-    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException;
+    public List<BidEntity> viewAllBids() throws GeneralException;
 
-    public List<AuctionEntity> retrieveAuctionByProductName(String name) throws AuctionNotFoundException;
+    public void switchStatus(Long id, boolean status) throws AuctionNotFoundException, GeneralException;
 
-    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException;
+    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException, GeneralException;
 
-    public AuctionEntity createNewAuction(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException;
+    public AuctionEntity retrieveAuctionByProductCode(String number) throws AuctionNotFoundException, DuplicateException;
 
-    public List<AuctionEntity> viewAllAuction() throws GeneralException;
+    public void deleteEmployee(Long id) throws AuctionNotFoundException, GeneralException;
 
+    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException;
 }
