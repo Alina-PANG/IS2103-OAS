@@ -33,4 +33,8 @@ public interface AuctionEntityControllerRemote {
 
     public List<AuctionEntity> viewAllAuction() throws GeneralException;
 
+    public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
+
+    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException;
+
 }

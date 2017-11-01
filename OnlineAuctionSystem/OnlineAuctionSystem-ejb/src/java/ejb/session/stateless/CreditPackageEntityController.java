@@ -78,7 +78,7 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
     @Override
     public List<CreditPackageEntity> retrieveCreditPackageByName(String name) throws CreditPackageNotFoundException {
         Query query = em.createQuery("SELECT cp FROM CreditPackageEntity cp WHERE LOWER(cp.name) LIKE LOWER(:name)");
-        query.setParameter("name", name);
+        query.setParameter("name", '%'+name+'%');
         
         try {
             return (List<CreditPackageEntity>) query.getResultList();

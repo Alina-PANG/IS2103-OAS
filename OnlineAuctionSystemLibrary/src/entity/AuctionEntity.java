@@ -158,6 +158,14 @@ public class AuctionEntity implements Serializable {
     public void setStatus(StatusEnum status) {
         this.status = status;
     }
+    
+    public boolean checkStatus(){
+        if((new Date()).compareTo(this.endingTime) > 0){
+            this.status = StatusEnum.CLOSED;
+            return true;
+        }
+        return false;
+    }
 
     /**
      * @return the reservePrice
@@ -227,6 +235,15 @@ public class AuctionEntity implements Serializable {
     public void setBidEntities(List<BidEntity> bidEntities) {
         this.bidEntities = bidEntities;
     }
+    
+    public BidEntity getWinningBid(){
+        for(BidEntity bid: this.bidEntities){
+            if(bid.getIsWinningBid())
+                return bid;
+        }
+        return null;
+    }
+    
 
     /**
      * @return the status

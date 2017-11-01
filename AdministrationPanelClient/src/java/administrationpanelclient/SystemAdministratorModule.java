@@ -68,14 +68,14 @@ public class SystemAdministratorModule {
                     case 6:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
                 if (choice == 6) {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("[Warning] Invalid Type!");
+                System.err.println("[Warning] Invalid Type!");
             }
         }
     }
@@ -115,10 +115,10 @@ public class SystemAdministratorModule {
                 StaffEntity staff = staffEntityController.createNewStaffEntity(new StaffEntity(firstName, lastName, idNum, username, password, accessRight));
                 System.out.println("[System] Staff with id = " + staff.getId() + " has been created successfully!");
             } catch (StaffAlreadyExistException | GeneralException ex) {
-                System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+                System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("[Warning] Invalid input, Please retry."); //This is given on invalid input.  Put whatever type of error message you want here.
+            System.err.println("[Warning] Invalid input, Please retry."); //This is given on invalid input.  Put whatever type of error message you want here.
         }
 
     }
@@ -186,9 +186,9 @@ public class SystemAdministratorModule {
             staffEntityController.updateEmployee(staff);
             System.out.println("[System] Staff with id = " + staff.getId() + " has been updated successfully!");
         } catch (StaffNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while updating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while updating employee: " + ex.getMessage());
         }catch (InputMismatchException ex) {
-            System.out.println("[Warning] Please input a valid response number.");
+            System.err.println("[Warning] Please input a valid response number.");
         }
     }
 
@@ -205,7 +205,7 @@ public class SystemAdministratorModule {
             StaffEntity staff = findEmployee();
             viewEmployeeDetails(staff);
         } catch (StaffNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
         }
     }
 
@@ -225,7 +225,7 @@ public class SystemAdministratorModule {
             staffEntityController.deleteEmployee(staff.getId());
             System.out.println("[System] Staff with id = " + staff.getId() + " has been deleted successfully!");
         } catch (GeneralException | StaffNotFoundException ex) {
-            System.out.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
         }
     }
 
@@ -238,7 +238,7 @@ public class SystemAdministratorModule {
                 System.out.printf("%4s%15s%15s%30s%10s\n", staff.getId() + "|", staff.getFirstName() + "|", staff.getLastName() + "|", staff.getIdentificationNumber() + "|", staff.getAccessRight());
             }
         } catch (GeneralException ex) {
-            System.out.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());
         }
     }
 }

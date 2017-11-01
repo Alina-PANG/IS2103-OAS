@@ -8,6 +8,7 @@ package administrationpanelclient;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.AuctionEntityControllerRemote;
 import entity.AuctionEntity;
+import entity.BidEntity;
 import entity.StaffEntity;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -19,6 +20,7 @@ import java.util.Scanner;
 import util.enumeration.StatusEnum;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.AuctionNotFoundException;
+import util.exception.BidNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -93,7 +95,7 @@ public class SalesStaffModule {
                     case 7:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
                 if (response == 7) {
@@ -101,7 +103,7 @@ public class SalesStaffModule {
                 }
             }
         } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Invalide Type!");
+            System.err.println("[Warning] Invalide Type!");
         }
     }
 
@@ -124,7 +126,7 @@ public class SalesStaffModule {
                 endDate = formatter.parse(endDateStr);
 
                 if (startDate.compareTo(endDate) > 0) {
-                    System.out.println("[Warning] End Date cannot be later than Start Date!");
+                    System.err.println("[Warning] End Date cannot be later than Start Date!");
                 }
             } while (startDate.compareTo(endDate) > 0);
             System.out.print("Reserve Price: ");
@@ -139,11 +141,11 @@ public class SalesStaffModule {
             AuctionEntity al = auctionEntityController.createNewAuction(new AuctionEntity(startDate, endDate, StatusEnum.CLOSED, reservePrice, productName, productDes));
             System.out.println("[System] Auction Listing with id = " + al.getId() + "' has been created successfully!");
         } catch (AuctionAlreadyExistException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
         } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Invalid input type!");
+            System.err.println("[Warning] Invalid input type!");
         } catch (ParseException ex) {
-            System.out.println("[Warning] Invalid Datetime type!");
+            System.err.println("[Warning] Invalid Datetime type!");
         }
     }
 
@@ -189,7 +191,7 @@ public class SalesStaffModule {
                     case 6:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
                 if (response == 6) {
@@ -199,11 +201,11 @@ public class SalesStaffModule {
             auctionEntityController.updateAuction(al);
             System.out.println("[System] Auction Listing with id = " + al.getId() + " has been updated successfully!");
         } catch (AuctionNotFoundException | GeneralException | AuctionAlreadyExistException ex) {
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Invalid input!");
+            System.err.println("[Warning] Invalid input!");
         } catch (ParseException ex) {
-            System.out.println("[Warning] Invalid Datetime type!");
+            System.err.println("[Warning] Invalid Datetime type!");
         }
     }
 
@@ -211,7 +213,7 @@ public class SalesStaffModule {
         try {
             viewAuctionDetails(findAuction());
         } catch (AuctionNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         }
 
     }
@@ -228,7 +230,7 @@ public class SalesStaffModule {
                 System.out.println("[System] Auction Listing with id = " + al.getId() + " is in used, thus it can only be disabled.");
             }
         } catch (AuctionNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         }
     }
 
@@ -239,13 +241,13 @@ public class SalesStaffModule {
             List<AuctionEntity> list = auctionEntityController.viewAllAuction();
             showList(list);
         } catch (GeneralException ex) {
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         }
     }
 
     private void showList(List<AuctionEntity> list) {
         //  startDate, endDate, false, reservePrice, productName, productDes, new Long(-1), null));
-        System.out.printf("%5s%25s%25s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|", "Product Name");
+        System.out.printf("%5s%25s%25s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|","Product Name");
         for (AuctionEntity al : list) {
             System.out.printf("%5s%25s%25s%10s%15s%20s\n", al.getId() + "|", al.getStartingTime() + "|", al.getEndingTime() + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
         }
@@ -271,6 +273,11 @@ public class SalesStaffModule {
     private void viewAuctionDetails(AuctionEntity al) {
         System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
         System.out.println("[Immutable] Status: " + al.getStatus());
+        System.out.print("[Immutable] Winning Bid: ");
+        if(al.getWinningBid() != null)
+            System.out.println(""+al.getWinningBid().getAmount());
+        else 
+            System.out.println("No winning bid yet.");
         System.out.println("1. Start Date: " + al.getStartingTime());
         System.out.println("2. End Date: " + al.getEndingTime());
         System.out.println("3. Reserve Price: " + al.getReservePrice());
@@ -279,7 +286,33 @@ public class SalesStaffModule {
     }
 
     private void viewAuctionNoWinning() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("******* [Auction Listing] View All Auction Listings with Bids but Below Researve Price ******* ");
+        Scanner sc = new Scanner(System.in);
+        try{
+            showList(auctionEntityController.viewNoWinningAuction());
+            System.out.print("Input the id of the Auction Listing that you want to retrieve:");
+            List<BidEntity> list = auctionEntityController.viewBidEntity(sc.nextLong());
+            showBid(list);
+            System.out.println("Input the id of the Bid tht you want to assign as the winning bid (0 for cancel): ");
+            Long bid = sc.nextLong();
+            if(!bid.equals(0)){
+                bidEntityController.assignWinningBid(bid);
+                System.out.println("[System] Assign successful!");
+            }
+        } catch(GeneralException ex){
+            System.err.println("[Warning] No requested Auction Listing exist!");
+        } catch(InputMismatchException ex){
+            System.err.println("[Warning] Incompatible format!");
+        } catch(AuctionNotFoundException | BidNotFoundException ex){
+            System.err.println("[Warning] An error has incurred while retrieving auction: "+ex.getMessage());
+        }
+    }
+
+    private void showBid(List<BidEntity> list) {
+        System.out.printf("%5s%10s\n", "ID|", "Amount");
+        for (BidEntity b : list) {
+            System.out.printf("%5s%10s\n", b.getId() + "|", b.getAmount());
+        }
     }
 
 }

@@ -65,7 +65,7 @@ public class MainApp {
                     case 2:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
 
@@ -73,7 +73,7 @@ public class MainApp {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("[Warning] Invalid type!");
+                System.err.println("[Warning] Invalid type!");
             }
 
         }
@@ -116,7 +116,7 @@ public class MainApp {
             System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "!");
             postLoginOperation();
         } catch (StaffNotFoundException | IncorrectPasswordException | DuplicateException ex) {
-            System.out.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }
     }
 
@@ -139,7 +139,7 @@ public class MainApp {
                     case 3:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                 }
 
                 if (response2 == 3) {
@@ -147,7 +147,7 @@ public class MainApp {
                 }
             }
         } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Please input a valid response number.");
+            System.err.println("[Warning] Please input a valid response number.");
         }
     }
 
@@ -184,7 +184,7 @@ public class MainApp {
             newPw2 = sc.nextLine().trim();
 
             if (!newPw1.equals(newPw2)) {
-                System.out.println("[Warning] The two passwords you input are inconsistent with each other!");
+                System.err.println("[Warning] The two passwords you input are inconsistent with each other!");
             }
         }
 
@@ -192,7 +192,7 @@ public class MainApp {
             currentStaffEntity = staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
             System.out.println("[System] Password Changed Successfully!");
         } catch (IncorrectPasswordException | StaffNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while changing password: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while changing password: " + ex.getMessage());
         }
     }
 }

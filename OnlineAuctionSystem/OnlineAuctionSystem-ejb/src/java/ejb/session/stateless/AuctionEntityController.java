@@ -187,51 +187,22 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
     }
 
-    
-           public List<AuctionEntity> viewAllAuctionNoWinning() throws GeneralException{
-                 Query query = em.createQuery("SELECT al FROM AuctionEntity al");
-               
-              try {
+    @Override
+    public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
+        Query query = em.createQuery("(SELECT al FROM AuctionEntity al, BidEntity b WHERE b.amount >= al.reservePrice GROUP BY al.id HAVING COUNT(b) == 0) MINUS (SELECT al.id GROUP BY al.id HAVING COUNT(al.bidEntities) == 0)");
+        try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
             throw new GeneralException("No auction listing exists!");
         }
-           }
-    /**
-     *
-     * @return @throws GeneralException
-     *
-     * @Override public List<BidEntity> viewAllBids() throws GeneralException {
-     * Query query = em.createQuery("SELECT * FROM BidEntity s"); try { return
-     * (List<BidEntity>) query.getResultList(); } catch (Exception ex) { throw
-     * new GeneralException("An unexpected exception happens: " +
-     * ex.getMessage()); } } /* public BidEntity getWinningBid(Long aid) throws
-     * AuctionNotFoundException, GeneralException, BidNotFoundException {
-     * AuctionEntity a = retrieveAuctionById(aid);
-     *
-     * BidEntity bOld = bidEntityController.retrieveById(a.getWinningBidId());
-     * return bOld; }
-     *
-     * public boolean isWinningBid(Long bid, Long aid, Long cid) throws
-     * AuctionNotFoundException, GeneralException, BidNotFoundException {
-     * AuctionEntity a = retrieveAuctionById(aid); BidEntity bNew =
-     * bidEntityController.retrieveById(bid); try { BidEntity bOld =
-     * bidEntityController.retrieveById(a.getWinningBidId()); BigDecimal
-     * oldAmount = bOld.getAmount(); BigDecimal newAmount = bNew.getAmount(); if
-     * (newAmount.compareTo(oldAmount) > 0) { a.setWinningBidId(bid);
-     * a.setWinningCustomerId(cid); bOld.setIsWinningBid(Boolean.FALSE);
-     * bNew.setIsWinningBid(Boolean.TRUE); return true; } else { return false; }
-     * } catch (BidNotFoundException ex) { a.setWinningBidId(bid);
-     * a.setWinningCustomerId(cid); bNew.setIsWinningBid(Boolean.TRUE); return
-     * false; } }
-     */
-    /*
-    @Override
-    public void switchStatus(Long id, boolean status) throws AuctionNotFoundException, GeneralException {
-        AuctionEntity ae;
-
-        ae = retrieveAuctionById(id);
-        ae.setStatus(status);
     }
-     */
+    
+    @Override
+    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException{
+    AuctionEntity ae = retrieveAuctionById(aid);
+        
+        return ae.getBidEntities();
+    }
+    
+    
 }

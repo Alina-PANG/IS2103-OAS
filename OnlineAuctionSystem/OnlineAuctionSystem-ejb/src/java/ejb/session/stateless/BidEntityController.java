@@ -64,4 +64,11 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         
         em.remove(bid);
     }
+    
+    @Override
+    public void assignWinningBid(Long id) throws BidNotFoundException {
+        BidEntity bid = retrieveById(id);
+        
+        bid.setIsWinningBid(true);
+    }
 }

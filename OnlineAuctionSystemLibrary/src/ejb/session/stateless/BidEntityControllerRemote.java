@@ -22,4 +22,6 @@ public interface BidEntityControllerRemote {
     public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException;
 
     public void deleteBid(Long id) throws BidNotFoundException;
+
+    public void assignWinningBid(Long id) throws BidNotFoundException;
 }

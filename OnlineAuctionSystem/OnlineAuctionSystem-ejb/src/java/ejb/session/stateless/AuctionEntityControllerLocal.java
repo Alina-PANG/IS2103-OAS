@@ -20,7 +20,7 @@ import util.exception.GeneralException;
  */
 public interface AuctionEntityControllerLocal {
 
-    public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
+     public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
 
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException;
 
@@ -30,7 +30,9 @@ public interface AuctionEntityControllerLocal {
 
     public AuctionEntity createNewAuction(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException;
 
-        public List<AuctionEntity> viewAllAuction() throws GeneralException;
-        
-        public List<AuctionEntity> viewAllAuctionNoWinning() throws GeneralException;
+    public List<AuctionEntity> viewAllAuction() throws GeneralException;
+
+    public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
+
+    public List<BidEntity> viewBidEntity(Long aid)throws AuctionNotFoundException;
 }
