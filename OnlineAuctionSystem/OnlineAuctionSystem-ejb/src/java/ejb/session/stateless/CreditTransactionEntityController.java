@@ -5,11 +5,16 @@
  */
 package ejb.session.stateless;
 
+import entity.CreditTransactionEntity;
+import entity.CustomerEntity;
+import java.math.BigDecimal;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.enumeration.TransactionTypeEnum;
+import util.exception.CreditPackageNotFoundException;
 
 /**
  *
@@ -18,14 +23,36 @@ import javax.persistence.PersistenceContext;
 @Stateless
 @Local(CreditTransactionEntityControllerLocal.class)
 @Remote(CreditTransactionEntityControllerRemote.class)
+
 public class CreditTransactionEntityController implements CreditTransactionEntityControllerRemote, CreditTransactionEntityControllerLocal {
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
+    
+    private CreditPackageEntityControllerLocal creditPackageEntityControllerLocal;
 
-    public void persist(Object object) {
-        em.persist(object);
+    /*comment for future modification
+    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type)
+    {
+        try{
+        CreditTransactionEntity credittransaction = new CreditTransactionEntity();
+        credittransaction.setCustomerEntity(customer);
+        credittransaction.setTransactionTypeEnum(type);//
+        credittransaction.setUnitOfPurchase(num);//how many package has the customer purchased
+        credittransaction.setCreditPackageEntity(creditPackageEntityControllerLocal.retrieveCreditPackageById(id));
+        credittransaction.setTotalValue(creditPackageEntityControllerLocal.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num)));
+        
+        em.persist(credittransaction);
+        em.flush();
+        em.refresh(credittransaction);
+        
+        }
+        catch(CreditPackageNotFoundException ex)
+        {
+            System.out.println(ex.getMessage()+" !");
+        }
     }
+*/
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

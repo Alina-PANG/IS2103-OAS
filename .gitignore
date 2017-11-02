@@ -5,7 +5,5 @@
 /AuctionClient/nbproject/private/
 /ProxyAgent/nbproject/private/
 /OnlineAuctionSystemLibrary/nbproject/private/
-/OnlineAuctionSystemLibrary/build/
-/OnlineAuctionSystemLibrary/dist/
-/OnlineAuctionSystem/OnlineAuctionSystem-ejb/build/
-/OnlineAuctionSystem/OnlineAuctionSystem-ejb/dist/
+.DS_Store
+.DS_Store?
