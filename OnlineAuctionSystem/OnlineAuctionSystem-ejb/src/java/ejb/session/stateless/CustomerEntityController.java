@@ -54,8 +54,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             }
         }
     }
-    
-        @Override
+
+    @Override
     public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException {
         CustomerEntity customer = retrieveCustomerByUsername(username);
         if (customer.getPassword().equals(password)) {
@@ -64,8 +64,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new IncorrectPasswordException("Incorrect Password!");
         }
     }
-    
-        @Override
+
+    @Override
     public CustomerEntity retrieveCustomerById(Long id) throws CustomerNotFoundException, GeneralException {
         // retrieve the customer
         CustomerEntity customer = em.find(CustomerEntity.class, id);
@@ -88,7 +88,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             return (CustomerEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new CustomerNotFoundException("Customer with identification number = " + number + " is not found!");
-        } 
+        }
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             return (CustomerEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new CustomerNotFoundException("Customer with username = " + username + " is not found!");
-        } 
+        }
     }
 
     @Override
