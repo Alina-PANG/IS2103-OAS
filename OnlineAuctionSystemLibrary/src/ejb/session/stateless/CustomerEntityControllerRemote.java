@@ -17,9 +17,6 @@ import util.exception.GeneralException;
  * @author alina
  */
 public interface CustomerEntityControllerRemote {
- public CustomerEntity persistCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistsException, GeneralException;
-
     public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException;
-    public void changePassword(CustomerEntity customer, String oldpassword, String newpassword) throws CustomerPinChangeException;
        
 }

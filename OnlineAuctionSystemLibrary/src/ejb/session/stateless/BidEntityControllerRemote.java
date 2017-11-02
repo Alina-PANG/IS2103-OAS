@@ -5,6 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.BidEntity;
+import util.exception.BidAlreadyExistException;
+import util.exception.BidNotFoundException;
+import util.exception.GeneralException;
+
 
 
 /**
@@ -12,5 +17,11 @@ package ejb.session.stateless;
  * @author alina
  */
 public interface BidEntityControllerRemote {
-    
+        public BidEntity retrieveById(Long id) throws BidNotFoundException;
+
+    public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException;
+
+    public void deleteBid(Long id) throws BidNotFoundException;
+
+    public void assignWinningBid(Long id) throws BidNotFoundException;
 }

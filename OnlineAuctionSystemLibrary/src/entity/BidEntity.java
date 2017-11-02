@@ -113,7 +113,7 @@ public class BidEntity implements Serializable {
     /**
      * @return the isWinningBid
      */
-    public Boolean isIsWinningBid() {
+    public Boolean getIsWinningBid() {
         return isWinningBid;
     }
 

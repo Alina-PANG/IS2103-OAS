@@ -6,10 +6,12 @@
 package ejb.session.stateless;
 
 import entity.CustomerEntity;
-import util.exception.CustomerAlreadyExistsException;
+import java.util.List;
+import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
-import util.exception.CustomerPinChangeException;
+import util.exception.DuplicateException;
 import util.exception.GeneralException;
+import util.exception.IncorrectPasswordException;
 
 
 /**
@@ -18,10 +20,25 @@ import util.exception.GeneralException;
  */
 public interface CustomerEntityControllerLocal {
 
-    public CustomerEntity persistCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistsException, GeneralException;
 
     public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException;
 
-    public void changePassword(CustomerEntity customer, String oldpassword, String newpassword) throws CustomerPinChangeException;
+    public CustomerEntity createNewCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistException, GeneralException;
+
+    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException;
+
+    public CustomerEntity retrieveCustomerById(Long id) throws CustomerNotFoundException, GeneralException;
+
+    public CustomerEntity retrieveCustomerByIdentificationNumber(String number) throws CustomerNotFoundException;
+
+    public CustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException;
+
+    public CustomerEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, CustomerNotFoundException, GeneralException;
+
+    public CustomerEntity updateCustomer(CustomerEntity newCustomer) throws CustomerNotFoundException, GeneralException;
+
+    public void deleteCustomer(Long id) throws CustomerNotFoundException, GeneralException;
+
+    public List<CustomerEntity> viewAllCustomer() throws GeneralException;
     
 }

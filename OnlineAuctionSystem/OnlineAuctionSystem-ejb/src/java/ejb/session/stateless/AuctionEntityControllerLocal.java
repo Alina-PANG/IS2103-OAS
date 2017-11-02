@@ -20,18 +20,19 @@ import util.exception.GeneralException;
  */
 public interface AuctionEntityControllerLocal {
 
-    public AuctionEntity persist(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException;
+     public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
 
-    public List<BidEntity> viewAllBids() throws GeneralException;
+    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException;
 
-    public void switchStatus(Long id, boolean status) throws AuctionNotFoundException, GeneralException;
+    public List<AuctionEntity> retrieveAuctionByProductName(String name) throws AuctionNotFoundException;
 
-    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException, GeneralException;
+    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException;
 
-    public AuctionEntity retrieveAuctionByProductCode(String number) throws AuctionNotFoundException, DuplicateException;
+    public AuctionEntity createNewAuction(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException;
 
-    public void deleteEmployee(Long id) throws AuctionNotFoundException, GeneralException;
+    public List<AuctionEntity> viewAllAuction() throws GeneralException;
 
-    public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException;
-    
+    public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
+
+    public List<BidEntity> viewBidEntity(Long aid)throws AuctionNotFoundException;
 }

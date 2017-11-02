@@ -65,7 +65,7 @@ public class MainApp {
                     case 2:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
 
@@ -73,13 +73,14 @@ public class MainApp {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("[Warning] Please input a valid response number.");
+                System.err.println("[Warning] Invalid type!");
             }
 
         }
     }
 
     private void menu01() {
+        System.out.println("");
         System.out.println("******* [OAS System] Employee Homepage *******");
         System.out.println("1. Login");
         System.out.println("2. Exit");
@@ -88,6 +89,7 @@ public class MainApp {
     }
 
     private void menu02() {
+        System.out.println("");
         System.out.println("******* [OAS System] Employee Basic Operation *******");
         System.out.println("1. Enter Employee Portal");
         System.out.println("2. Change Password");
@@ -102,6 +104,7 @@ public class MainApp {
         String username, password;
 
         // login
+        System.out.println("");
         System.out.println("******* [OAS System] Employee Login *******");
         System.out.print("Username: ");
         username = sc.nextLine().trim();
@@ -113,7 +116,7 @@ public class MainApp {
             System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "!");
             postLoginOperation();
         } catch (StaffNotFoundException | IncorrectPasswordException | DuplicateException ex) {
-            System.out.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }
     }
 
@@ -136,7 +139,7 @@ public class MainApp {
                     case 3:
                         break;
                     default:
-                        System.out.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Please input a valid response number.");
                 }
 
                 if (response2 == 3) {
@@ -144,7 +147,7 @@ public class MainApp {
                 }
             }
         } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Please input a valid response number.");
+            System.err.println("[Warning] Please input a valid response number.");
         }
     }
 
@@ -170,6 +173,7 @@ public class MainApp {
         String currentPw;
         String newPw1 = "a", newPw2 = "b";
 
+        System.out.println("");
         System.out.println("******* [OAS System] Change Password *******");
         System.out.println("Please input your old password: ");
         currentPw = sc.nextLine().trim();
@@ -180,7 +184,7 @@ public class MainApp {
             newPw2 = sc.nextLine().trim();
 
             if (!newPw1.equals(newPw2)) {
-                System.out.println("[Warning] The two passwords you input are inconsistent with each other!");
+                System.err.println("[Warning] The two passwords you input are inconsistent with each other!");
             }
         }
 
@@ -188,7 +192,7 @@ public class MainApp {
             currentStaffEntity = staffEntityController.changePassword(currentPw, newPw1, currentStaffEntity.getId());
             System.out.println("[System] Password Changed Successfully!");
         } catch (IncorrectPasswordException | StaffNotFoundException | GeneralException ex) {
-            System.out.println("[Warning] An error has occured while changing password: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while changing password: " + ex.getMessage());
         }
     }
 }

@@ -7,3 +7,6 @@
 /OnlineAuctionSystemLibrary/nbproject/private/
 .DS_Store
 .DS_Store?
+*.class
+*.jar
+

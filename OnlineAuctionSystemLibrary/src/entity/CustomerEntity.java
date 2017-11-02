@@ -1,4 +1,4 @@
-/*
+/*D
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -13,10 +13,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -71,6 +71,8 @@ public class CustomerEntity implements Serializable {
     private List<AddressEntity> addressEntities;
     @Enumerated(EnumType.STRING)
     private CustomerTypeEnum customerTypeEnum;
+    @ManyToMany(mappedBy = "customerEntities")
+    private List<AuctionEntity> auctionEntities;
     
     // Premium Customer
     @Column(precision = 18, scale = 4)

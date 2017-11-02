@@ -12,14 +12,18 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.Future;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import util.enumeration.StatusEnum;
 
 /**
  *
@@ -33,16 +37,15 @@ import javax.xml.bind.annotation.XmlType;
     "endingTime",
     "status",
     "reservePrice",
-  //  "winningBid",
-    "productCode",
+    //  "winningBid",
+    //"productCode",
     "productName",
     "productDescription",
-    "winningCustomerId",
-    "bidEntities"
+    //  "winningCustomerId",
+    "bidEntities",
+    "customerEntities"
 })
 public class AuctionEntity implements Serializable {
-
-
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -54,33 +57,31 @@ public class AuctionEntity implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Future
     private Date endingTime;
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
     @Column(precision = 18, scale = 4)
     private BigDecimal reservePrice;
-   // private Long winningBidId;
-    @Column(length = 32, unique = true)
-    private String productCode;
-    @Column(length = 32)
+    // private Long winningBidId;
+    @Column(length = 32, nullable = false)
     private String productName;
     @Column(length = 300)
     private String productDescription;
-    private Long winningCustomerId;
+    // private Long winningCustomerId;
     @OneToMany(mappedBy = "auctionEntity", cascade = CascadeType.ALL)
     private List<BidEntity> bidEntities;
+    @ManyToMany
+    private List<CustomerEntity> customerEntities;
 
     public AuctionEntity() {
     }
 
-    public AuctionEntity(Date startingTime, Date endingTime, Boolean status, BigDecimal reservePrice, String productName, String productDescription, Long winningCustomerId, List<BidEntity> bidEntities) {
+    public AuctionEntity(Date startingTime, Date endingTime, StatusEnum status, BigDecimal reservePrice, String productName, String productDescription) {
         this.startingTime = startingTime;
         this.endingTime = endingTime;
         this.status = status;
         this.reservePrice = reservePrice;
-       // this.winningBidId = winningBid;
         this.productName = productName;
         this.productDescription = productDescription;
-        this.winningCustomerId = winningCustomerId;
-        this.bidEntities = bidEntities;
     }
 
     public Long getId() {
@@ -127,7 +128,7 @@ public class AuctionEntity implements Serializable {
      * @param startingTime the startingTime to set
      */
     public void setStartingTime(Date startingTime) {
-        this.setStartingTime(startingTime);
+        this.startingTime = startingTime;
     }
 
     /**
@@ -141,21 +142,29 @@ public class AuctionEntity implements Serializable {
      * @param endingTime the endingTime to set
      */
     public void setEndingTime(Date endingTime) {
-        this.setEndingTime(endingTime);
+        this.endingTime = endingTime;
     }
 
     /**
      * @return the status
      */
-    public Boolean isStatus() {
+    public StatusEnum isStatus() {
         return getStatus();
     }
 
     /**
      * @param status the status to set
      */
-    public void setStatus(Boolean status) {
+    public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+    
+    public boolean checkStatus(){
+        if((new Date()).compareTo(this.endingTime) > 0){
+            this.status = StatusEnum.CLOSED;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -174,17 +183,17 @@ public class AuctionEntity implements Serializable {
 
     /**
      * @return the winningBid
-     
-    public Long getWinningBidId() {
-        return winningBidId;
-    }
-
-    /**
+     *
+     * public Long getWinningBidId() { return winningBidId; }
+     *
+     * /
+     **
      * @param winningBidId the winningBidId to set
-     
-    public void setWinningBidId(Long winningBidId) {
-        this.winningBidId = winningBidId;
-    }*/
+     *
+     * public void setWinningBidId(Long winningBidId) { this.winningBidId =
+     * winningBidId;
+    }
+     */
     /**
      * @return the productName
      */
@@ -214,20 +223,6 @@ public class AuctionEntity implements Serializable {
     }
 
     /**
-     * @return the winningCustomerId
-     */
-    public Long getWinningCustomerId() {
-        return winningCustomerId;
-    }
-
-    /**
-     * @param winningCustomerId the winningCustomerId to set
-     */
-    public void setWinningCustomerId(Long winningCustomerId) {
-        this.winningCustomerId = winningCustomerId;
-    }
-
-    /**
      * @return the bidEntities
      */
     public List<BidEntity> getBidEntities() {
@@ -240,26 +235,34 @@ public class AuctionEntity implements Serializable {
     public void setBidEntities(List<BidEntity> bidEntities) {
         this.bidEntities = bidEntities;
     }
+    
+    public BidEntity getWinningBid(){
+        for(BidEntity bid: this.bidEntities){
+            if(bid.getIsWinningBid())
+                return bid;
+        }
+        return null;
+    }
+    
 
     /**
      * @return the status
      */
-    public Boolean getStatus() {
+    public StatusEnum getStatus() {
         return status;
     }
 
     /**
-     * @return the productCode
+     * @return the customerEntities
      */
-    public String getProductCode() {
-        return productCode;
+    public List<CustomerEntity> getCustomerEntities() {
+        return customerEntities;
     }
 
     /**
-     * @param productCode the productCode to set
+     * @param customerEntities the customerEntities to set
      */
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
+    public void setCustomerEntities(List<CustomerEntity> customerEntities) {
+        this.customerEntities = customerEntities;
     }
-
 }

@@ -7,8 +7,6 @@ package util.exception;
 
 /**
  *
- * @author Amber
- */
 public class CustomerNotFoundException extends Exception {
 
     /**
