@@ -5,16 +5,10 @@
  */
 package util.exception;
 
-/**
- *
+
 public class CustomerNotFoundException extends Exception {
 
-    /**
-     * Creates a new instance of <code>customerNotFoundException</code> without
-     * detail message.
-     */
-    public CustomerNotFoundException() {
-    }
+
 
     /**
      * Constructs an instance of <code>customerNotFoundException</code> with the

@@ -6,10 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CustomerEntity;
-import util.exception.CustomerAlreadyExistsException;
 import util.exception.CustomerNotFoundException;
-import util.exception.CustomerPinChangeException;
-import util.exception.GeneralException;
 
 
 /**
