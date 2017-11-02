@@ -92,8 +92,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             }
         }
     }
-    
-        @Override
+
+    @Override
     public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException {
         CustomerEntity customer = retrieveCustomerByUsername(username);
         if (customer.getPassword().equals(password)) {
@@ -102,8 +102,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new IncorrectPasswordException("Incorrect Password!");
         }
     }
-    
-        @Override
+
+    @Override
     public CustomerEntity retrieveCustomerById(Long id) throws CustomerNotFoundException, GeneralException {
         // retrieve the customer
         CustomerEntity customer = em.find(CustomerEntity.class, id);
@@ -116,7 +116,18 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
         }
     }
 
+    @Override
+    public CustomerEntity retrieveCustomerByIdentificationNumber(String number) throws CustomerNotFoundException {
+        // retrieve customer
+        Query query = em.createQuery("SELECT s FROM CustomerEntity s WHERE s.identificationNumber = :num");
+        query.setParameter("num", number);
 
+        try {
+            return (CustomerEntity) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw new CustomerNotFoundException("Customer with identification number = " + number + " is not found!");
+        }
+    }
     @Override
     public CustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException {
         // retrieve customer
@@ -127,7 +138,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             return (CustomerEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new CustomerNotFoundException("Customer with username = " + username + " is not found!");
-        } 
+        }
     }
 
 
