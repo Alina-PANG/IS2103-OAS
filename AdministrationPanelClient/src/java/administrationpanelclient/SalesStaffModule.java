@@ -71,23 +71,7 @@ public class SalesStaffModule {
                     case 1:
                         createAuction();
                         break;
-                    case 2:
-                        updateAuction();
-                        break;
-                    case 3:
-                        System.out.println("******* [Finance Staff] View Credit Package Details *******");
-                        viewAuctionDetails();
-                        break;
-                    case 4:
-                        deleteAuction();
-                        break;
-                    case 5:
-                        viewAllAuction();
-                        break;
-                    case 6:
-                        System.out.println("");
-                        createAuction();
-                        break;
+
                     case 2:
                         System.out.println("");
                         updateAuction();
@@ -329,7 +313,6 @@ public class SalesStaffModule {
         for (BidEntity b : list) {
             System.out.printf("%5s%10s\n", b.getId() + "|", b.getAmount());
         }
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
     }
 
 }

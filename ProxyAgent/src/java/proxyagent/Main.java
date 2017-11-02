@@ -5,17 +5,32 @@
  */
 package proxyagent;
 
+import ejb.session.stateless.AuctionEntityControllerRemote;
+import ejb.session.stateless.BidEntityControllerRemote;
+import ejb.session.stateless.CustomerEntityControllerRemote;
+import javax.ejb.EJB;
+
 /**
  *
  * @author alina
  */
 public class Main {
 
+    @EJB
+    private static CustomerEntityControllerRemote customerEntityController;
+
+    @EJB
+    private static BidEntityControllerRemote bidEntityController;
+
+    @EJB
+    private static AuctionEntityControllerRemote auctionEntityController;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        MainApp mainApp = new MainApp(customerEntityController, bidEntityController, auctionEntityController);
+     //   mainApp.runApp();
     }
-    
+
 }

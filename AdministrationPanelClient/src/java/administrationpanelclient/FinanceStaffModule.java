@@ -63,45 +63,26 @@ public class FinanceStaffModule {
                         createCreditPackage();
                         break;
                     case 2:
-                        updateCreditPackage();
-                        break;
-                    case 3:
-=======
-                        System.out.println("");
-                        createCreditPackage();
-                        break;
-                    case 2:
                         System.out.println("");
                         updateCreditPackage();
                         break;
                     case 3:
                         System.out.println("");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
                         System.out.println("******* [Finance Staff] View Credit Package Details *******");
                         viewCreditPackageDetails();
                         break;
                     case 4:
-<<<<<<< HEAD
-                        deleteCreditPackage();
-                        break;
-                    case 5:
-=======
                         System.out.println("");
                         deleteCreditPackage();
                         break;
                     case 5:
                         System.out.println("");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
                         viewAllCreditPackage();
                         break;
                     case 6:
                         break;
                     default:
-<<<<<<< HEAD
-                        System.out.println("[Warning] Please input a valid response number.");
-=======
                         System.err.println("[Warning] Please input a valid response number.");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
                         break;
                 }
                 if (response == 6) {
@@ -109,11 +90,7 @@ public class FinanceStaffModule {
                 }
             }
         } catch (InputMismatchException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] Please input a valid response number.");
-=======
             System.err.println("[Warning] Please input a valid response number.");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
         }
     }
 
@@ -134,15 +111,10 @@ public class FinanceStaffModule {
             CreditPackageEntity cp = creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(value, price, name, false));
             System.out.println("[System] Credit Package with id = " + cp.getId() + ", name: '" + cp.getName() + "' has been created successfully!");
         } catch (CreditPackageAlreadyExistException | GeneralException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
-        } catch (InputMismatchException ex) {
-            System.out.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
-=======
             System.err.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
+
         }
     }
 
@@ -179,11 +151,7 @@ public class FinanceStaffModule {
                     case 4:
                         break;
                     default:
-<<<<<<< HEAD
-                        System.out.println("[Warning] Please input a valid response number.");
-=======
                         System.err.println("[Warning] Please input a valid response number.");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
                         break;
                 }
                 if (response == 4) {
@@ -193,15 +161,9 @@ public class FinanceStaffModule {
             creditPackageEntityController.updateCreditPackage(cp);
             System.out.println("[System] Credit Package with id = " + cp.getId() + ", name: '" + cp.getName() + "' has been updated successfully!");
         } catch (CreditPackageNotFoundException | GeneralException | CreditPackageAlreadyExistException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
-        } catch (InputMismatchException ex) {
-            System.out.println("[Warning] Invalid input!");
-=======
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid input!");
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
         }
     }
 
@@ -209,11 +171,7 @@ public class FinanceStaffModule {
         try {
             viewCreditPackageDetails(findCreditPackage());
         } catch (CreditPackageNotFoundException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
-=======
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
         }
 
     }
@@ -230,11 +188,7 @@ public class FinanceStaffModule {
                 System.out.println("[System] The Credit Package with id = " + cp.getId() + ", name: '" + cp.getName() + "' is in used, thus it can only be disabled.");
             }
         } catch (CreditPackageNotFoundException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
-=======
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
         }
     }
 
@@ -245,11 +199,7 @@ public class FinanceStaffModule {
             List<CreditPackageEntity> list = creditPackageEntityController.viewAllCreditPackage();
             showList(list);
         } catch (GeneralException ex) {
-<<<<<<< HEAD
-            System.out.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
-=======
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
->>>>>>> 95322043058d35993c3a696f325588dcc98142d2
         }
     }
 

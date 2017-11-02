@@ -20,7 +20,7 @@ import util.exception.GeneralException;
 /**
  *
  * @author Amber
- */
+ 
 public class ProfileModule {
  
     private CustomerEntity customer;
