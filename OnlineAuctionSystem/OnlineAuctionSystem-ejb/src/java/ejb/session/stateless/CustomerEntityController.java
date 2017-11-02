@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CustomerEntity;
+import entity.StaffEntity;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -27,6 +28,7 @@ import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 import util.exception.CustomerNotFoundException;
 import util.exception.CustomerNotFoundException;
+import util.exception.StaffNotFoundException;
 
 /**
  *
@@ -57,17 +59,19 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
         
     }
     
-    public void changePassword(CustomerEntity customer, String oldpassword, String newpassword)throws CustomerPinChangeException
-    {
-        if(oldpassword.equals(customer.getPassword()))
-        {
-            customer.setPassword(newpassword);
+    @Override
+    public CustomerEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, CustomerNotFoundException, GeneralException {
+        CustomerEntity customer = retrieveCustomerById(id);
+
+        if (customer.getPassword().equals(currentPw)) {
+            customer.setPassword(newPw);
+            em.flush();
+            em.refresh(customer);
+
+            return customer;
+        } else {
+            throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
         }
-        else
-        {
-            throw new CustomerPinChangeException("Current password is invalid!");
-        }
-        
     }
     
     

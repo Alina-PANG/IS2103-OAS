@@ -9,6 +9,7 @@ import ejb.session.stateless.CustomerEntityControllerLocal;
 import entity.CustomerEntity;
 import entity.PremiumCustomerEntity;
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -39,7 +40,7 @@ public class ProxyWebService {
      * @throws util.exception.GeneralException
      */
     @WebMethod(operationName = "createNewCustomerEntity")
-    public PremiumCustomerEntity createNewCustomerEntity(@WebParam(name = "c") CustomerEntity c, @WebParam(name = "price") BigDecimal price, @WebParam(name = "c") ) throws CustomerAlreadyExistException, GeneralException {
+    public PremiumCustomerEntity createNewCustomerEntity(@WebParam(name = "c") CustomerEntity c, @WebParam(name = "price") BigDecimal price, @WebParam(name = "hb") BigDecimal hb, @WebParam(name = "td") Date td) throws CustomerAlreadyExistException, GeneralException {
         System.out.println("******* [OAS Web Service] Remote Register");
         PremiumCustomerEntity pc = (PremiumCustomerEntity) customerEntityController.createNewCustomerEntity(c);
         pc.setMaxWillingPrice(price);
@@ -62,7 +63,4 @@ public class ProxyWebService {
         System.out.println("******* [OAS Web Service] Remote Login");
         return customerEntityController.customerLogin(username, password);
     }
-    
-    
-    
 }

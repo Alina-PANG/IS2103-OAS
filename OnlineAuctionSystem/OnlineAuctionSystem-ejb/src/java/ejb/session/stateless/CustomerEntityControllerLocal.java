@@ -13,13 +13,11 @@ import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 
-
 /**
  *
  * @author alina
  */
 public interface CustomerEntityControllerLocal {
-
 
     public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException;
 
@@ -40,5 +38,5 @@ public interface CustomerEntityControllerLocal {
     public void deleteCustomer(Long id) throws CustomerNotFoundException, GeneralException;
 
     public List<CustomerEntity> viewAllCustomer() throws GeneralException;
-    
+
 }
