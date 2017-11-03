@@ -10,17 +10,16 @@ import ejb.session.stateless.CreditTransactionEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import entity.CreditPackageEntity;
 import entity.CustomerEntity;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
-import static util.enumeration.TransactionTypeEnum.TOPUP;
-import util.exception.CustomerPinChangeException;
+import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
+import util.exception.IncorrectPasswordException;
 
-/**
+/*
  *
  * @author Amber
- 
+ */
 public class ProfileModule {
  
     private CustomerEntity customer;
@@ -95,6 +94,8 @@ public class ProfileModule {
                 
                 try
                 {
+                System.out.println("Enter your id->");
+                Long id = scanner.nextLong();
                 System.out.println("Enter current password->");
                 String oldpassword = scanner.nextLine().trim();
                 System.out.println("Enter new password->");
@@ -103,7 +104,7 @@ public class ProfileModule {
                 String reenterpassword = scanner.nextLine().trim();
                 if(newpassword.equals(reenterpassword))
                 {
-                    customerentitycontrollerremote.changePassword(customer,oldpassword, newpassword);
+                    customerentitycontrollerremote.changePassword(oldpassword, newpassword,id);
                     System.out.println("New password changed successfully!");
                 }
                 else
@@ -111,7 +112,7 @@ public class ProfileModule {
                     System.out.println("New passwords mismatched!");
                 }
                 }
-                catch(CustomerPinChangeException ex)
+                catch(IncorrectPasswordException| CustomerNotFoundException| GeneralException ex)
                 {
                     System.out.println(ex.getMessage()+"!\n");
                 }
