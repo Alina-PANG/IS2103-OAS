@@ -179,8 +179,11 @@ public class ProfileModule {
                 
                 //create CreditTransactionEntity
                 credittransactionentitycontrollerremote.createNewTransaction(customer,id,num,TransactionTypeEnum.TOPUP);
-                //havent finalised this method yet
          
+                //add new customer entity in credit package entity list<customerentity>
+                creditpackageentitycontrollerremote.addCustomerToCreditPackage(id, customer);
+                
+                //update customer's credit balance
                 BigDecimal addvalue = new BigDecimal("0.00");
                 addvalue = creditpackageentitycontrollerremote.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num));            
                 BigDecimal currentvalue = customer.getCreditBalance();
@@ -188,10 +191,7 @@ public class ProfileModule {
                 
                 System.out.println("Your purchase is successful");
                 System.out.println("Your current credit balance is "+customer.getCreditBalance()+" .");
-                
-                
-                
-                
+
             }
             else if(response==3)
             {
