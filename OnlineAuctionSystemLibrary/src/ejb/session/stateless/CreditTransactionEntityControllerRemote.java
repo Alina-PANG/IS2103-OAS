@@ -5,11 +5,19 @@
  */
 package ejb.session.stateless;
 
+import entity.CreditTransactionEntity;
+import entity.CustomerEntity;
+import java.util.List;
+import util.enumeration.TransactionTypeEnum;
+
 
 /**
  *
  * @author alina
  */
 public interface CreditTransactionEntityControllerRemote {
+     public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer);
+
+    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type);
     
 }
