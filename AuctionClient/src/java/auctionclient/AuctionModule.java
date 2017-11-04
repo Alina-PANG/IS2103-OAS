@@ -7,6 +7,7 @@ package auctionclient;
 
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import entity.CustomerEntity;
+import java.util.Scanner;
 
 /**
  *
@@ -22,11 +23,11 @@ public class AuctionModule {
 
     public AuctionModule(CustomerEntity customer) {
         this.customer = customer;
-        
     }
     
     public void viewAuctionListing()
     {
+        Scanner scanner = new Scanner(System.in);
         
     }
     
@@ -36,6 +37,8 @@ public class AuctionModule {
     }
     public void viewWonAuction()
     {
+        Scanner scanner = new Scanner(System.in);
+        
         
     }
           

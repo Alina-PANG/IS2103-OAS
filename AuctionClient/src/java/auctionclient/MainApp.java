@@ -10,7 +10,7 @@ import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.Scanner;
 import util.enumeration.CustomerTypeEnum;
-import util.exception.CustomerAlreadyExistsException;
+import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
 
@@ -66,8 +66,7 @@ public class MainApp {
                 {
                     System.out.println("Invalid option! Please try again!");
                 }
-                
-                
+
             }
             
             if(response==3)
@@ -105,11 +104,11 @@ public class MainApp {
         //System.out.print("Join  us as a premium mumber and enjoy more priviledges? Y/N->");
         //assume that we only have "normal" type customer now
         
-        customer = customerEntityControllerRemote.persistCustomerEntity(customer);
+        customer = customerEntityControllerRemote.createNewCustomerEntity(customer);
         System.out.println("Customer");
         
         }
-        catch(CustomerAlreadyExistsException | GeneralException ex)
+        catch(CustomerAlreadyExistException | GeneralException ex)
         {
             System.out.println("An error has occured while creating the new customer "+ex.getMessage()+"!");
         }
@@ -158,11 +157,14 @@ public class MainApp {
         System.out.println("1.View Profile");//include view and update which includes changing password
         System.out.println("2.View my Credit Package");// view my balance, view credit package transaction, also can buy a new package
         System.out.println("3.Update Address");//create address and delete address
-        System.out.println("4.View All Auction Listing");//display all available auciotn items and place bids
+        System.out.println("4.View All Auction Listing");//display all available auction items and place bids
         System.out.println("5.View my Bid");//view all the auction that i have bidded and can update the bid and refresh the bid list
         System.out.println("6.Browse Won Acution Listing");//all the auction that i have won and can select address for successful bid
         System.out.println("7.Logout");
         
+        //pass customer entity into sub-modules
+        ProfileModule profilemodule = new ProfileModule(customer);
+        AuctionModule auctionmodule = new AuctionModule(customer);
         
         //if the response is invalid, keep key in
         while(response<0||response>7)
@@ -170,7 +172,6 @@ public class MainApp {
             System.out.println(">");
             response = scanner.nextInt();
             
-
             if(response==1)
             {
                 profilemodule.viewProfile();
@@ -183,9 +184,7 @@ public class MainApp {
             {
                 profilemodule.manageAddress();
             }
-            
-
-            if(response==4)
+           else if(response==4)
             {
                 auctionmodule.viewAuctionListing();
             }
@@ -207,8 +206,6 @@ public class MainApp {
                 System.out.println("Invalid Option! Please try again!");
             }
             
-        }
-        
-        
+        }        
     }
 }
