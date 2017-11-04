@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CreditPackageEntity;
+import entity.CustomerEntity;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -135,5 +136,13 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             em.remove(cp);
             return true;
         }
+    }
+    
+    @Override
+    public void addCustomerToCreditPackage(Long creditpackageid, CustomerEntity customer) throws CreditPackageNotFoundException
+    {
+       CreditPackageEntity creditpackage = retrieveCreditPackageById(creditpackageid);
+       creditpackage.getCustomerEntities().add(customer);
+       
     }
 }

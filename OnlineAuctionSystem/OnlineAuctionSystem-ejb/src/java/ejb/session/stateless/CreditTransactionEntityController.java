@@ -8,11 +8,13 @@ package ejb.session.stateless;
 import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.CreditPackageNotFoundException;
 
@@ -31,7 +33,8 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
     
     private CreditPackageEntityControllerLocal creditPackageEntityControllerLocal;
 
-    /*comment for future modification
+    //comment for future modification
+    @Override
     public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type)
     {
         try{
@@ -52,9 +55,22 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
             System.out.println(ex.getMessage()+" !");
         }
     }
-*/
+
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
+   
+    @Override
+    public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer)
+    {
+        Query query = em.createQuery("SELECT c FROM CreditTransactionEntity c WHERE c.customerEntity LIKE :cust").setParameter("cust",customer);
+        
+        return query.getResultList();
+
+        //find all credit transactionentity list provided with customer entity class
+       
+    }
+
+
 }

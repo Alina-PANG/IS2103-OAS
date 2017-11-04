@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CreditPackageEntity;
+import entity.CustomerEntity;
 import java.util.List;
 import util.exception.CreditPackageAlreadyExistException;
 import util.exception.CreditPackageNotFoundException;
@@ -28,5 +29,7 @@ public interface CreditPackageEntityControllerLocal {
     public List<CreditPackageEntity> viewAllCreditPackage() throws GeneralException;
 
     public boolean deleteCreditPackage(Long id) throws CreditPackageNotFoundException;
+    
+    public void addCustomerToCreditPackage(Long creditpackageid, CustomerEntity customer) throws CreditPackageNotFoundException;
 
 }
