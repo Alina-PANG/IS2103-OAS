@@ -6,7 +6,9 @@
 package auctionclient;
 
 import ejb.session.stateless.AuctionEntityControllerRemote;
+import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
+import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
+import util.exception.BidNotFoundException;
 import util.exception.GeneralException;
 
 /**
@@ -26,6 +29,7 @@ public class AuctionModule {
     private CustomerEntityControllerRemote customerentitycontrollerremote; 
     private AuctionEntityControllerRemote auctionEntityControllerRemote;
     MainApp mainapp;
+    private BidEntityControllerRemote bidEntityControllerRemote; 
 
     public AuctionModule() {
     }
@@ -171,9 +175,83 @@ public class AuctionModule {
     }
     public void viewWonAuction()
     {
+        try{
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Below are the auctions that you have won");
+        List<BidEntity> winningbidlist= bidEntityControllerRemote.viewAllWinningBid(customer);
+        if(winningbidlist!=null)
+        {
+            Boolean nulladdressexists=false;
+            System.out.println("Bid ID---Product name---Bid amount---Delivery Address");
+            for(BidEntity bid:winningbidlist)
+            {
+                System.out.print(bid.getId()+"---");
+                System.out.print(bid.getAuctionEntity().getProductName()+"---");
+                System.out.print(bid.getAmount()+"---");
+                if(bid.getAddressEntity()!=null)
+                {
+                    System.out.println(bid.getAddressEntity().getAddressLine()+"---");
+                    System.out.print(bid.getAddressEntity().getPostCode());
+                    nulladdressexists=true;
+                }
+                    
+                else
+                    System.out.println("No address linked to this winning bid yet!");
+            }
+            if(nulladdressexists)
+            {
+                selectaddressforwinningbid();
+            }
+            else
+            {
+                System.out.println("Back to menu?(Y/N)>");
+                while(scanner.nextLine().trim().equals("N"))
+                {
+                    System.out.println(">");
+                    if(scanner.nextLine().trim().equals("Y"))
+                    mainapp.menuMain(customer);
+                }
+                    
+            }
+        }
+        else
+        {
+            System.out.println("There are no winning auctions now");
+        }
+        }
+        catch(GeneralException ex)
+        {
+            System.out.println("Error has occured! "+ex.getMessage());
+        }
+    }
+    
+    public void selectaddressforwinningbid()
+    {
+        try{
         Scanner scanner = new Scanner(System.in);
         
+        System.out.println("There are winning bids that don't have a delivery address");
+        System.out.println("Enter id of the winning bid that you want to select an address->");
+        Long bidid = scanner.nextLong();
+        System.out.println("Your current address list:");
+        List<AddressEntity> addresslist = customer.getAddressEntities();
+        for(AddressEntity address:addresslist)
+        {
+            System.out.print(address.getId()+"---");
+            System.out.print(address.getAddressLine()+"---");
+            System.out.println(address.getPostCode());
+        }
+        System.out.print("Select the id of the address that you want to assign as the delivery address for product");
+        Long addressid = scanner.nextLong();
+        BidEntity bid = bidEntityControllerRemote.setAddressForWinningBid(addressid, bidid);
+        System.out.println("Address updated successfully!");
         
+        viewWonAuction();//refresh the list and check if there is still won auction that does not have an address 
+        }
+        catch(BidNotFoundException|GeneralException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
     }
           
     
