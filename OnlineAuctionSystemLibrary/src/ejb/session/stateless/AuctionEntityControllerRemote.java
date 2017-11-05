@@ -7,9 +7,12 @@ package ejb.session.stateless;
 
 import entity.AuctionEntity;
 import entity.BidEntity;
+import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.AuctionNotFoundException;
+import util.exception.BidAlreadyExistException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 
@@ -35,5 +38,15 @@ public interface AuctionEntityControllerRemote {
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
 
     public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException;
+
+    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException;
+
+    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException;
+
+    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
+
+    public Double getCurrentBidIncremental(BigDecimal currentprice);
+    
+    public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException;
 
 }
