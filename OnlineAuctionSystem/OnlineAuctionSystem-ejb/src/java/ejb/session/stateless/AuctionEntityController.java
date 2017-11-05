@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -23,6 +24,7 @@ import util.enumeration.StatusEnum;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.GeneralException;
 import util.exception.AuctionNotFoundException;
+import util.exception.BidAlreadyExistException;
 import util.exception.BidNotFoundException;
 
 /**
@@ -204,5 +206,119 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return ae.getBidEntities();
     }
     
+    @Override
+    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException
+    {
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al,WHERE al.status LIKE status").setParameter("status",StatusEnum.ACTIVE);
+        try {
+            return (List<AuctionEntity>) query.getResultList();
+        } catch (NoResultException ex) {
+            throw new GeneralException("No auction listing exists!");
+        }
+    }
+    
+    @Override
+    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException
+    {
+        Query query = em.createQuery("SELECT ae FROM AuctionEntity ae WHERE ae.id LIKE aeid AND ae.status LIKE status")
+                .setParameter("aeid",productid).setParameter("status",StatusEnum.ACTIVE);
+        return (AuctionEntity)query.getSingleResult();
+    }
+    
+    
+    
+    @Override
+    public BidEntity getCurrentWinningBidEntity (Long productid) throws AuctionNotFoundException
+    {
+        List<BidEntity> bidlist = viewBidEntity(productid);
+        if(bidlist!=null)
+        {
+            BidEntity highestbid= new BidEntity();
+            for(BidEntity bid:bidlist)
+            {
+                if(bid.getAmount().compareTo(highestbid.getAmount())==1)
+                    highestbid=bid;
+            }
+           return highestbid;
+        }
+        else 
+            return null;
+        
+    }
+    
+    @Override
+    public Double getCurrentBidIncremental(BigDecimal currentprice)
+    {
+        Double incremental =0.00;
+        if(currentprice.compareTo(BigDecimal.valueOf(0.00))==1
+                &&currentprice.compareTo(BigDecimal.valueOf(0.99))==-1)
+        {
+            incremental = 0.05;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(5.00))==-1)
+        {
+            incremental = 0.25;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(25.00))==-1)
+        {
+            incremental = 0.50;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(100.00))==-1)
+        {
+            incremental = 1.00;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(250.00))==-1)
+        {
+            incremental = 2.50;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(500.00))==-1)
+        {
+            incremental = 5.00;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(1000.00))==-1)
+        {
+            incremental = 10.00;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(2500.00))==-1)
+        {
+            incremental = 25.00;
+        }
+        else if(currentprice.compareTo(BigDecimal.valueOf(5000.00))==-1)
+        {
+            incremental = 50.00;
+        }
+        else
+        {
+            incremental = 100.00;
+        }
+        
+        return incremental;
+    }
+    
+    
+    
+    @Override
+    public BidEntity placeNewBid(Long productid,CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException
+    {
+       
+        //create new bid entity
+        BidEntity newbid = new BidEntity();
+        AuctionEntity auctionentity = retrieveAvailabeAuctionById(productid);
+        newbid.setAuctionEntity(auctionentity);
+        newbid.setCustomerEntity(customer);
+        BigDecimal currentprice = getCurrentWinningBidEntity(productid).getAmount();
+        BigDecimal currentincremental = BigDecimal.valueOf(getCurrentBidIncremental(getCurrentWinningBidEntity(productid).getAmount()));
+        BigDecimal newprice = currentprice.add(currentincremental);
+        newbid.setAmount(newprice);
+        newbid = bidEntityController.createNewBid(newbid);
+        
+        //add customerentity and bidentity into auction entity
+        auctionentity.getBidEntities().add(newbid);
+        auctionentity.getCustomerEntities().add(customer);
+        
+        //add bid entity to customer entity? maybe not because it is not a winning bid yet
+       
+        return newbid;
+    }
     
 }

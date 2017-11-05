@@ -71,4 +71,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         
         bid.setIsWinningBid(true);
     }
+    
+  
 }
+
