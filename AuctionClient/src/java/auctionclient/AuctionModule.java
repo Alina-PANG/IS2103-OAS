@@ -165,14 +165,49 @@ public class AuctionModule {
             System.out.println(ex.getMessage());
         }
     }
-        
     
-   
-    
+
     public void viewBid()
     {
+        try{
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Below are the auctions that you have placed bids but haven't reached auction ending time yet:");
+        List<BidEntity> bidlist = bidEntityControllerRemote.viewMyBidsInProcess(customer);
+        System.out.println("Product ID---Product name---Your bid---Current Winning Bid");
+        for(BidEntity bid :bidlist)
+        {
+            System.out.print(bid.getAuctionEntity().getId());
+            System.out.print(bid.getAuctionEntity().getProductName()+"---");
+            System.out.print(bid.getAmount()+"---");
+            System.out.println(auctionEntityControllerRemote
+                    .getCurrentWinningBidEntity(bid.getAuctionEntity().getId())
+                    .getAmount());
+        }
+        System.out.println("Do you want to place new bid?(Y/N)->");
+        if(scanner.nextLine().trim().equals("Y"))
+        {
+            System.out.println("Enter id of the auction item that you want to place new bids->");
+            placeNewBid(scanner.nextLong());
+        }
+        else
+        {
+            System.out.println("Back to menu?(Y/N)>");
+                while(scanner.nextLine().trim().equals("N"))
+                {
+                    System.out.println(">");
+                    if(scanner.nextLine().trim().equals("Y"))
+                    mainapp.menuMain(customer);
+                } 
+        }
         
+        }
+        catch(GeneralException|AuctionNotFoundException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
     }
+    
+    
     public void viewWonAuction()
     {
         try{
@@ -210,8 +245,7 @@ public class AuctionModule {
                     System.out.println(">");
                     if(scanner.nextLine().trim().equals("Y"))
                     mainapp.menuMain(customer);
-                }
-                    
+                } 
             }
         }
         else

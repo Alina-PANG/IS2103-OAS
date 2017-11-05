@@ -29,4 +29,6 @@ public interface BidEntityControllerLocal {
     
     public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException;
     
+    public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException;
+    
 }

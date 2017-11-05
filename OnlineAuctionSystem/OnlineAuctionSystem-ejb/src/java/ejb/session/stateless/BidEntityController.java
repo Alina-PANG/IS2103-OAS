@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.StatusEnum;
 import util.exception.GeneralException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidNotFoundException;
@@ -92,6 +93,15 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         AddressEntity address = addressEntityControllerLocal.getAddressById(addressid);
         bid.setAddressEntity(address);
         return bid;
+    }
+    
+    //customer has placed bids but the auction item has not reached the ending time yet
+    public List<BidEntity> viewMyBidsInProcess (CustomerEntity customer) throws GeneralException
+    {
+        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity LIKE cust AND be.auctionEntity.status LIKE active")
+                .setParameter("cust",customer).setParameter("active",StatusEnum.ACTIVE);
+        
+        return query.getResultList();
     }
 }
 
