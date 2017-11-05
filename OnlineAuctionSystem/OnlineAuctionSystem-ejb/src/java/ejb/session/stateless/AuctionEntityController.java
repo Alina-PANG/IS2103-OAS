@@ -316,7 +316,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         auctionentity.getBidEntities().add(newbid);
         auctionentity.getCustomerEntities().add(customer);
         
-        //add bid entity to customer entity? maybe not because it is not a winning bid yet
+        //add bid entity to customer entity
+        customer.getBidEntities().add(newbid);
        
         return newbid;
     }

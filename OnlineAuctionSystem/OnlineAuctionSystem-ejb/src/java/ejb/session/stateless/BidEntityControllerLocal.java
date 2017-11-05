@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.BidEntity;
+import entity.CustomerEntity;
+import java.util.List;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidNotFoundException;
 import util.exception.GeneralException;
@@ -22,5 +24,9 @@ public interface BidEntityControllerLocal {
     public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException;
 
     public void deleteBid(Long id) throws BidNotFoundException;
+    
+    public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException;
+    
+    public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException;
     
 }
