@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,8 @@ import javax.xml.bind.annotation.XmlType;
     "value",
     "price",
     "name",
-    "creditTransactionEntities"
+    "customerEntities",
+    "isDisabled"
 })
 public class CreditPackageEntity implements Serializable {
 
@@ -45,8 +47,8 @@ public class CreditPackageEntity implements Serializable {
     @ManyToMany
     private List<CustomerEntity> customerEntities;
     private Boolean isDisabled;
-  //  @OneToMany(mappedBy="creditPackageEntity")
-  // private List<CreditTransactionEntity> creditTransactionEntities;
+    //  @OneToMany(mappedBy="creditPackageEntity")
+    // private List<CreditTransactionEntity> creditTransactionEntities;
 
     public CreditPackageEntity() {
         isDisabled = false;
@@ -57,6 +59,7 @@ public class CreditPackageEntity implements Serializable {
         this.price = price;
         this.name = name;
         this.isDisabled = isDisabled;
+        this.customerEntities = new ArrayList<CustomerEntity>();
     }
 
     public Long getId() {
@@ -164,16 +167,17 @@ public class CreditPackageEntity implements Serializable {
 
     /**
      * @return the creditTransactionEntities
-     
-    public List<CreditTransactionEntity> getCreditTransactionEntities() {
-        return creditTransactionEntities;
-    }*/
-
+     *
+     * public List<CreditTransactionEntity> getCreditTransactionEntities() {
+     * return creditTransactionEntities;
+    }
+     */
     /**
      * @param creditTransactionEntities the creditTransactionEntities to set
-     
-    public void setCreditTransactionEntities(List<CreditTransactionEntity> creditTransactionEntities) {
-        this.creditTransactionEntities = creditTransactionEntities;
-    }*/
-
+     *
+     * public void setCreditTransactionEntities(List<CreditTransactionEntity>
+     * creditTransactionEntities) { this.creditTransactionEntities =
+     * creditTransactionEntities;
+    }
+     */
 }

@@ -41,7 +41,6 @@ public class MainApp {
         // define attributes
         Scanner sc = new Scanner(System.in);
         int response1 = 0;
-        int response2 = 0;
 
         // while loop to collect response
         while (true) {
@@ -52,14 +51,17 @@ public class MainApp {
                     case 1:
                         doLogin();
                         break;
-                    case 2:
+                    case 2: 
+                        registration();
+                        break;
+                    case 3:
                         break;
                     default:
                         System.err.println("[Warning] Please input a valid response number.");
                         break;
                 }
 
-                if (response1 == 2) {
+                if (response1 == 3) {
                     break;
                 }
             } catch (InputMismatchException ex) {
@@ -71,19 +73,24 @@ public class MainApp {
 
     private void menu01() {
         System.out.println("");
-        System.out.println("******* [OAS System] Employee Homepage *******");
+        System.out.println("******* [OAS System] Premium Client Homepage *******");
         System.out.println("1. Login");
-        System.out.println("2. Exit");
+        System.out.println("2. Registration");
+        System.out.println("3. Exit");
         System.out.println("Please input the operation that you want to perform:");
         System.out.print("> ");
     }
 
     private void menu02() {
         System.out.println("");
-        System.out.println("******* [OAS System] Employee Basic Operation *******");
-        System.out.println("1. Enter Employee Portal");
-        System.out.println("2. Change Password");
-        System.out.println("3. Logout");
+        System.out.println("******* [OAS System] Premium Client Operation *******");
+        System.out.println("1. View Credit Balance");
+        System.out.println("2. View Auction Listing Details");
+        System.out.println("3. Configure Proxy Bidding for Aucton Listing");
+        System.out.println("4. Configure Sniping for Auction Listing");
+        System.out.println("5. Browse All Auction Listings");
+        System.out.println("6. View Won Auction Listings");
+        System.out.println("7. Logout");
         System.out.println("Please input the operation that you want to perform:");
         System.out.print("> ");
     }
@@ -108,7 +115,12 @@ public class MainApp {
             System.err.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }
 
-    }*/
+    }
+
+    private void registration() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+*/
     
     
 }

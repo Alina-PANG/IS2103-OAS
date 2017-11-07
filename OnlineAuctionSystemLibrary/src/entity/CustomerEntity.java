@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,13 +36,14 @@ import util.enumeration.CustomerTypeEnum;
     "lastName",
     "username",
     "password",
-    "contactNumber", 
+    "contactNumber",
     "email",
     "creditBalance",
     "creditTransactionEntities",
     "bidEntities",
     "addressEntities",
-    "customerTypeEnum"
+    "customerTypeEnum",
+    "auctionEntities"
 })
 public class CustomerEntity implements Serializable {
 
@@ -73,27 +75,25 @@ public class CustomerEntity implements Serializable {
     private CustomerTypeEnum customerTypeEnum;
     @ManyToMany(mappedBy = "customerEntities")
     private List<AuctionEntity> auctionEntities;
-    
-    // Premium Customer
-    @Column(precision = 18, scale = 4)
-    private BigDecimal maxWillingAmount;
-    @Column(precision = 18, scale = 4)
-    private BigDecimal oneTimeHighestBid;
+
 
     public CustomerEntity() {
         this.creditBalance = new BigDecimal(0);
     }
 
-    public CustomerEntity(String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, List<CreditTransactionEntity> creditTransactionEntities, List<BidEntity> bidEntities, List<AddressEntity> addressEntities, CustomerTypeEnum customerTypeEnum) {
+    public CustomerEntity(String firstName, String lastName, String username, String password, String contactNumber, String email, CustomerTypeEnum customerTypeEnum) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = username;
+        this.password = password;
         this.contactNumber = contactNumber;
         this.email = email;
-        this.creditBalance = creditBalance;
-        this.creditTransactionEntities = creditTransactionEntities;
-        this.bidEntities = bidEntities;
-        this.addressEntities = addressEntities;
+        this.creditBalance = new BigDecimal(0);
         this.customerTypeEnum = customerTypeEnum;
+        this.creditTransactionEntities = new ArrayList<CreditTransactionEntity>();
+        this.addressEntities = new ArrayList<AddressEntity>();
+        this.auctionEntities = new ArrayList<AuctionEntity>();
+        this.bidEntities = new ArrayList<BidEntity>();
     }
 
     public Long getId() {
@@ -283,32 +283,9 @@ public class CustomerEntity implements Serializable {
         this.password = password;
     }
 
-    /**
-     * @return the maxWillingAmount
-     */
-    public BigDecimal getMaxWillingAmount() {
-        return maxWillingAmount;
-    }
 
-    /**
-     * @param maxWillingAmount the maxWillingAmount to set
-     */
-    public void setMaxWillingAmount(BigDecimal maxWillingAmount) {
-        this.maxWillingAmount = maxWillingAmount;
-    }
 
-    /**
-     * @return the oneTimeHighestBid
-     */
-    public BigDecimal getOneTimeHighestBid() {
-        return oneTimeHighestBid;
+    public void addCreditBalance(BigDecimal add) {
+        this.creditBalance.add(add);
     }
-
-    /**
-     * @param oneTimeHighestBid the oneTimeHighestBid to set
-     */
-    public void setOneTimeHighestBid(BigDecimal oneTimeHighestBid) {
-        this.oneTimeHighestBid = oneTimeHighestBid;
-    }
-
 }

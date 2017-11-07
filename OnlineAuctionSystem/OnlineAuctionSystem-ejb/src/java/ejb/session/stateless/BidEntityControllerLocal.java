@@ -25,6 +25,8 @@ public interface BidEntityControllerLocal {
 
     public void deleteBid(Long id) throws BidNotFoundException;
     
+    public void assignWinningBid(Long id, boolean is) throws BidNotFoundException;
+    
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException;
     
     public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException;

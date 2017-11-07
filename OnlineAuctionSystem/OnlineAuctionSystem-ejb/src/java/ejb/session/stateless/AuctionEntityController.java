@@ -9,11 +9,18 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -42,6 +49,9 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @EJB
     private BidEntityControllerLocal bidEntityController;
 
+    @Resource
+    private SessionContext sessionContext;
+
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
@@ -58,6 +68,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             em.persist(ae);
             em.flush();
             em.refresh(ae);
+
+            createTimerForAuction(ae);
 
             return ae;
         } catch (PersistenceException ex) {
@@ -77,6 +89,57 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 throw new GeneralException("Start and End Date and time cannot be later than today!");
             }
         }
+    }
+
+    private void createTimerForAuction(AuctionEntity ae) {
+        TimerService timerService = sessionContext.getTimerService();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+
+        Timer timer = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(ae, true));
+    }
+
+    @Timeout
+    public void closeAuction(Timer timer) {
+        AuctionEntity ae = (AuctionEntity) timer.getInfo();
+        em.merge(ae);
+
+        ae.setStatus(StatusEnum.CLOSED);
+
+        //dealWithPremiumCustomer(ae);
+        BidEntity winning = findWinningBid(ae);
+        if (winning != null) {
+            ae.setWinningBidId(winning.getId());
+        } else {
+            ae.setWinningBidId(new Long(0));
+        }
+    }
+
+    private BidEntity findWinningBid(AuctionEntity ae) {
+        List<BidEntity> bidList = ae.getBidEntities();
+        BidEntity result = null;
+
+        // If there is no winning bid
+        if (ae.getWinningBid().getAmount().compareTo(ae.getReservePrice()) < 0) {
+            for (BidEntity b : bidList) {
+                if (!b.getIsWinningBid()) {
+                    b.getCustomerEntity().addCreditBalance(b.getAmount());
+                } else {
+                    result = b;
+                }
+            }
+        } else {
+            result = ae.getWinningBid();
+            for (BidEntity b : bidList) {
+                if (!b.equals(result)) {
+                    b.getCustomerEntity().addCreditBalance(b.getAmount());
+                }
+            }
+        }
+        return result;
+    }
+
+    private void dealWithPremiumCustomer(AuctionEntity ae) {
+
     }
 
     /**
@@ -191,116 +254,87 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
-        Query query = em.createQuery("(SELECT al FROM AuctionEntity al, BidEntity b WHERE b.amount >= al.reservePrice GROUP BY al.id HAVING COUNT(b) == 0) MINUS (SELECT al.id GROUP BY al.id HAVING COUNT(al.bidEntities) == 0)");
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.reservePrice > (SELECT MAX(b.amount) FROM BidEntity b WHERE b MEMBER OF al.bidEntities)");
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
             throw new GeneralException("No auction listing exists!");
         }
     }
-    
+
     @Override
-    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException{
-    AuctionEntity ae = retrieveAuctionById(aid);
-        
+    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException {
+        AuctionEntity ae = retrieveAuctionById(aid);
+
         return ae.getBidEntities();
     }
-    
+
     @Override
-    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException
-    {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al,WHERE al.status LIKE status").setParameter("status",StatusEnum.ACTIVE);
+    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException {
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al,WHERE al.status LIKE status").setParameter("status", StatusEnum.ACTIVE);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
             throw new GeneralException("No auction listing exists!");
         }
     }
-    
+
     @Override
-    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException
-    {
+    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException {
         Query query = em.createQuery("SELECT ae FROM AuctionEntity ae WHERE ae.id LIKE aeid AND ae.status LIKE status")
-                .setParameter("aeid",productid).setParameter("status",StatusEnum.ACTIVE);
-        return (AuctionEntity)query.getSingleResult();
+                .setParameter("aeid", productid).setParameter("status", StatusEnum.ACTIVE);
+        return (AuctionEntity) query.getSingleResult();
     }
-    
-    
-    
+
     @Override
-    public BidEntity getCurrentWinningBidEntity (Long productid) throws AuctionNotFoundException
-    {
+    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException {
         List<BidEntity> bidlist = viewBidEntity(productid);
-        if(bidlist!=null)
-        {
-            BidEntity highestbid= new BidEntity();
-            for(BidEntity bid:bidlist)
-            {
-                if(bid.getAmount().compareTo(highestbid.getAmount())==1)
-                    highestbid=bid;
+        if (bidlist != null) {
+            BidEntity highestbid = new BidEntity();
+            for (BidEntity bid : bidlist) {
+                if (bid.getAmount().compareTo(highestbid.getAmount()) == 1) {
+                    highestbid = bid;
+                }
             }
-           return highestbid;
-        }
-        else 
+            return highestbid;
+        } else {
             return null;
-        
+        }
+
     }
-    
+
     @Override
-    public Double getCurrentBidIncremental(BigDecimal currentprice)
-    {
-        Double incremental =0.00;
-        if(currentprice.compareTo(BigDecimal.valueOf(0.00))==1
-                &&currentprice.compareTo(BigDecimal.valueOf(0.99))==-1)
-        {
+    public Double getCurrentBidIncremental(BigDecimal currentprice) {
+        Double incremental = 0.00;
+        if (currentprice.compareTo(BigDecimal.valueOf(0.00)) == 1
+                && currentprice.compareTo(BigDecimal.valueOf(0.99)) == -1) {
             incremental = 0.05;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(5.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(5.00)) == -1) {
             incremental = 0.25;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(25.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(25.00)) == -1) {
             incremental = 0.50;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(100.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(100.00)) == -1) {
             incremental = 1.00;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(250.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(250.00)) == -1) {
             incremental = 2.50;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(500.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(500.00)) == -1) {
             incremental = 5.00;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(1000.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(1000.00)) == -1) {
             incremental = 10.00;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(2500.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(2500.00)) == -1) {
             incremental = 25.00;
-        }
-        else if(currentprice.compareTo(BigDecimal.valueOf(5000.00))==-1)
-        {
+        } else if (currentprice.compareTo(BigDecimal.valueOf(5000.00)) == -1) {
             incremental = 50.00;
-        }
-        else
-        {
+        } else {
             incremental = 100.00;
         }
-        
+
         return incremental;
     }
-    
-    
-    
+
     @Override
-    public BidEntity placeNewBid(Long productid,CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException
-    {
-       
+    public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+
         //create new bid entity
         BidEntity newbid = new BidEntity();
         AuctionEntity auctionentity = retrieveAvailabeAuctionById(productid);
@@ -311,15 +345,15 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         BigDecimal newprice = currentprice.add(currentincremental);
         newbid.setAmount(newprice);
         newbid = bidEntityController.createNewBid(newbid);
-        
+
         //add customerentity and bidentity into auction entity
         auctionentity.getBidEntities().add(newbid);
         auctionentity.getCustomerEntities().add(customer);
-        
+
         //add bid entity to customer entity
         customer.getBidEntities().add(newbid);
-       
+
         return newbid;
     }
-    
+
 }

@@ -72,16 +72,16 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     }
     
     @Override
-    public void assignWinningBid(Long id) throws BidNotFoundException {
+    public void assignWinningBid(Long id, boolean is) throws BidNotFoundException {
         BidEntity bid = retrieveById(id);
         
-        bid.setIsWinningBid(true);
+        bid.setIsWinningBid(is);
     }
     
     @Override
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException
     {
-        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity LIKE cust AND be.isWinningBid LIKE true")
+        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity = cust AND be.isWinningBid = true")
                 .setParameter("cust",customer).setParameter("true",true);
         return query.getResultList();
         

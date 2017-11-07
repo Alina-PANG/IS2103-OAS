@@ -35,6 +35,7 @@ import util.enumeration.CustomerTypeEnum;
     "bidEntities",
     "addressEntities",
     "customerTypeEnum",
+    "auctionEntities",
     "maxWillingPrice",
     "timeDuration",
     "oneTimeHighestBid"
@@ -51,8 +52,8 @@ public class PremiumCustomerEntity extends CustomerEntity implements Serializabl
     public PremiumCustomerEntity() {
     }
 
-    public PremiumCustomerEntity(BigDecimal maxWillingPrice, Date timeDuration, BigDecimal oneTimeHighestBid, String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, List<CreditTransactionEntity> creditTransactionEntities, List<BidEntity> bidEntities, List<AddressEntity> addressEntities, CustomerTypeEnum customerTypeEnum) {
-        super(firstName, lastName, contactNumber, email, creditBalance, creditTransactionEntities, bidEntities, addressEntities, customerTypeEnum);
+    public PremiumCustomerEntity(BigDecimal maxWillingPrice, Date timeDuration, BigDecimal oneTimeHighestBid, String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, CustomerTypeEnum customerTypeEnum) {
+        super(firstName, lastName, contactNumber, email, creditBalance, customerTypeEnum);
         this.maxWillingPrice = maxWillingPrice;
         this.timeDuration = timeDuration;
         this.oneTimeHighestBid = oneTimeHighestBid;

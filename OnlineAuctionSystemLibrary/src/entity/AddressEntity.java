@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,12 +54,12 @@ public class AddressEntity implements Serializable {
     public AddressEntity() {
     }
 
-    public AddressEntity(String addressLine, String postCode, boolean isDisabled, List<BidEntity> bidEntities, CustomerEntity customerEntity) {
+    public AddressEntity(String addressLine, String postCode, boolean isDisabled, CustomerEntity customerEntity) {
         this.addressLine = addressLine;
         this.postCode = postCode;
         this.isDisabled = isDisabled;
-        this.bidEntities = bidEntities;
         this.customerEntity = customerEntity;
+        this.bidEntities = new ArrayList<BidEntity>();
     }
 
     public Long getId() {
