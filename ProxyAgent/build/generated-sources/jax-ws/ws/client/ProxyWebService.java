@@ -7,7 +7,6 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Action;
 import javax.xml.ws.FaultAction;
 import javax.xml.ws.RequestWrapper;
@@ -29,12 +28,9 @@ public interface ProxyWebService {
 
     /**
      * 
-     * @param td
      * @param c
-     * @param price
-     * @param hb
      * @return
-     *     returns ws.client.PremiumCustomerEntity
+     *     returns ws.client.CustomerEntity
      * @throws GeneralException_Exception
      * @throws CustomerAlreadyExistException_Exception
      */
@@ -46,15 +42,9 @@ public interface ProxyWebService {
         @FaultAction(className = CustomerAlreadyExistException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/createNewCustomerEntity/Fault/CustomerAlreadyExistException"),
         @FaultAction(className = GeneralException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/createNewCustomerEntity/Fault/GeneralException")
     })
-    public PremiumCustomerEntity createNewCustomerEntity(
+    public CustomerEntity createNewCustomerEntity(
         @WebParam(name = "c", targetNamespace = "")
-        CustomerEntity c,
-        @WebParam(name = "price", targetNamespace = "")
-        BigDecimal price,
-        @WebParam(name = "hb", targetNamespace = "")
-        BigDecimal hb,
-        @WebParam(name = "td", targetNamespace = "")
-        XMLGregorianCalendar td)
+        CustomerEntity c)
         throws CustomerAlreadyExistException_Exception, GeneralException_Exception
     ;
 
@@ -65,7 +55,6 @@ public interface ProxyWebService {
      * @return
      *     returns ws.client.CustomerEntity
      * @throws CustomerNotFoundException_Exception
-     * @throws DuplicateException_Exception
      * @throws IncorrectPasswordException_Exception
      */
     @WebMethod
@@ -74,15 +63,56 @@ public interface ProxyWebService {
     @ResponseWrapper(localName = "customerLoginResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CustomerLoginResponse")
     @Action(input = "http://ws.session.ejb/ProxyWebService/customerLoginRequest", output = "http://ws.session.ejb/ProxyWebService/customerLoginResponse", fault = {
         @FaultAction(className = CustomerNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"),
-        @FaultAction(className = IncorrectPasswordException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"),
-        @FaultAction(className = DuplicateException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/DuplicateException")
+        @FaultAction(className = IncorrectPasswordException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException")
     })
     public CustomerEntity customerLogin(
         @WebParam(name = "username", targetNamespace = "")
         String username,
         @WebParam(name = "password", targetNamespace = "")
         String password)
-        throws CustomerNotFoundException_Exception, DuplicateException_Exception, IncorrectPasswordException_Exception
+        throws CustomerNotFoundException_Exception, IncorrectPasswordException_Exception
+    ;
+
+    /**
+     * 
+     * @param id
+     * @return
+     *     returns ws.client.AuctionEntity
+     * @throws AuctionNotFoundException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "viewAuctionListDetails", targetNamespace = "http://ws.session.ejb/", className = "ws.client.ViewAuctionListDetails")
+    @ResponseWrapper(localName = "viewAuctionListDetailsResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.ViewAuctionListDetailsResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsRequest", output = "http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsResponse", fault = {
+        @FaultAction(className = AuctionNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/viewAuctionListDetails/Fault/AuctionNotFoundException")
+    })
+    public AuctionEntity viewAuctionListDetails(
+        @WebParam(name = "id", targetNamespace = "")
+        Long id)
+        throws AuctionNotFoundException_Exception
+    ;
+
+    /**
+     * 
+     * @param id
+     * @return
+     *     returns java.math.BigDecimal
+     * @throws GeneralException_Exception
+     * @throws CustomerNotFoundException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "viewCreditBalance", targetNamespace = "http://ws.session.ejb/", className = "ws.client.ViewCreditBalance")
+    @ResponseWrapper(localName = "viewCreditBalanceResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.ViewCreditBalanceResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/viewCreditBalanceRequest", output = "http://ws.session.ejb/ProxyWebService/viewCreditBalanceResponse", fault = {
+        @FaultAction(className = CustomerNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/CustomerNotFoundException"),
+        @FaultAction(className = GeneralException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/GeneralException")
+    })
+    public BigDecimal viewCreditBalance(
+        @WebParam(name = "id", targetNamespace = "")
+        Long id)
+        throws CustomerNotFoundException_Exception, GeneralException_Exception
     ;
 
 }

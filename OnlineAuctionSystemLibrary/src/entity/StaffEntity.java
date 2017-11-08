@@ -23,16 +23,6 @@ import util.enumeration.EmployeeAccessRightEnum;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "staffEntity", propOrder = {
-    "id",
-    "firstName",
-    "lastName",
-    "identificationNumber",
-    "username",
-    "password",
-    "accessRight"
-})
 public class StaffEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

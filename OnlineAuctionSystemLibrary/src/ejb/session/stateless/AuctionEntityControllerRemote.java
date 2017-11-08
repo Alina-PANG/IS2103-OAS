@@ -49,4 +49,8 @@ public interface AuctionEntityControllerRemote {
     
     public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException;
 
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException;
+
+    public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
+
 }

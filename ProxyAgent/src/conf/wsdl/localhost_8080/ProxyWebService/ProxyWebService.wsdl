@@ -28,8 +28,20 @@
 <message name="IncorrectPasswordException">
 <part name="fault" element="tns:IncorrectPasswordException"/>
 </message>
-<message name="DuplicateException">
-<part name="fault" element="tns:DuplicateException"/>
+<message name="viewAuctionListDetails">
+<part name="parameters" element="tns:viewAuctionListDetails"/>
+</message>
+<message name="viewAuctionListDetailsResponse">
+<part name="parameters" element="tns:viewAuctionListDetailsResponse"/>
+</message>
+<message name="AuctionNotFoundException">
+<part name="fault" element="tns:AuctionNotFoundException"/>
+</message>
+<message name="viewCreditBalance">
+<part name="parameters" element="tns:viewCreditBalance"/>
+</message>
+<message name="viewCreditBalanceResponse">
+<part name="parameters" element="tns:viewCreditBalanceResponse"/>
 </message>
 <portType name="ProxyWebService">
 <operation name="createNewCustomerEntity">
@@ -43,7 +55,17 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
 <fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
 <fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
-<fault message="tns:DuplicateException" name="DuplicateException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/DuplicateException"/>
+</operation>
+<operation name="viewAuctionListDetails">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsRequest" message="tns:viewAuctionListDetails"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsResponse" message="tns:viewAuctionListDetailsResponse"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetails/Fault/AuctionNotFoundException"/>
+</operation>
+<operation name="viewCreditBalance">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceRequest" message="tns:viewCreditBalance"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceResponse" message="tns:viewCreditBalanceResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/CustomerNotFoundException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/GeneralException"/>
 </operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
@@ -77,8 +99,32 @@
 <fault name="IncorrectPasswordException">
 <soap:fault name="IncorrectPasswordException" use="literal"/>
 </fault>
-<fault name="DuplicateException">
-<soap:fault name="DuplicateException" use="literal"/>
+</operation>
+<operation name="viewAuctionListDetails">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="viewCreditBalance">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
 </fault>
 </operation>
 </binding>

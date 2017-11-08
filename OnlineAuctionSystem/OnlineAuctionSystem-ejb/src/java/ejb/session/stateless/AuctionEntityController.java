@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -55,6 +56,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
+    private Timer timerEnd;
+    private Timer timerStart;
+    private TimerService timerService;
+
     /**
      *
      * @param ae
@@ -92,54 +97,48 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     private void createTimerForAuction(AuctionEntity ae) {
-        TimerService timerService = sessionContext.getTimerService();
+        timerService = sessionContext.getTimerService();
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        Timer timer = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(ae, true));
+        timerEnd = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(new Pair(ae, false), true));
+        timerStart = timerService.createSingleActionTimer(ae.getStartingTime(), new TimerConfig(new Pair(ae, true), true));
     }
 
     @Timeout
-    public void closeAuction(Timer timer) {
-        AuctionEntity ae = (AuctionEntity) timer.getInfo();
+    public void openOrCloseAuction(Timer timer) {
+        AuctionEntity ae = (AuctionEntity) ((Pair) timer.getInfo()).getAuctionEntity();
         em.merge(ae);
 
-        ae.setStatus(StatusEnum.CLOSED);
-
-        //dealWithPremiumCustomer(ae);
-        BidEntity winning = findWinningBid(ae);
-        if (winning != null) {
-            ae.setWinningBidId(winning.getId());
+        if (((Pair) timer.getInfo()).getIsStart()) {
+            ae.setStatus(StatusEnum.ACTIVE);
         } else {
-            ae.setWinningBidId(new Long(0));
-        }
-    }
+            ae.setStatus(StatusEnum.CLOSED);
 
-    private BidEntity findWinningBid(AuctionEntity ae) {
-        List<BidEntity> bidList = ae.getBidEntities();
-        BidEntity result = null;
-
-        // If there is no winning bid
-        if (ae.getBidEntities().size() != 0 && ae.getWinningBid().getAmount().compareTo(ae.getReservePrice()) < 0) {
-            for (BidEntity b : bidList) {
-                if (!b.getIsWinningBid()) {
-                    b.getCustomerEntity().addCreditBalance(b.getAmount());
-                } else {
-                    result = b;
-                }
-            }
-        } else {
-            result = ae.getWinningBid();
-            for (BidEntity b : bidList) {
-                if (!b.equals(result)) {
-                    b.getCustomerEntity().addCreditBalance(b.getAmount());
-                }
+            BidEntity winning = closingFindWinningBid(ae);
+            if (winning != null) {
+                ae.setWinningBidId(winning.getId());
             }
         }
-        return result;
+
     }
 
-    private void dealWithPremiumCustomer(AuctionEntity ae) {
+    private BidEntity closingFindWinningBid(AuctionEntity ae) {
+        Query query = em.createQuery("SELECT b FROM BidEntity b, AuctionEntity al WHERE b MEMBER OF al.bidEntities AND al.id = :id AND b.amount = (SELECT MAX(b.amount) FROM b WHERE b MEMBER OF al)");
+        query.setParameter(":id", ae.getId());
 
+        List<BidEntity> list = (List<BidEntity>) query.getResultList();
+
+        if (list == null || list.size() == 0) {
+            return null;
+        }
+
+        return list.get(0);
+    }
+
+    @Override
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException {
+        AuctionEntity ae = retrieveAuctionById(aid);
+        ae.setWinningBidId(bid);
     }
 
     /**
@@ -166,7 +165,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public List<AuctionEntity> retrieveAuctionByProductName(String name) throws AuctionNotFoundException {
         // retrieve ae
         Query query = em.createQuery("SELECT s FROM AuctionEntity s WHERE LOWER(s.productName) LIKE :name");
-        query.setParameter("name", name);
+        query.setParameter("name", "%" + name + "%");
 
         try {
             return (List<AuctionEntity>) query.getResultList();
@@ -186,8 +185,17 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException {
         AuctionEntity oldAuction = retrieveAuctionById(newAuction.getId());
 
-        oldAuction.setStartingTime(newAuction.getStartingTime());
-        oldAuction.setEndingTime(newAuction.getEndingTime());
+        if (!oldAuction.getStartingTime().equals(newAuction.getStartingTime())) {
+            timerStart.cancel();
+            oldAuction.setStartingTime(newAuction.getStartingTime());
+            timerStart = timerService.createSingleActionTimer(oldAuction.getStartingTime(), new TimerConfig(new Pair(oldAuction, true), true));
+        }
+        if (!oldAuction.getEndingTime().equals(newAuction.getEndingTime())) {
+            timerEnd.cancel();
+            oldAuction.setEndingTime(newAuction.getEndingTime());
+            timerEnd = timerService.createSingleActionTimer(oldAuction.getEndingTime(), new TimerConfig(new Pair(oldAuction, false), true));
+        }
+
         oldAuction.setStatus(newAuction.getStatus());
         oldAuction.setReservePrice(newAuction.getReservePrice());
         // oldAuction.setWinningBidId(newAuction.getWinningBidId());
@@ -198,6 +206,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         try {
             em.flush();
             em.refresh(oldAuction);
+
         } catch (PersistenceException ex) {
             if (ex.getCause() != null
                     && ex.getCause().getCause() != null
@@ -254,7 +263,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.reservePrice > (SELECT MAX(b.amount) FROM BidEntity b WHERE b MEMBER OF al.bidEntities)");
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.status = :status AND al.reservePrice > (SELECT MAX(b.amount) FROM BidEntity b WHERE b MEMBER OF al.bidEntities)");
+        query.setParameter("status", StatusEnum.CLOSED);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
@@ -262,11 +272,34 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
     }
 
+    /**
+     *
+     * @param cid
+     * @return
+     * @throws GeneralException
+     */
+    @Override
+    public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException {
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al, CustomerEntity c, IN(c.bidEntities) b WHERE c.id = :id AND al MEMBER OF c.auctionEntities AND al.winningBidId = b.id");
+        query.setParameter(":id", cid);
+        try {
+            return (List<AuctionEntity>) query.getResultList();
+        } catch (Exception ex) {
+            throw new GeneralException(ex.getMessage());
+        }
+
+    }
+
     @Override
     public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException {
         AuctionEntity ae = retrieveAuctionById(aid);
+        List<BidEntity> list = ae.getBidEntities();
 
-        return ae.getBidEntities();
+        for (BidEntity b : list) {
+            b.getAuctionEntity();
+        }
+
+        return list;
     }
 
     @Override
@@ -356,4 +389,23 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return newbid;
     }
 
+}
+
+class Pair implements Serializable {
+
+    private AuctionEntity ae;
+    private boolean isStart;
+
+    Pair(AuctionEntity ae, boolean isStart) {
+        this.ae = ae;
+        this.isStart = isStart;
+    }
+
+    boolean getIsStart() {
+        return isStart;
+    }
+
+    AuctionEntity getAuctionEntity() {
+        return ae;
+    }
 }

@@ -22,15 +22,6 @@ import javax.xml.bind.annotation.XmlType;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "bidEntity", propOrder = {
-    "id",
-    "amount",
-    "isWinningBid",
-    "auctionEntity",
-    "customerEntity",
-    "addressEntity"
-})
 public class BidEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +30,6 @@ public class BidEntity implements Serializable {
     private Long id;
     @Column(precision = 18, scale = 4)
     private BigDecimal amount;
-    private Boolean isWinningBid;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AuctionEntity auctionEntity;
@@ -55,7 +45,6 @@ public class BidEntity implements Serializable {
 
     public BidEntity(BigDecimal amount, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntities) {
         this.amount = amount;
-        this.isWinningBid = false;
         this.auctionEntity = auctionEntity;
         this.customerEntity = customerEntity;
         this.addressEntity = addressEntities;
@@ -108,20 +97,6 @@ public class BidEntity implements Serializable {
      */
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    /**
-     * @return the isWinningBid
-     */
-    public Boolean getIsWinningBid() {
-        return isWinningBid;
-    }
-
-    /**
-     * @param isWinningBid the isWinningBid to set
-     */
-    public void setIsWinningBid(Boolean isWinningBid) {
-        this.isWinningBid = isWinningBid;
     }
 
     /**

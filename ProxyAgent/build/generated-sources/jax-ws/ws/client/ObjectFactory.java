@@ -24,9 +24,9 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _AuctionNotFoundException_QNAME = new QName("http://ws.session.ejb/", "AuctionNotFoundException");
     private final static QName _CustomerAlreadyExistException_QNAME = new QName("http://ws.session.ejb/", "CustomerAlreadyExistException");
     private final static QName _CustomerNotFoundException_QNAME = new QName("http://ws.session.ejb/", "CustomerNotFoundException");
-    private final static QName _DuplicateException_QNAME = new QName("http://ws.session.ejb/", "DuplicateException");
     private final static QName _GeneralException_QNAME = new QName("http://ws.session.ejb/", "GeneralException");
     private final static QName _IncorrectPasswordException_QNAME = new QName("http://ws.session.ejb/", "IncorrectPasswordException");
     private final static QName _AddressEntity_QNAME = new QName("http://ws.session.ejb/", "addressEntity");
@@ -39,13 +39,24 @@ public class ObjectFactory {
     private final static QName _CustomerEntity_QNAME = new QName("http://ws.session.ejb/", "customerEntity");
     private final static QName _CustomerLogin_QNAME = new QName("http://ws.session.ejb/", "customerLogin");
     private final static QName _CustomerLoginResponse_QNAME = new QName("http://ws.session.ejb/", "customerLoginResponse");
-    private final static QName _PremiumCustomerEntity_QNAME = new QName("http://ws.session.ejb/", "premiumCustomerEntity");
+    private final static QName _ViewAuctionListDetails_QNAME = new QName("http://ws.session.ejb/", "viewAuctionListDetails");
+    private final static QName _ViewAuctionListDetailsResponse_QNAME = new QName("http://ws.session.ejb/", "viewAuctionListDetailsResponse");
+    private final static QName _ViewCreditBalance_QNAME = new QName("http://ws.session.ejb/", "viewCreditBalance");
+    private final static QName _ViewCreditBalanceResponse_QNAME = new QName("http://ws.session.ejb/", "viewCreditBalanceResponse");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: ws.client
      * 
      */
     public ObjectFactory() {
+    }
+
+    /**
+     * Create an instance of {@link AuctionNotFoundException }
+     * 
+     */
+    public AuctionNotFoundException createAuctionNotFoundException() {
+        return new AuctionNotFoundException();
     }
 
     /**
@@ -62,14 +73,6 @@ public class ObjectFactory {
      */
     public CustomerNotFoundException createCustomerNotFoundException() {
         return new CustomerNotFoundException();
-    }
-
-    /**
-     * Create an instance of {@link DuplicateException }
-     * 
-     */
-    public DuplicateException createDuplicateException() {
-        return new DuplicateException();
     }
 
     /**
@@ -169,11 +172,44 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link PremiumCustomerEntity }
+     * Create an instance of {@link ViewAuctionListDetails }
      * 
      */
-    public PremiumCustomerEntity createPremiumCustomerEntity() {
-        return new PremiumCustomerEntity();
+    public ViewAuctionListDetails createViewAuctionListDetails() {
+        return new ViewAuctionListDetails();
+    }
+
+    /**
+     * Create an instance of {@link ViewAuctionListDetailsResponse }
+     * 
+     */
+    public ViewAuctionListDetailsResponse createViewAuctionListDetailsResponse() {
+        return new ViewAuctionListDetailsResponse();
+    }
+
+    /**
+     * Create an instance of {@link ViewCreditBalance }
+     * 
+     */
+    public ViewCreditBalance createViewCreditBalance() {
+        return new ViewCreditBalance();
+    }
+
+    /**
+     * Create an instance of {@link ViewCreditBalanceResponse }
+     * 
+     */
+    public ViewCreditBalanceResponse createViewCreditBalanceResponse() {
+        return new ViewCreditBalanceResponse();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AuctionNotFoundException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "AuctionNotFoundException")
+    public JAXBElement<AuctionNotFoundException> createAuctionNotFoundException(AuctionNotFoundException value) {
+        return new JAXBElement<AuctionNotFoundException>(_AuctionNotFoundException_QNAME, AuctionNotFoundException.class, null, value);
     }
 
     /**
@@ -192,15 +228,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "CustomerNotFoundException")
     public JAXBElement<CustomerNotFoundException> createCustomerNotFoundException(CustomerNotFoundException value) {
         return new JAXBElement<CustomerNotFoundException>(_CustomerNotFoundException_QNAME, CustomerNotFoundException.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link DuplicateException }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "DuplicateException")
-    public JAXBElement<DuplicateException> createDuplicateException(DuplicateException value) {
-        return new JAXBElement<DuplicateException>(_DuplicateException_QNAME, DuplicateException.class, null, value);
     }
 
     /**
@@ -312,12 +339,39 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link PremiumCustomerEntity }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link ViewAuctionListDetails }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "premiumCustomerEntity")
-    public JAXBElement<PremiumCustomerEntity> createPremiumCustomerEntity(PremiumCustomerEntity value) {
-        return new JAXBElement<PremiumCustomerEntity>(_PremiumCustomerEntity_QNAME, PremiumCustomerEntity.class, null, value);
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewAuctionListDetails")
+    public JAXBElement<ViewAuctionListDetails> createViewAuctionListDetails(ViewAuctionListDetails value) {
+        return new JAXBElement<ViewAuctionListDetails>(_ViewAuctionListDetails_QNAME, ViewAuctionListDetails.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ViewAuctionListDetailsResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewAuctionListDetailsResponse")
+    public JAXBElement<ViewAuctionListDetailsResponse> createViewAuctionListDetailsResponse(ViewAuctionListDetailsResponse value) {
+        return new JAXBElement<ViewAuctionListDetailsResponse>(_ViewAuctionListDetailsResponse_QNAME, ViewAuctionListDetailsResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ViewCreditBalance }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewCreditBalance")
+    public JAXBElement<ViewCreditBalance> createViewCreditBalance(ViewCreditBalance value) {
+        return new JAXBElement<ViewCreditBalance>(_ViewCreditBalance_QNAME, ViewCreditBalance.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ViewCreditBalanceResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewCreditBalanceResponse")
+    public JAXBElement<ViewCreditBalanceResponse> createViewCreditBalanceResponse(ViewCreditBalanceResponse value) {
+        return new JAXBElement<ViewCreditBalanceResponse>(_ViewCreditBalanceResponse_QNAME, ViewCreditBalanceResponse.class, null, value);
     }
 
 }

@@ -27,15 +27,6 @@ import util.enumeration.TransactionTypeEnum;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "creditTransactionEntity", propOrder = {
-    "id",
-    "totalValue",
-    "transactionTypeEnum",
-    "unitOfPurchase",
-    "creditPackageEntity",
-    "customerEntity"
-})
 public class CreditTransactionEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

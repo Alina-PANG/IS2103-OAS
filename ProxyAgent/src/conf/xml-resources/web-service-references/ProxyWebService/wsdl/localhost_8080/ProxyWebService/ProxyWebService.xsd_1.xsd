@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.session.ejb/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.session.ejb/">
 
+<xs:element name="AuctionNotFoundException" type="tns:AuctionNotFoundException"/>
+
 <xs:element name="CustomerAlreadyExistException" type="tns:CustomerAlreadyExistException"/>
 
 <xs:element name="CustomerNotFoundException" type="tns:CustomerNotFoundException"/>
-
-<xs:element name="DuplicateException" type="tns:DuplicateException"/>
 
 <xs:element name="GeneralException" type="tns:GeneralException"/>
 
@@ -30,7 +30,13 @@
 
 <xs:element name="customerLoginResponse" type="tns:customerLoginResponse"/>
 
-<xs:element name="premiumCustomerEntity" type="tns:premiumCustomerEntity"/>
+<xs:element name="viewAuctionListDetails" type="tns:viewAuctionListDetails"/>
+
+<xs:element name="viewAuctionListDetailsResponse" type="tns:viewAuctionListDetailsResponse"/>
+
+<xs:element name="viewCreditBalance" type="tns:viewCreditBalance"/>
+
+<xs:element name="viewCreditBalanceResponse" type="tns:viewCreditBalanceResponse"/>
 
 <xs:complexType name="customerLogin">
 <xs:sequence>
@@ -134,7 +140,19 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="DuplicateException">
+<xs:complexType name="viewAuctionListDetails">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListDetailsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="AuctionNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
@@ -143,28 +161,13 @@
 <xs:complexType name="createNewCustomerEntity">
 <xs:sequence>
 <xs:element name="c" type="tns:customerEntity" minOccurs="0"/>
-<xs:element name="price" type="xs:decimal" minOccurs="0"/>
-<xs:element name="hb" type="xs:decimal" minOccurs="0"/>
-<xs:element name="td" type="xs:dateTime" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="createNewCustomerEntityResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:premiumCustomerEntity" minOccurs="0"/>
+<xs:element name="return" type="tns:customerEntity" minOccurs="0"/>
 </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="premiumCustomerEntity">
-<xs:complexContent>
-<xs:extension base="tns:customerEntity">
-<xs:sequence>
-<xs:element name="maxWillingPrice" type="xs:decimal" minOccurs="0"/>
-<xs:element name="timeDuration" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="oneTimeHighestBid" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="CustomerAlreadyExistException">
@@ -176,6 +179,18 @@
 <xs:complexType name="GeneralException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewCreditBalance">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewCreditBalanceResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

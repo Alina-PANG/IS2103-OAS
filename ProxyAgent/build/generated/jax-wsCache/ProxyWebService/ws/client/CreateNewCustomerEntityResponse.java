@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="return" type="{http://ws.session.ejb/}premiumCustomerEntity" minOccurs="0"/&gt;
+ *         &lt;element name="return" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -33,17 +33,17 @@ import javax.xml.bind.annotation.XmlType;
 public class CreateNewCustomerEntityResponse {
 
     @XmlElement(name = "return")
-    protected PremiumCustomerEntity _return;
+    protected CustomerEntity _return;
 
     /**
      * Gets the value of the return property.
      * 
      * @return
      *     possible object is
-     *     {@link PremiumCustomerEntity }
+     *     {@link CustomerEntity }
      *     
      */
-    public PremiumCustomerEntity getReturn() {
+    public CustomerEntity getReturn() {
         return _return;
     }
 
@@ -52,10 +52,10 @@ public class CreateNewCustomerEntityResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link PremiumCustomerEntity }
+     *     {@link CustomerEntity }
      *     
      */
-    public void setReturn(PremiumCustomerEntity value) {
+    public void setReturn(CustomerEntity value) {
         this._return = value;
     }
 

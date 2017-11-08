@@ -95,13 +95,13 @@ public class DataInitializationSessionBean {
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
 
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2017"), StatusEnum.CLOSED, new BigDecimal(77), "Totoro", "Cute Totoro!"));
-            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2018"), StatusEnum.CLOSED, new BigDecimal(10), "Cup", "Drink Water"));
-            auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), StatusEnum.CLOSED, new BigDecimal(92), "Apple", "Sweet Apple"));
+            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 10/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
+            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
+            auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(92), "Apple", "Sweet Apple"));
 
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30), ae2, c, a));
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(20), ae2, c, a));
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60), ae2, c, a));
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30), ae1, c, a));
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(20), ae1, c, a));
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60), ae1, c, a));
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(30), ae2, c, a));
         } catch (AddressAlreadyExistsException | StaffAlreadyExistException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
             System.out.println("Error in Singleton");

@@ -112,7 +112,7 @@ public class SalesStaffModule {
         BigDecimal reservePrice;
         String startDateStr, endDateStr, productName, productDes;
         Date startDate, endDate;
-        
+
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
@@ -138,7 +138,7 @@ public class SalesStaffModule {
             System.out.print("> ");
             productDes = sc.nextLine().trim();
 
-            AuctionEntity al = auctionEntityController.createNewAuction(new AuctionEntity(startDate, endDate, StatusEnum.CLOSED, reservePrice, productName, productDes));
+            AuctionEntity al = auctionEntityController.createNewAuction(new AuctionEntity(startDate, endDate, reservePrice, productName, productDes));
             System.out.println("[System] Auction Listing with id = " + al.getId() + "' has been created successfully!");
         } catch (AuctionAlreadyExistException | GeneralException ex) {
             System.err.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
@@ -163,7 +163,7 @@ public class SalesStaffModule {
             System.out.println("6. Finish");
 
             while (true) {
-                System.out.println("Please input an option that you want to change: ");
+                System.out.print("Please input an option that you want to change: \n>");
                 response = sc.nextInt();
                 sc.nextLine();
 
@@ -174,7 +174,11 @@ public class SalesStaffModule {
                         break;
                     case 2:
                         System.out.print("Please input new ending date (hh:mm:ss dd/mm/yyyy): ");
-                        al.setEndingTime(formatter.parse(sc.nextLine().trim()));
+                        Date ending = formatter.parse(sc.nextLine().trim());
+                        al.setEndingTime(ending);
+                        if (ending.compareTo(new Date()) > 0) {
+                            al.setStatus(StatusEnum.ACTIVE);
+                        }
                         break;
                     case 3:
                         System.out.println("Please input new reserve price: ");
@@ -247,9 +251,9 @@ public class SalesStaffModule {
 
     private void showList(List<AuctionEntity> list) {
         //  startDate, endDate, false, reservePrice, productName, productDes, new Long(-1), null));
-        System.out.printf("%5s%25s%25s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|","Product Name");
+        System.out.printf("%5s%35s%35s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|", "Product Name");
         for (AuctionEntity al : list) {
-            System.out.printf("%5s%25s%25s%10s%15s%20s\n", al.getId() + "|", al.getStartingTime() + "|", al.getEndingTime() + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
+            System.out.printf("%5s%35s%35s%10s%15s%20s\n", al.getId() + "|", al.getStartingTime() + "|", al.getEndingTime() + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
         }
     }
 
@@ -271,59 +275,53 @@ public class SalesStaffModule {
     }
 
     private void viewAuctionDetails(AuctionEntity al) {
-        System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
-        System.out.println("[Immutable] Status: " + al.getStatus());
-        System.out.print("[Immutable] Winning Bid: ");
-        if(al.getWinningBid() != null)
-            System.out.println(""+al.getWinningBid().getAmount());
-        else 
-            System.out.println("No winning bid yet.");
-        System.out.println("1. Start Date: " + al.getStartingTime());
-        System.out.println("2. End Date: " + al.getEndingTime());
-        System.out.println("3. Reserve Price: " + al.getReservePrice());
-        System.out.println("4. Product Name: " + al.getProductName());
-        System.out.println("5. Product Description: " + al.getProductDescription());
+        try {
+            System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
+            System.out.println("[Immutable] Status: " + al.getStatus());
+            System.out.print("[Immutable] Winning Bid Amount: ");
+
+            if (al.getWinningBidId().equals(new Long(0))) {
+                System.out.println("" + bidEntityController.retrieveById(al.getWinningBidId()).getAmount());
+            } else {
+                System.out.println("No winning bid yet.");
+            }
+            System.out.println("1. Start Date: " + al.getStartingTime());
+            System.out.println("2. End Date: " + al.getEndingTime());
+            System.out.println("3. Reserve Price: " + al.getReservePrice());
+            System.out.println("4. Product Name: " + al.getProductName());
+            System.out.println("5. Product Description: " + al.getProductDescription());
+        } catch (BidNotFoundException ex) {
+            System.err.println("[Warning] An error has occured: "+ex.getMessage());
+        }
     }
 
     private void viewAuctionNoWinning() {
         System.out.println("******* [Auction Listing] View All Auction Listings with Bids but Below Researve Price ******* ");
         Scanner sc = new Scanner(System.in);
-        try{
+        try {
             showList(auctionEntityController.viewNoWinningAuction());
             System.out.print("Input the id of the Auction Listing that you want to retrieve:");
-            List<BidEntity> list = auctionEntityController.viewBidEntity(sc.nextLong());
+            Long aid = sc.nextLong();
+            List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
             showBid(list);
-            System.out.println("Input the id of the Bid tht you want to assign as the winning bid (0 for cancel): ");
-            Long bidId = sc.nextLong();
-            if(!bidId.equals(0)){
-                for(BidEntity b: list){
-                    if(b.getIsWinningBid() == true){
-                        if(b.getId() != bidId){
-                            b.setIsWinningBid(false);
-                            bidEntityController.assignWinningBid(b.getId(), false);
-                        }
-                        break;
-                    }
-                }
-                bidEntityController.assignWinningBid(bidId, true);
+            System.out.println("Input the id of the Bid tht you want to assign as the winning bid (any other key for cancel): ");
+            int response = sc.nextInt();
+            if(0 < response && response <= list.size()){
+                auctionEntityController.assignWinningBid(aid, new Long(response));
                 System.out.println("[System] Assign successful!");
             }
-            else{
+            else {
                 System.out.println("[System] Action canceled.");
             }
-        } catch(GeneralException ex){
-            System.err.println("[Warning] No requested Auction Listing exist!");
-        } catch(InputMismatchException ex){
-            System.err.println("[Warning] Incompatible format!");
-        } catch(AuctionNotFoundException | BidNotFoundException ex){
-            System.err.println("[Warning] An error has incurred while retrieving auction: "+ex.getMessage());
-        }
+        } catch (AuctionNotFoundException | GeneralException ex) {
+            System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());
+        } 
     }
 
     private void showBid(List<BidEntity> list) {
-        System.out.printf("%5s%10s%10s\n", "ID|", "Amount|","Winning Bid");
+        System.out.printf("%5s%10s%30s\n", "ID|", "Amount|", "In Auction Name");
         for (BidEntity b : list) {
-            System.out.printf("%5s%10s%10s\n", b.getId() + "|", b.getAmount(), (b.getIsWinningBid()?"Y":"N"));
+            System.out.printf("%5s%10s%30s\n", b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
         }
     }
 

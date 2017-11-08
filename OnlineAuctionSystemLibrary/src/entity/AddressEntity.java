@@ -24,16 +24,6 @@ import javax.xml.bind.annotation.XmlType;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "addressEntity", propOrder = {
-    "id",
-    "addressLine",
-    "postCode",
-    "isDisabled",
-    "bidEntities",
-    "customerEntity"
-})
-
 public class AddressEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

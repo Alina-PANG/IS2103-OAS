@@ -16,14 +16,13 @@ import util.exception.BidAlreadyExistException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 
-
 /**
  *
  * @author alina
  */
 public interface AuctionEntityControllerLocal {
 
-     public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
+    public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
 
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException;
 
@@ -37,15 +36,19 @@ public interface AuctionEntityControllerLocal {
 
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
 
-    public List<BidEntity> viewBidEntity(Long aid)throws AuctionNotFoundException;
-    
-    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException;
-    
-    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException;
-    
-    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
-    
-     public Double getCurrentBidIncremental(BigDecimal currentprice);
+    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException;
 
-    public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException;
+    public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException;
+
+    public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException;
+
+    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
+
+    public Double getCurrentBidIncremental(BigDecimal currentprice);
+
+    public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException, BidAlreadyExistException, GeneralException;
+
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException;
+
+    public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
 }

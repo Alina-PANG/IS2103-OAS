@@ -10,8 +10,8 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "DuplicateException", targetNamespace = "http://ws.session.ejb/")
-public class DuplicateException_Exception
+@WebFault(name = "AuctionNotFoundException", targetNamespace = "http://ws.session.ejb/")
+public class AuctionNotFoundException_Exception
     extends Exception
 {
 
@@ -19,14 +19,14 @@ public class DuplicateException_Exception
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private DuplicateException faultInfo;
+    private AuctionNotFoundException faultInfo;
 
     /**
      * 
      * @param faultInfo
      * @param message
      */
-    public DuplicateException_Exception(String message, DuplicateException faultInfo) {
+    public AuctionNotFoundException_Exception(String message, AuctionNotFoundException faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
     }
@@ -37,7 +37,7 @@ public class DuplicateException_Exception
      * @param cause
      * @param message
      */
-    public DuplicateException_Exception(String message, DuplicateException faultInfo, Throwable cause) {
+    public AuctionNotFoundException_Exception(String message, AuctionNotFoundException faultInfo, Throwable cause) {
         super(message, cause);
         this.faultInfo = faultInfo;
     }
@@ -45,9 +45,9 @@ public class DuplicateException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: ws.client.DuplicateException
+     *     returns fault bean: ws.client.AuctionNotFoundException
      */
-    public DuplicateException getFaultInfo() {
+    public AuctionNotFoundException getFaultInfo() {
         return faultInfo;
     }
 

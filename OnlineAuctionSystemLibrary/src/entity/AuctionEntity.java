@@ -15,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,19 +32,6 @@ import util.enumeration.StatusEnum;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "auctionEntity", propOrder = {
-    "id",
-    "winningBidId",
-    "startingTime",
-    "endingTime",
-    "status",
-    "reservePrice",
-    "productName",
-    "productDescription",
-    "bidEntities",
-    "customerEntities"
-})
 public class AuctionEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,10 +40,9 @@ public class AuctionEntity implements Serializable {
     private Long id;
     private Long winningBidId;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    //@Future
     private Date startingTime;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    //@Future
+  //  @Future
     private Date endingTime;
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
@@ -73,15 +60,20 @@ public class AuctionEntity implements Serializable {
     public AuctionEntity() {
     }
 
-    public AuctionEntity(Date startingTime, Date endingTime, StatusEnum status, BigDecimal reservePrice, String productName, String productDescription) {
+    public AuctionEntity(Date startingTime, Date endingTime, BigDecimal reservePrice, String productName, String productDescription) {
         this.startingTime = startingTime;
         this.endingTime = endingTime;
-        this.status = status;
+        if(this.startingTime.compareTo(new Date()) < 0){
+            this.status = StatusEnum.ACTIVE;
+        }
+        else
+            this.status = StatusEnum.CLOSED;
         this.reservePrice = reservePrice;
         this.productName = productName;
         this.productDescription = productDescription;
         this.bidEntities = new ArrayList<BidEntity>();
         this.customerEntities = new ArrayList<CustomerEntity>();
+        this.winningBidId = new Long(0);
     }
 
     public Long getId() {
@@ -235,18 +227,6 @@ public class AuctionEntity implements Serializable {
         this.bidEntities = bidEntities;
     }
 
-    public BidEntity getWinningBid() {
-        if (this.bidEntities != null && this.bidEntities.size() != 0) {
-            BidEntity max = this.bidEntities.get(0);
-            for (BidEntity bid : this.bidEntities) {
-                if (bid.getAmount().compareTo(max.getAmount()) > 0) {
-                    max = bid;
-                }
-            }
-            return max;
-        }
-        return null;
-    }
 
     /**
      * @return the status

@@ -5,30 +5,21 @@
  */
 package ejb.session.stateless;
 
+import entity.AuctionEntity;
 import entity.CustomerEntity;
-import entity.StaffEntity;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import util.exception.CustomerAlreadyExistsException;
-import util.exception.CustomerNotFoundException;
-import util.exception.CustomerPinChangeException;
-import util.exception.GeneralException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.CustomerAlreadyExistException;
-import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 import util.exception.CustomerNotFoundException;
-import util.exception.CustomerNotFoundException;
-import util.exception.StaffNotFoundException;
 
 /**
  *
@@ -59,6 +50,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
         
     }
     
+    
     @Override
     public CustomerEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, CustomerNotFoundException, GeneralException {
         CustomerEntity customer = retrieveCustomerById(id);
@@ -73,7 +65,6 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
         }
     }
-    
     
     
     // Add business logic below. (Right-click in editor and choose
@@ -99,7 +90,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
     }
 
     @Override
-    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException {
+    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException {
         CustomerEntity customer = retrieveCustomerByUsername(username);
         if (customer.getPassword().equals(password)) {
             return customer;

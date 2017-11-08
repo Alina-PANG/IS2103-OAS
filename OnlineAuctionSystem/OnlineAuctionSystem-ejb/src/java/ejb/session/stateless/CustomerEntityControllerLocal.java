@@ -23,7 +23,7 @@ public interface CustomerEntityControllerLocal {
 
     public CustomerEntity createNewCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistException, GeneralException;
 
-    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException;
+    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException;
 
     public CustomerEntity retrieveCustomerById(Long id) throws CustomerNotFoundException, GeneralException;
 

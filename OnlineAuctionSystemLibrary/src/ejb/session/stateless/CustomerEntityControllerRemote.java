@@ -9,7 +9,6 @@ import entity.CustomerEntity;
 import java.util.List;
 import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
-import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
 
@@ -23,7 +22,7 @@ public interface CustomerEntityControllerRemote {
 
     public CustomerEntity createNewCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistException, GeneralException;
 
-    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException, DuplicateException;
+    public CustomerEntity customerLogin(String username, String password) throws CustomerNotFoundException, IncorrectPasswordException;
 
     public CustomerEntity retrieveCustomerById(Long id) throws CustomerNotFoundException, GeneralException;
 

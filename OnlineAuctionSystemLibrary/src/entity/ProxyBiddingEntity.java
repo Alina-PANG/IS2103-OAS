@@ -20,10 +20,6 @@ import javax.xml.bind.annotation.XmlType;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "auctionEntity", propOrder = {
-    "maxAmount"
-})
 public class ProxyBiddingEntity extends BidEntity implements Serializable {
 
     @Column(precision = 18, scale = 4)

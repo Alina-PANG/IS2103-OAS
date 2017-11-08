@@ -25,7 +25,7 @@ public interface BidEntityControllerRemote {
 
     public void deleteBid(Long id) throws BidNotFoundException;
 
-    public void assignWinningBid(Long id, boolean is) throws BidNotFoundException;
+
 
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException;
 

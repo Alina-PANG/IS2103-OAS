@@ -1,6 +1,7 @@
 
 package ws.client;
 
+import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -8,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for createNewCustomerEntityResponse complex type.
+ * <p>Java class for viewCreditBalanceResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="createNewCustomerEntityResponse"&gt;
+ * &lt;complexType name="viewCreditBalanceResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="return" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
+ *         &lt;element name="return" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -27,23 +28,23 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "createNewCustomerEntityResponse", propOrder = {
+@XmlType(name = "viewCreditBalanceResponse", propOrder = {
     "_return"
 })
-public class CreateNewCustomerEntityResponse {
+public class ViewCreditBalanceResponse {
 
     @XmlElement(name = "return")
-    protected CustomerEntity _return;
+    protected BigDecimal _return;
 
     /**
      * Gets the value of the return property.
      * 
      * @return
      *     possible object is
-     *     {@link CustomerEntity }
+     *     {@link BigDecimal }
      *     
      */
-    public CustomerEntity getReturn() {
+    public BigDecimal getReturn() {
         return _return;
     }
 
@@ -52,10 +53,10 @@ public class CreateNewCustomerEntityResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link CustomerEntity }
+     *     {@link BigDecimal }
      *     
      */
-    public void setReturn(CustomerEntity value) {
+    public void setReturn(BigDecimal value) {
         this._return = value;
     }
 

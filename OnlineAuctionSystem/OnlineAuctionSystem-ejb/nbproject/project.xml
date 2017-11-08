@@ -9,6 +9,7 @@
             <name>OnlineAuctionSystem-ejb</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <included-library dirs="200">reference.OnlineAuctionSystemLibrary.jar</included-library>
+            <included-library dirs="100">reference.ProxyAgent.dist</included-library>
             <source-roots>
                 <root id="src.dir" name="Source Packages"/>
             </source-roots>
@@ -24,6 +25,14 @@
                 <target>jar</target>
                 <clean-target>clean</clean-target>
                 <id>jar</id>
+            </reference>
+            <reference>
+                <foreign-project>ProxyAgent</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>dist</target>
+                <clean-target>clean</clean-target>
+                <id>dist</id>
             </reference>
         </references>
     </configuration>

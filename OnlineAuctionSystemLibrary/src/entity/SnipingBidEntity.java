@@ -19,11 +19,6 @@ import javax.xml.bind.annotation.XmlType;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "auctionEntity", propOrder = {
-    "maxAmount",
-    "timeDuration"
-})
 public class SnipingBidEntity extends BidEntity implements Serializable {
     
     @Column(precision = 18, scale = 4)

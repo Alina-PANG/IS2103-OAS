@@ -23,15 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "creditPackageEntity", propOrder = {
-    "id",
-    "value",
-    "price",
-    "name",
-    "customerEntities",
-    "isDisabled"
-})
 public class CreditPackageEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

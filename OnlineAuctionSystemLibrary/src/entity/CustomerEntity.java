@@ -29,22 +29,6 @@ import util.enumeration.CustomerTypeEnum;
  * @author alina
  */
 @Entity
-@XmlRootElement
-@XmlType(name = "customerEntity", propOrder = {
-    "id",
-    "firstName",
-    "lastName",
-    "username",
-    "password",
-    "contactNumber",
-    "email",
-    "creditBalance",
-    "creditTransactionEntities",
-    "bidEntities",
-    "addressEntities",
-    "customerTypeEnum",
-    "auctionEntities"
-})
 public class CustomerEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

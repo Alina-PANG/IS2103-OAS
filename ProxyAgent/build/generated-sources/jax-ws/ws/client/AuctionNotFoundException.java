@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DuplicateException complex type.
+ * <p>Java class for AuctionNotFoundException complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DuplicateException"&gt;
+ * &lt;complexType name="AuctionNotFoundException"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DuplicateException", propOrder = {
+@XmlType(name = "AuctionNotFoundException", propOrder = {
     "message"
 })
-public class DuplicateException {
+public class AuctionNotFoundException {
 
     protected String message;
 
