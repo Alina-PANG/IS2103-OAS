@@ -8,12 +8,7 @@ package proxyagent;
 import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
-import entity.PremiumCustomerEntity;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import util.exception.DuplicateException;
-import util.exception.IncorrectPasswordException;
-import util.exception.CustomerNotFoundException;
+import ws.client.CustomerEntity;
 
 /**
  *
@@ -25,7 +20,7 @@ public class MainApp {
     private BidEntityControllerRemote bidEntityController;
     private AuctionEntityControllerRemote auctionEntityController;
  
-    private PremiumCustomerEntity currentCustomerEntity;
+    private CustomerEntity currentCustomerEntity;
     
     public MainApp() {
     }

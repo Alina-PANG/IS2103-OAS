@@ -76,7 +76,6 @@ public class CustomerEntity implements Serializable {
     @ManyToMany(mappedBy = "customerEntities")
     private List<AuctionEntity> auctionEntities;
 
-
     public CustomerEntity() {
         this.creditBalance = new BigDecimal(0);
     }
@@ -287,5 +286,19 @@ public class CustomerEntity implements Serializable {
 
     public void addCreditBalance(BigDecimal add) {
         this.creditBalance.add(add);
+    }
+
+    /**
+     * @return the auctionEntities
+     */
+    public List<AuctionEntity> getAuctionEntities() {
+        return auctionEntities;
+    }
+
+    /**
+     * @param auctionEntities the auctionEntities to set
+     */
+    public void setAuctionEntities(List<AuctionEntity> auctionEntities) {
+        this.auctionEntities = auctionEntities;
     }
 }
