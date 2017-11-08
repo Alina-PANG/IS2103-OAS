@@ -8,12 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for createNewCustomerEntityResponse complex type.
+ * <p>Java class for registrationResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="createNewCustomerEntityResponse"&gt;
+ * &lt;complexType name="registrationResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "createNewCustomerEntityResponse", propOrder = {
+@XmlType(name = "registrationResponse", propOrder = {
     "_return"
 })
-public class CreateNewCustomerEntityResponse {
+public class RegistrationResponse {
 
     @XmlElement(name = "return")
     protected CustomerEntity _return;

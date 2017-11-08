@@ -10,8 +10,8 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "CustomerAlreadyExistException", targetNamespace = "http://ws.session.ejb/")
-public class CustomerAlreadyExistException_Exception
+@WebFault(name = "CustomerNotPremiumException", targetNamespace = "http://ws.session.ejb/")
+public class CustomerNotPremiumException_Exception
     extends Exception
 {
 
@@ -19,14 +19,14 @@ public class CustomerAlreadyExistException_Exception
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private CustomerAlreadyExistException faultInfo;
+    private CustomerNotPremiumException faultInfo;
 
     /**
      * 
      * @param faultInfo
      * @param message
      */
-    public CustomerAlreadyExistException_Exception(String message, CustomerAlreadyExistException faultInfo) {
+    public CustomerNotPremiumException_Exception(String message, CustomerNotPremiumException faultInfo) {
         super(message);
         this.faultInfo = faultInfo;
     }
@@ -37,7 +37,7 @@ public class CustomerAlreadyExistException_Exception
      * @param cause
      * @param message
      */
-    public CustomerAlreadyExistException_Exception(String message, CustomerAlreadyExistException faultInfo, Throwable cause) {
+    public CustomerNotPremiumException_Exception(String message, CustomerNotPremiumException faultInfo, Throwable cause) {
         super(message, cause);
         this.faultInfo = faultInfo;
     }
@@ -45,9 +45,9 @@ public class CustomerAlreadyExistException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: ws.client.CustomerAlreadyExistException
+     *     returns fault bean: ws.client.CustomerNotPremiumException
      */
-    public CustomerAlreadyExistException getFaultInfo() {
+    public CustomerNotPremiumException getFaultInfo() {
         return faultInfo;
     }
 

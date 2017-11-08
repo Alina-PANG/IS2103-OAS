@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CustomerAlreadyExistException complex type.
+ * <p>Java class for CustomerAlreadyPremiumException complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CustomerAlreadyExistException"&gt;
+ * &lt;complexType name="CustomerAlreadyPremiumException"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CustomerAlreadyExistException", propOrder = {
+@XmlType(name = "CustomerAlreadyPremiumException", propOrder = {
     "message"
 })
-public class CustomerAlreadyExistException {
+public class CustomerAlreadyPremiumException {
 
     protected String message;
 

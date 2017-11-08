@@ -21,19 +21,19 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
- *         &lt;element name="firstName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="lastName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="addressEntities" type="{http://ws.session.ejb/}addressEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="auctionEntities" type="{http://ws.session.ejb/}auctionEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="bidEntities" type="{http://ws.session.ejb/}bidEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="contactNumber" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="creditBalance" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *         &lt;element name="creditTransactionEntities" type="{http://ws.session.ejb/}creditTransactionEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="bidEntities" type="{http://ws.session.ejb/}bidEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="addressEntities" type="{http://ws.session.ejb/}addressEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="customerTypeEnum" type="{http://ws.session.ejb/}customerTypeEnum" minOccurs="0"/&gt;
- *         &lt;element name="auctionEntities" type="{http://ws.session.ejb/}auctionEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="firstName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="lastName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -44,159 +44,126 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "customerEntity", propOrder = {
-    "id",
-    "firstName",
-    "lastName",
-    "username",
-    "password",
+    "addressEntities",
+    "auctionEntities",
+    "bidEntities",
     "contactNumber",
-    "email",
     "creditBalance",
     "creditTransactionEntities",
-    "bidEntities",
-    "addressEntities",
     "customerTypeEnum",
-    "auctionEntities"
+    "email",
+    "firstName",
+    "id",
+    "lastName",
+    "password",
+    "username"
 })
 public class CustomerEntity {
 
-    protected Long id;
-    protected String firstName;
-    protected String lastName;
-    protected String username;
-    protected String password;
+    @XmlElement(nillable = true)
+    protected List<AddressEntity> addressEntities;
+    @XmlElement(nillable = true)
+    protected List<AuctionEntity> auctionEntities;
+    @XmlElement(nillable = true)
+    protected List<BidEntity> bidEntities;
     protected String contactNumber;
-    protected String email;
     protected BigDecimal creditBalance;
     @XmlElement(nillable = true)
     protected List<CreditTransactionEntity> creditTransactionEntities;
-    @XmlElement(nillable = true)
-    protected List<BidEntity> bidEntities;
-    @XmlElement(nillable = true)
-    protected List<AddressEntity> addressEntities;
     @XmlSchemaType(name = "string")
     protected CustomerTypeEnum customerTypeEnum;
-    @XmlElement(nillable = true)
-    protected List<AuctionEntity> auctionEntities;
+    protected String email;
+    protected String firstName;
+    protected Long id;
+    protected String lastName;
+    protected String password;
+    protected String username;
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the addressEntities property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the addressEntities property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getAddressEntities().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link AddressEntity }
+     * 
+     * 
      */
-    public Long getId() {
-        return id;
+    public List<AddressEntity> getAddressEntities() {
+        if (addressEntities == null) {
+            addressEntities = new ArrayList<AddressEntity>();
+        }
+        return this.addressEntities;
     }
 
     /**
-     * Sets the value of the id property.
+     * Gets the value of the auctionEntities property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the auctionEntities property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getAuctionEntities().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link AuctionEntity }
+     * 
+     * 
      */
-    public void setId(Long value) {
-        this.id = value;
+    public List<AuctionEntity> getAuctionEntities() {
+        if (auctionEntities == null) {
+            auctionEntities = new ArrayList<AuctionEntity>();
+        }
+        return this.auctionEntities;
     }
 
     /**
-     * Gets the value of the firstName property.
+     * Gets the value of the bidEntities property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * Sets the value of the firstName property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the bidEntities property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFirstName(String value) {
-        this.firstName = value;
-    }
-
-    /**
-     * Gets the value of the lastName property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getBidEntities().add(newItem);
+     * </pre>
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * Sets the value of the lastName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLastName(String value) {
-        this.lastName = value;
-    }
-
-    /**
-     * Gets the value of the username property.
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link BidEntity }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Sets the value of the username property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
-    public void setUsername(String value) {
-        this.username = value;
-    }
-
-    /**
-     * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPassword(String value) {
-        this.password = value;
+    public List<BidEntity> getBidEntities() {
+        if (bidEntities == null) {
+            bidEntities = new ArrayList<BidEntity>();
+        }
+        return this.bidEntities;
     }
 
     /**
@@ -221,30 +188,6 @@ public class CustomerEntity {
      */
     public void setContactNumber(String value) {
         this.contactNumber = value;
-    }
-
-    /**
-     * Gets the value of the email property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * Sets the value of the email property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEmail(String value) {
-        this.email = value;
     }
 
     /**
@@ -301,64 +244,6 @@ public class CustomerEntity {
     }
 
     /**
-     * Gets the value of the bidEntities property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the bidEntities property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getBidEntities().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link BidEntity }
-     * 
-     * 
-     */
-    public List<BidEntity> getBidEntities() {
-        if (bidEntities == null) {
-            bidEntities = new ArrayList<BidEntity>();
-        }
-        return this.bidEntities;
-    }
-
-    /**
-     * Gets the value of the addressEntities property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the addressEntities property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAddressEntities().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AddressEntity }
-     * 
-     * 
-     */
-    public List<AddressEntity> getAddressEntities() {
-        if (addressEntities == null) {
-            addressEntities = new ArrayList<AddressEntity>();
-        }
-        return this.addressEntities;
-    }
-
-    /**
      * Gets the value of the customerTypeEnum property.
      * 
      * @return
@@ -383,32 +268,147 @@ public class CustomerEntity {
     }
 
     /**
-     * Gets the value of the auctionEntities property.
+     * Gets the value of the email property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the auctionEntities property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAuctionEntities().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AuctionEntity }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<AuctionEntity> getAuctionEntities() {
-        if (auctionEntities == null) {
-            auctionEntities = new ArrayList<AuctionEntity>();
-        }
-        return this.auctionEntities;
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the value of the email property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setEmail(String value) {
+        this.email = value;
+    }
+
+    /**
+     * Gets the value of the firstName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Sets the value of the firstName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setFirstName(String value) {
+        this.firstName = value;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setId(Long value) {
+        this.id = value;
+    }
+
+    /**
+     * Gets the value of the lastName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Sets the value of the lastName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setLastName(String value) {
+        this.lastName = value;
+    }
+
+    /**
+     * Gets the value of the password property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the value of the password property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPassword(String value) {
+        this.password = value;
+    }
+
+    /**
+     * Gets the value of the username property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Sets the value of the username property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUsername(String value) {
+        this.username = value;
     }
 
 }

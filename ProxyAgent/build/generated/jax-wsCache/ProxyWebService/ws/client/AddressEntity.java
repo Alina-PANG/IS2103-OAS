@@ -19,12 +19,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *         &lt;element name="addressLine" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="postCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="isDisabled" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
  *         &lt;element name="bidEntities" type="{http://ws.session.ejb/}bidEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="customerEntity" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="isDisabled" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="postCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -35,46 +35,22 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "addressEntity", propOrder = {
-    "id",
     "addressLine",
-    "postCode",
-    "isDisabled",
     "bidEntities",
-    "customerEntity"
+    "customerEntity",
+    "id",
+    "isDisabled",
+    "postCode"
 })
 public class AddressEntity {
 
-    protected Long id;
     protected String addressLine;
-    protected String postCode;
-    protected Boolean isDisabled;
     @XmlElement(nillable = true)
     protected List<BidEntity> bidEntities;
     protected CustomerEntity customerEntity;
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Long }
-     *     
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Long }
-     *     
-     */
-    public void setId(Long value) {
-        this.id = value;
-    }
+    protected Long id;
+    protected Boolean isDisabled;
+    protected String postCode;
 
     /**
      * Gets the value of the addressLine property.
@@ -98,54 +74,6 @@ public class AddressEntity {
      */
     public void setAddressLine(String value) {
         this.addressLine = value;
-    }
-
-    /**
-     * Gets the value of the postCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPostCode() {
-        return postCode;
-    }
-
-    /**
-     * Sets the value of the postCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPostCode(String value) {
-        this.postCode = value;
-    }
-
-    /**
-     * Gets the value of the isDisabled property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isIsDisabled() {
-        return isDisabled;
-    }
-
-    /**
-     * Sets the value of the isDisabled property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setIsDisabled(Boolean value) {
-        this.isDisabled = value;
     }
 
     /**
@@ -199,6 +127,78 @@ public class AddressEntity {
      */
     public void setCustomerEntity(CustomerEntity value) {
         this.customerEntity = value;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Long }
+     *     
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Long }
+     *     
+     */
+    public void setId(Long value) {
+        this.id = value;
+    }
+
+    /**
+     * Gets the value of the isDisabled property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isIsDisabled() {
+        return isDisabled;
+    }
+
+    /**
+     * Sets the value of the isDisabled property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setIsDisabled(Boolean value) {
+        this.isDisabled = value;
+    }
+
+    /**
+     * Gets the value of the postCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPostCode() {
+        return postCode;
+    }
+
+    /**
+     * Sets the value of the postCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPostCode(String value) {
+        this.postCode = value;
     }
 
 }

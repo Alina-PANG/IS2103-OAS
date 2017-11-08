@@ -17,12 +17,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="addressEntity" type="{http://ws.session.ejb/}addressEntity" minOccurs="0"/&gt;
  *         &lt;element name="amount" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
- *         &lt;element name="isWinningBid" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
  *         &lt;element name="auctionEntity" type="{http://ws.session.ejb/}auctionEntity" minOccurs="0"/&gt;
  *         &lt;element name="customerEntity" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
- *         &lt;element name="addressEntity" type="{http://ws.session.ejb/}addressEntity" minOccurs="0"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -33,44 +32,42 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "bidEntity", propOrder = {
-    "id",
+    "addressEntity",
     "amount",
-    "isWinningBid",
     "auctionEntity",
     "customerEntity",
-    "addressEntity"
+    "id"
 })
 public class BidEntity {
 
-    protected Long id;
+    protected AddressEntity addressEntity;
     protected BigDecimal amount;
-    protected Boolean isWinningBid;
     protected AuctionEntity auctionEntity;
     protected CustomerEntity customerEntity;
-    protected AddressEntity addressEntity;
+    protected Long id;
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the addressEntity property.
      * 
      * @return
      *     possible object is
-     *     {@link Long }
+     *     {@link AddressEntity }
      *     
      */
-    public Long getId() {
-        return id;
+    public AddressEntity getAddressEntity() {
+        return addressEntity;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the addressEntity property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Long }
+     *     {@link AddressEntity }
      *     
      */
-    public void setId(Long value) {
-        this.id = value;
+    public void setAddressEntity(AddressEntity value) {
+        this.addressEntity = value;
     }
 
     /**
@@ -95,30 +92,6 @@ public class BidEntity {
      */
     public void setAmount(BigDecimal value) {
         this.amount = value;
-    }
-
-    /**
-     * Gets the value of the isWinningBid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isIsWinningBid() {
-        return isWinningBid;
-    }
-
-    /**
-     * Sets the value of the isWinningBid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setIsWinningBid(Boolean value) {
-        this.isWinningBid = value;
     }
 
     /**
@@ -170,27 +143,27 @@ public class BidEntity {
     }
 
     /**
-     * Gets the value of the addressEntity property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
-     *     {@link AddressEntity }
+     *     {@link Long }
      *     
      */
-    public AddressEntity getAddressEntity() {
-        return addressEntity;
+    public Long getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the addressEntity property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
-     *     {@link AddressEntity }
+     *     {@link Long }
      *     
      */
-    public void setAddressEntity(AddressEntity value) {
-        this.addressEntity = value;
+    public void setId(Long value) {
+        this.id = value;
     }
 
 }

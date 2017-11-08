@@ -8,10 +8,10 @@ package ejb.session.stateless;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javafx.util.Pair;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -100,16 +100,16 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         timerService = sessionContext.getTimerService();
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        timerEnd = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(new Pair(ae, false), true));
-        timerStart = timerService.createSingleActionTimer(ae.getStartingTime(), new TimerConfig(new Pair(ae, true), true));
+        timerEnd = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(new Pair<AuctionEntity, Boolean>(ae, false), true));
+        timerStart = timerService.createSingleActionTimer(ae.getStartingTime(), new TimerConfig(new Pair<AuctionEntity, Boolean>(ae, true), true));
     }
 
     @Timeout
     public void openOrCloseAuction(Timer timer) {
-        AuctionEntity ae = (AuctionEntity) ((Pair) timer.getInfo()).getAuctionEntity();
+        AuctionEntity ae = (AuctionEntity) ((Pair) timer.getInfo()).getKey();
         em.merge(ae);
 
-        if (((Pair) timer.getInfo()).getIsStart()) {
+        if ((Boolean) ((Pair) timer.getInfo()).getValue()) {
             ae.setStatus(StatusEnum.ACTIVE);
         } else {
             ae.setStatus(StatusEnum.CLOSED);
@@ -391,21 +391,3 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
 }
 
-class Pair implements Serializable {
-
-    private AuctionEntity ae;
-    private boolean isStart;
-
-    Pair(AuctionEntity ae, boolean isStart) {
-        this.ae = ae;
-        this.isStart = isStart;
-    }
-
-    boolean getIsStart() {
-        return isStart;
-    }
-
-    AuctionEntity getAuctionEntity() {
-        return ae;
-    }
-}

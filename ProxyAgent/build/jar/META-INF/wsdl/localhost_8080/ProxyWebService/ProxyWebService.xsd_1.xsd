@@ -1,36 +1,46 @@
 <?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.session.ejb/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.session.ejb/">
 
-<xs:element name="CustomerAlreadyExistException" type="tns:CustomerAlreadyExistException"/>
+<xs:element name="AuctionNotFoundException" type="tns:AuctionNotFoundException"/>
+
+<xs:element name="BidAlreadyExistException" type="tns:BidAlreadyExistException"/>
+
+<xs:element name="CustomerAlreadyPremiumException" type="tns:CustomerAlreadyPremiumException"/>
 
 <xs:element name="CustomerNotFoundException" type="tns:CustomerNotFoundException"/>
 
-<xs:element name="DuplicateException" type="tns:DuplicateException"/>
+<xs:element name="CustomerNotPremiumException" type="tns:CustomerNotPremiumException"/>
 
 <xs:element name="GeneralException" type="tns:GeneralException"/>
 
 <xs:element name="IncorrectPasswordException" type="tns:IncorrectPasswordException"/>
 
-<xs:element name="addressEntity" type="tns:addressEntity"/>
-
-<xs:element name="auctionEntity" type="tns:auctionEntity"/>
-
-<xs:element name="bidEntity" type="tns:bidEntity"/>
-
-<xs:element name="createNewCustomerEntity" type="tns:createNewCustomerEntity"/>
-
-<xs:element name="createNewCustomerEntityResponse" type="tns:createNewCustomerEntityResponse"/>
-
-<xs:element name="creditPackageEntity" type="tns:creditPackageEntity"/>
-
-<xs:element name="creditTransactionEntity" type="tns:creditTransactionEntity"/>
-
-<xs:element name="customerEntity" type="tns:customerEntity"/>
-
 <xs:element name="customerLogin" type="tns:customerLogin"/>
 
 <xs:element name="customerLoginResponse" type="tns:customerLoginResponse"/>
 
-<xs:element name="premiumCustomerEntity" type="tns:premiumCustomerEntity"/>
+<xs:element name="placeBid" type="tns:placeBid"/>
+
+<xs:element name="placeBidResponse" type="tns:placeBidResponse"/>
+
+<xs:element name="registration" type="tns:registration"/>
+
+<xs:element name="registrationResponse" type="tns:registrationResponse"/>
+
+<xs:element name="viewAllAuctionListings" type="tns:viewAllAuctionListings"/>
+
+<xs:element name="viewAllAuctionListingsResponse" type="tns:viewAllAuctionListingsResponse"/>
+
+<xs:element name="viewAuctionListDetails" type="tns:viewAuctionListDetails"/>
+
+<xs:element name="viewAuctionListDetailsResponse" type="tns:viewAuctionListDetailsResponse"/>
+
+<xs:element name="viewCreditBalance" type="tns:viewCreditBalance"/>
+
+<xs:element name="viewCreditBalanceResponse" type="tns:viewCreditBalanceResponse"/>
+
+<xs:element name="viewWonAuctionListings" type="tns:viewWonAuctionListings"/>
+
+<xs:element name="viewWonAuctionListingsResponse" type="tns:viewWonAuctionListingsResponse"/>
 
 <xs:complexType name="customerLogin">
 <xs:sequence>
@@ -47,78 +57,77 @@
 
 <xs:complexType name="customerEntity">
 <xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="firstName" type="xs:string" minOccurs="0"/>
-<xs:element name="lastName" type="xs:string" minOccurs="0"/>
-<xs:element name="username" type="xs:string" minOccurs="0"/>
-<xs:element name="password" type="xs:string" minOccurs="0"/>
+<xs:element name="addressEntities" type="tns:addressEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="auctionEntities" type="tns:auctionEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="contactNumber" type="xs:string" minOccurs="0"/>
-<xs:element name="email" type="xs:string" minOccurs="0"/>
 <xs:element name="creditBalance" type="xs:decimal" minOccurs="0"/>
 <xs:element name="creditTransactionEntities" type="tns:creditTransactionEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="addressEntities" type="tns:addressEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="customerTypeEnum" type="tns:customerTypeEnum" minOccurs="0"/>
-<xs:element name="auctionEntities" type="tns:auctionEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="creditTransactionEntity">
-<xs:sequence>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="firstName" type="xs:string" minOccurs="0"/>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="totalValue" type="xs:decimal" minOccurs="0"/>
-<xs:element name="transactionTypeEnum" type="tns:transactionTypeEnum" minOccurs="0"/>
-<xs:element name="unitOfPurchase" type="xs:int" minOccurs="0"/>
-<xs:element name="creditPackageEntity" type="tns:creditPackageEntity" minOccurs="0"/>
-<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="creditPackageEntity">
-<xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="value" type="xs:decimal" minOccurs="0"/>
-<xs:element name="price" type="xs:decimal" minOccurs="0"/>
-<xs:element name="name" type="xs:string" minOccurs="0"/>
-<xs:element name="customerEntities" type="tns:customerEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="bidEntity">
-<xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="amount" type="xs:decimal" minOccurs="0"/>
-<xs:element name="isWinningBid" type="xs:boolean" minOccurs="0"/>
-<xs:element name="auctionEntity" type="tns:auctionEntity" minOccurs="0"/>
-<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
-<xs:element name="addressEntity" type="tns:addressEntity" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="auctionEntity">
-<xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="winningBidId" type="xs:long" minOccurs="0"/>
-<xs:element name="startingTime" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="endingTime" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="status" type="tns:statusEnum" minOccurs="0"/>
-<xs:element name="reservePrice" type="xs:decimal" minOccurs="0"/>
-<xs:element name="productName" type="xs:string" minOccurs="0"/>
-<xs:element name="productDescription" type="xs:string" minOccurs="0"/>
-<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="customerEntities" type="tns:customerEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+<xs:element name="password" type="xs:string" minOccurs="0"/>
+<xs:element name="username" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="addressEntity">
 <xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
 <xs:element name="addressLine" type="xs:string" minOccurs="0"/>
-<xs:element name="postCode" type="xs:string" minOccurs="0"/>
-<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
 <xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
+<xs:element name="postCode" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="bidEntity">
+<xs:sequence>
+<xs:element name="addressEntity" type="tns:addressEntity" minOccurs="0"/>
+<xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+<xs:element name="auctionEntity" type="tns:auctionEntity" minOccurs="0"/>
+<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="auctionEntity">
+<xs:sequence>
+<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="customerEntities" type="tns:customerEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="endingTime" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="productDescription" type="xs:string" minOccurs="0"/>
+<xs:element name="productName" type="xs:string" minOccurs="0"/>
+<xs:element name="reservePrice" type="xs:decimal" minOccurs="0"/>
+<xs:element name="startingTime" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="status" type="tns:statusEnum" minOccurs="0"/>
+<xs:element name="winningBidId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="creditTransactionEntity">
+<xs:sequence>
+<xs:element name="creditPackageEntity" type="tns:creditPackageEntity" minOccurs="0"/>
+<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="totalValue" type="xs:decimal" minOccurs="0"/>
+<xs:element name="transactionTypeEnum" type="tns:transactionTypeEnum" minOccurs="0"/>
+<xs:element name="unitOfPurchase" type="xs:int" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="creditPackageEntity">
+<xs:sequence>
+<xs:element name="customerEntities" type="tns:customerEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="price" type="xs:decimal" minOccurs="0"/>
+<xs:element name="value" type="xs:decimal" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -134,42 +143,37 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="DuplicateException">
+<xs:complexType name="CustomerNotPremiumException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="createNewCustomerEntity">
+<xs:complexType name="viewAuctionListDetails">
 <xs:sequence>
-<xs:element name="c" type="tns:customerEntity" minOccurs="0"/>
-<xs:element name="price" type="xs:decimal" minOccurs="0"/>
-<xs:element name="hb" type="xs:decimal" minOccurs="0"/>
-<xs:element name="td" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="productName" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="createNewCustomerEntityResponse">
+<xs:complexType name="viewAuctionListDetailsResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:premiumCustomerEntity" minOccurs="0"/>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="premiumCustomerEntity">
-<xs:complexContent>
-<xs:extension base="tns:customerEntity">
-<xs:sequence>
-<xs:element name="maxWillingPrice" type="xs:decimal" minOccurs="0"/>
-<xs:element name="timeDuration" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="oneTimeHighestBid" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="CustomerAlreadyExistException">
+<xs:complexType name="AuctionNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAllAuctionListings">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="viewAllAuctionListingsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -179,13 +183,65 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:simpleType name="transactionTypeEnum">
-<xs:restriction base="xs:string">
-<xs:enumeration value="TOPUP"/>
-<xs:enumeration value="BIDDING"/>
-<xs:enumeration value="REFUND"/>
-</xs:restriction>
-</xs:simpleType>
+<xs:complexType name="viewWonAuctionListings">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewWonAuctionListingsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewCreditBalance">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewCreditBalanceResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="registration">
+<xs:sequence>
+<xs:element name="username" type="xs:string" minOccurs="0"/>
+<xs:element name="password" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="registrationResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:customerEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="CustomerAlreadyPremiumException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="placeBid">
+<xs:sequence>
+<xs:element name="type" type="tns:bidTypeEnum" minOccurs="0"/>
+<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="placeBidResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="BidAlreadyExistException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
 
 <xs:simpleType name="statusEnum">
 <xs:restriction base="xs:string">
@@ -195,9 +251,25 @@
 </xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="transactionTypeEnum">
+<xs:restriction base="xs:string">
+<xs:enumeration value="TOPUP"/>
+<xs:enumeration value="BIDDING"/>
+<xs:enumeration value="REFUND"/>
+</xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="customerTypeEnum">
 <xs:restriction base="xs:string">
 <xs:enumeration value="PREMIUM"/>
+<xs:enumeration value="NORMAL"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="bidTypeEnum">
+<xs:restriction base="xs:string">
+<xs:enumeration value="SNIPING"/>
+<xs:enumeration value="PROXY"/>
 <xs:enumeration value="NORMAL"/>
 </xs:restriction>
 </xs:simpleType>

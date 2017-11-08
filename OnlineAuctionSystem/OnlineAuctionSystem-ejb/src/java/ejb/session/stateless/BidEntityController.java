@@ -8,10 +8,19 @@ package ejb.session.stateless;
 import entity.AddressEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import javafx.util.Pair;
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Remote;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -33,6 +42,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
     private AddressEntityControllerLocal addressEntityControllerLocal;
+    
+        @Resource
+    private SessionContext sessionContext;
 
     @Override
     public BidEntity createNewBid(BidEntity bid) throws BidAlreadyExistException, GeneralException {
@@ -100,6 +112,23 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 .setParameter("cust",customer).setParameter("active",StatusEnum.ACTIVE);
         
         return query.getResultList();
+    }
+    
+    
+    private void createSnipingBid(BigDecimal maxPrice, Date duration, BidEntity bid) {
+        
+        TimerService timerService = sessionContext.getTimerService();
+
+        Timer timer = timerService.createSingleActionTimer(duration, new TimerConfig(new Pair<BidEntity, BigDecimal>(bid, maxPrice), true));
+    }
+    
+    @Timeout
+    private void putSnipingBid(Timer timer){
+        BigDecimal price = (BigDecimal) ((Pair) timer.getInfo()).getValue();
+        BidEntity bid = (BidEntity) ((Pair) timer.getInfo()).getKey();
+        
+        
+        
     }
 }
 

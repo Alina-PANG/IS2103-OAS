@@ -18,12 +18,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
+ *         &lt;element name="creditPackageEntity" type="{http://ws.session.ejb/}creditPackageEntity" minOccurs="0"/&gt;
+ *         &lt;element name="customerEntity" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
  *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *         &lt;element name="totalValue" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *         &lt;element name="transactionTypeEnum" type="{http://ws.session.ejb/}transactionTypeEnum" minOccurs="0"/&gt;
  *         &lt;element name="unitOfPurchase" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="creditPackageEntity" type="{http://ws.session.ejb/}creditPackageEntity" minOccurs="0"/&gt;
- *         &lt;element name="customerEntity" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -34,22 +34,70 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "creditTransactionEntity", propOrder = {
+    "creditPackageEntity",
+    "customerEntity",
     "id",
     "totalValue",
     "transactionTypeEnum",
-    "unitOfPurchase",
-    "creditPackageEntity",
-    "customerEntity"
+    "unitOfPurchase"
 })
 public class CreditTransactionEntity {
 
+    protected CreditPackageEntity creditPackageEntity;
+    protected CustomerEntity customerEntity;
     protected Long id;
     protected BigDecimal totalValue;
     @XmlSchemaType(name = "string")
     protected TransactionTypeEnum transactionTypeEnum;
     protected Integer unitOfPurchase;
-    protected CreditPackageEntity creditPackageEntity;
-    protected CustomerEntity customerEntity;
+
+    /**
+     * Gets the value of the creditPackageEntity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CreditPackageEntity }
+     *     
+     */
+    public CreditPackageEntity getCreditPackageEntity() {
+        return creditPackageEntity;
+    }
+
+    /**
+     * Sets the value of the creditPackageEntity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CreditPackageEntity }
+     *     
+     */
+    public void setCreditPackageEntity(CreditPackageEntity value) {
+        this.creditPackageEntity = value;
+    }
+
+    /**
+     * Gets the value of the customerEntity property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CustomerEntity }
+     *     
+     */
+    public CustomerEntity getCustomerEntity() {
+        return customerEntity;
+    }
+
+    /**
+     * Sets the value of the customerEntity property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CustomerEntity }
+     *     
+     */
+    public void setCustomerEntity(CustomerEntity value) {
+        this.customerEntity = value;
+    }
 
     /**
      * Gets the value of the id property.
@@ -145,54 +193,6 @@ public class CreditTransactionEntity {
      */
     public void setUnitOfPurchase(Integer value) {
         this.unitOfPurchase = value;
-    }
-
-    /**
-     * Gets the value of the creditPackageEntity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CreditPackageEntity }
-     *     
-     */
-    public CreditPackageEntity getCreditPackageEntity() {
-        return creditPackageEntity;
-    }
-
-    /**
-     * Sets the value of the creditPackageEntity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CreditPackageEntity }
-     *     
-     */
-    public void setCreditPackageEntity(CreditPackageEntity value) {
-        this.creditPackageEntity = value;
-    }
-
-    /**
-     * Gets the value of the customerEntity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CustomerEntity }
-     *     
-     */
-    public CustomerEntity getCustomerEntity() {
-        return customerEntity;
-    }
-
-    /**
-     * Sets the value of the customerEntity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CustomerEntity }
-     *     
-     */
-    public void setCustomerEntity(CustomerEntity value) {
-        this.customerEntity = value;
     }
 
 }

@@ -6,8 +6,10 @@
 package ejb.session.ws;
 
 import ejb.session.stateless.AuctionEntityControllerLocal;
+import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.CustomerEntityControllerLocal;
 import entity.AuctionEntity;
+import entity.BidEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,8 +18,10 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import util.enumeration.BidTypeEnum;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.AuctionNotFoundException;
+import util.exception.BidAlreadyExistException;
 import util.exception.CustomerAlreadyPremiumException;
 import util.exception.CustomerNotFoundException;
 import util.exception.CustomerNotPremiumException;
@@ -34,16 +38,21 @@ import util.exception.IncorrectPasswordException;
 public class ProxyWebService {
 
     @EJB
+    private BidEntityControllerLocal bidEntityController;
+
+    @EJB
     private AuctionEntityControllerLocal auctionEntityController;
 
     @EJB
     private CustomerEntityControllerLocal customerEntityController;
     
+    
+    
     @WebMethod(operationName = "registration")
     public CustomerEntity registration(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws CustomerNotFoundException, IncorrectPasswordException, CustomerAlreadyPremiumException{
         System.out.println("******* [OAS Web Service] Registration");
         CustomerEntity c =  customerEntityController.customerLogin(username, password);
-        if(c.getCustomerTypeEnum() == CustomerTypeEnum.NORMAL)
+        if(c.getCustomerTypeEnum().equals(CustomerTypeEnum.PREMIUM))
             throw new CustomerAlreadyPremiumException("Customer "+username+" is already a premium customer!");
         c.setCustomerTypeEnum(CustomerTypeEnum.PREMIUM);
         return c;
@@ -70,8 +79,12 @@ public class ProxyWebService {
     
     @WebMethod(operationName = "viewAuctionListDetails")
     public AuctionEntity viewAuctionListDetails(@WebParam(name = "id") Long id) throws AuctionNotFoundException {
-        System.out.println("******* [OAS Web Service] View Auction List Details");
         return auctionEntityController.retrieveAuctionById(id);
+    }
+    
+    @WebMethod(operationName = "viewAuctionListByName")
+    public List<AuctionEntity> viewAuctionListByName(@WebParam(name = "productName") String productName) throws AuctionNotFoundException{
+        return auctionEntityController.retrieveAuctionByProductName(productName);
     }
     
     @WebMethod(operationName = "viewCreditBalance")
@@ -90,5 +103,24 @@ public class ProxyWebService {
     public List<AuctionEntity> viewWonAuctionListings(@WebParam(name = "id") Long cid) throws GeneralException{
         System.out.println("******* [OAS Web Service] View Won Auction Listings");
         return auctionEntityController.viewWonAuction(cid);
+    }
+    
+    @WebMethod(operationName = "placeBid")
+    public void placeBid(@WebParam(name="type") BidTypeEnum type, @WebParam(name="bid") BidEntity bid) throws BidAlreadyExistException, GeneralException{
+        bidEntityController.createNewBid(bid);
+        if(type == BidTypeEnum.PROXY){
+            createProxyBid();
+        }
+        else if(type == BidTypeEnum.SNIPING){
+            createSnipingBid();
+        }
+    }
+
+    private void createProxyBid() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void createSnipingBid() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
