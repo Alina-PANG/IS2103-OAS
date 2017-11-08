@@ -88,7 +88,7 @@ public class DataInitializationSessionBean {
             staffEntityController.createNewStaffEntity(new StaffEntity("Wei Liang", "Tan", "03", "weiliang", "000000", EmployeeAccessRightEnum.SALESSTAFF));
 
             CustomerEntity c = customerEntityController.createNewCustomerEntity(new CustomerEntity("Jinzheng", "Xu", "jinzheng","000000","87111111", "jinzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
-            AddressEntity a = addressEntityController.createAddress(new AddressEntity("PGPR", "1182333", false, c));
+            AddressEntity a = addressEntityController.createAddress(new AddressEntity("PGPR", "118133", false, c));
 
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(5), new BigDecimal(5), "5 for 5", false));
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(10), new BigDecimal(9), "9 for 10", false));

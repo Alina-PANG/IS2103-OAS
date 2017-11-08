@@ -28,7 +28,7 @@ import util.enumeration.TransactionTypeEnum;
  */
 @Entity
 @XmlRootElement
-@XmlType(name = "addressEntity", propOrder = {
+@XmlType(name = "creditTransactionEntity", propOrder = {
     "id",
     "totalValue",
     "transactionTypeEnum",

@@ -119,7 +119,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         BidEntity result = null;
 
         // If there is no winning bid
-        if (ae.getWinningBid().getAmount().compareTo(ae.getReservePrice()) < 0) {
+        if (ae.getBidEntities().size() != 0 && ae.getWinningBid().getAmount().compareTo(ae.getReservePrice()) < 0) {
             for (BidEntity b : bidList) {
                 if (!b.getIsWinningBid()) {
                     b.getCustomerEntity().addCreditBalance(b.getAmount());

@@ -22,20 +22,7 @@ import util.enumeration.CustomerTypeEnum;
  */
 @Entity
 @XmlRootElement
-@XmlType(name = "customerEntity", propOrder = {
-    "id",
-    "firstName",
-    "lastName",
-    "username",
-    "password",
-    "contactNumber",
-    "email",
-    "creditBalance",
-    "creditTransactionEntities",
-    "bidEntities",
-    "addressEntities",
-    "customerTypeEnum",
-    "auctionEntities",
+@XmlType(name = "premiumCustomerEntity", propOrder = {
     "maxWillingPrice",
     "timeDuration",
     "oneTimeHighestBid"
@@ -52,8 +39,8 @@ public class PremiumCustomerEntity extends CustomerEntity implements Serializabl
     public PremiumCustomerEntity() {
     }
 
-    public PremiumCustomerEntity(BigDecimal maxWillingPrice, Date timeDuration, BigDecimal oneTimeHighestBid, String firstName, String lastName, String contactNumber, String email, BigDecimal creditBalance, CustomerTypeEnum customerTypeEnum) {
-        super(firstName, lastName, contactNumber, email, creditBalance, customerTypeEnum);
+    public PremiumCustomerEntity(BigDecimal maxWillingPrice, Date timeDuration, BigDecimal oneTimeHighestBid, String firstName, String lastName, String username, String password, String contactNumber, String email, CustomerTypeEnum customerTypeEnum) {
+        super(firstName, lastName, username, password, contactNumber, email, customerTypeEnum);
         this.maxWillingPrice = maxWillingPrice;
         this.timeDuration = timeDuration;
         this.oneTimeHighestBid = oneTimeHighestBid;
