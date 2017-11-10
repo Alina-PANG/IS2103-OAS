@@ -9,18 +9,13 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import javafx.util.Pair;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -56,8 +51,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
-    private Timer timerEnd;
-    private Timer timerStart;
     private TimerService timerService;
 
     /**
@@ -73,8 +66,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             em.persist(ae);
             em.flush();
             em.refresh(ae);
-
-            createTimerForAuction(ae);
 
             return ae;
         } catch (PersistenceException ex) {
@@ -94,32 +85,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 throw new GeneralException("Start and End Date and time cannot be later than today!");
             }
         }
-    }
-
-    private void createTimerForAuction(AuctionEntity ae) {
-        timerService = sessionContext.getTimerService();
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-
-        timerEnd = timerService.createSingleActionTimer(ae.getEndingTime(), new TimerConfig(new Pair<AuctionEntity, Boolean>(ae, false), true));
-        timerStart = timerService.createSingleActionTimer(ae.getStartingTime(), new TimerConfig(new Pair<AuctionEntity, Boolean>(ae, true), true));
-    }
-
-    @Timeout
-    public void openOrCloseAuction(Timer timer) {
-        AuctionEntity ae = (AuctionEntity) ((Pair) timer.getInfo()).getKey();
-        em.merge(ae);
-
-        if ((Boolean) ((Pair) timer.getInfo()).getValue()) {
-            ae.setStatus(StatusEnum.ACTIVE);
-        } else {
-            ae.setStatus(StatusEnum.CLOSED);
-
-            BidEntity winning = closingFindWinningBid(ae);
-            if (winning != null) {
-                ae.setWinningBidId(winning.getId());
-            }
-        }
-
     }
 
     private BidEntity closingFindWinningBid(AuctionEntity ae) {
@@ -184,17 +149,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException {
         AuctionEntity oldAuction = retrieveAuctionById(newAuction.getId());
-
-        if (!oldAuction.getStartingTime().equals(newAuction.getStartingTime())) {
-            timerStart.cancel();
-            oldAuction.setStartingTime(newAuction.getStartingTime());
-            timerStart = timerService.createSingleActionTimer(oldAuction.getStartingTime(), new TimerConfig(new Pair(oldAuction, true), true));
-        }
-        if (!oldAuction.getEndingTime().equals(newAuction.getEndingTime())) {
-            timerEnd.cancel();
-            oldAuction.setEndingTime(newAuction.getEndingTime());
-            timerEnd = timerService.createSingleActionTimer(oldAuction.getEndingTime(), new TimerConfig(new Pair(oldAuction, false), true));
-        }
 
         oldAuction.setStatus(newAuction.getStatus());
         oldAuction.setReservePrice(newAuction.getReservePrice());

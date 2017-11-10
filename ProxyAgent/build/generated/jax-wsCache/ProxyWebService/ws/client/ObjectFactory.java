@@ -33,6 +33,8 @@ public class ObjectFactory {
     private final static QName _IncorrectPasswordException_QNAME = new QName("http://ws.session.ejb/", "IncorrectPasswordException");
     private final static QName _CustomerLogin_QNAME = new QName("http://ws.session.ejb/", "customerLogin");
     private final static QName _CustomerLoginResponse_QNAME = new QName("http://ws.session.ejb/", "customerLoginResponse");
+    private final static QName _Persist_QNAME = new QName("http://ws.session.ejb/", "persist");
+    private final static QName _PersistResponse_QNAME = new QName("http://ws.session.ejb/", "persistResponse");
     private final static QName _PlaceBid_QNAME = new QName("http://ws.session.ejb/", "placeBid");
     private final static QName _PlaceBidResponse_QNAME = new QName("http://ws.session.ejb/", "placeBidResponse");
     private final static QName _Registration_QNAME = new QName("http://ws.session.ejb/", "registration");
@@ -125,6 +127,22 @@ public class ObjectFactory {
      */
     public CustomerLoginResponse createCustomerLoginResponse() {
         return new CustomerLoginResponse();
+    }
+
+    /**
+     * Create an instance of {@link Persist }
+     * 
+     */
+    public Persist createPersist() {
+        return new Persist();
+    }
+
+    /**
+     * Create an instance of {@link PersistResponse }
+     * 
+     */
+    public PersistResponse createPersistResponse() {
+        return new PersistResponse();
     }
 
     /**
@@ -366,6 +384,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "customerLoginResponse")
     public JAXBElement<CustomerLoginResponse> createCustomerLoginResponse(CustomerLoginResponse value) {
         return new JAXBElement<CustomerLoginResponse>(_CustomerLoginResponse_QNAME, CustomerLoginResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Persist }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "persist")
+    public JAXBElement<Persist> createPersist(Persist value) {
+        return new JAXBElement<Persist>(_Persist_QNAME, Persist.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link PersistResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "persistResponse")
+    public JAXBElement<PersistResponse> createPersistResponse(PersistResponse value) {
+        return new JAXBElement<PersistResponse>(_PersistResponse_QNAME, PersistResponse.class, null, value);
     }
 
     /**

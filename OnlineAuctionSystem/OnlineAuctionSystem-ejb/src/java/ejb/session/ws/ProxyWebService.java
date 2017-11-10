@@ -18,6 +18,8 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import util.enumeration.BidTypeEnum;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.AuctionNotFoundException;
@@ -42,6 +44,8 @@ public class ProxyWebService {
 
     @EJB
     private AuctionEntityControllerLocal auctionEntityController;
+    @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
+    private EntityManager em;
 
     @EJB
     private CustomerEntityControllerLocal customerEntityController;
@@ -73,9 +77,19 @@ public class ProxyWebService {
         System.out.println("******* [OAS Web Service] Remote Login");
         
         CustomerEntity c = customerEntityController.customerLogin(username, password);
+        detachBidAddress(c.getBidEntities());
+        
         if(c.getCustomerTypeEnum() == CustomerTypeEnum.NORMAL)
             throw new CustomerNotPremiumException("Customer "+username+" is not a premium customer!");
         return c;
+    }
+    
+    private void detachBidAddress(List<BidEntity> bids){
+        for(BidEntity b: bids){
+            em.detach(b);
+            b.setAddressEntity(null);
+        }
+   
     }
     
     @WebMethod(operationName = "viewAuctionListDetails")
@@ -123,5 +137,9 @@ public class ProxyWebService {
 
     private void createSnipingBid() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 }

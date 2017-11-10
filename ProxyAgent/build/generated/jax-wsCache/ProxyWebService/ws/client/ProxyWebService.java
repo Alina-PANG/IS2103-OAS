@@ -29,13 +29,25 @@ public interface ProxyWebService {
 
     /**
      * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "persist", targetNamespace = "http://ws.session.ejb/", className = "ws.client.Persist")
+    @ResponseWrapper(localName = "persistResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.PersistResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/persistRequest", output = "http://ws.session.ejb/ProxyWebService/persistResponse")
+    public void persist(
+        @WebParam(name = "arg0", targetNamespace = "")
+        Object arg0);
+
+    /**
+     * 
      * @param password
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
      * @throws IncorrectPasswordException_Exception
-     * @throws CustomerAlreadyPremiumException_Exception
      * @throws CustomerNotFoundException_Exception
+     * @throws CustomerAlreadyPremiumException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -60,8 +72,8 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
-     * @throws CustomerNotPremiumException_Exception
      * @throws IncorrectPasswordException_Exception
+     * @throws CustomerNotPremiumException_Exception
      * @throws CustomerNotFoundException_Exception
      */
     @WebMethod
@@ -123,33 +135,11 @@ public interface ProxyWebService {
 
     /**
      * 
-     * @param type
-     * @param bid
-     * @throws GeneralException_Exception
-     * @throws BidAlreadyExistException_Exception
-     */
-    @WebMethod
-    @RequestWrapper(localName = "placeBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.PlaceBid")
-    @ResponseWrapper(localName = "placeBidResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.PlaceBidResponse")
-    @Action(input = "http://ws.session.ejb/ProxyWebService/placeBidRequest", output = "http://ws.session.ejb/ProxyWebService/placeBidResponse", fault = {
-        @FaultAction(className = BidAlreadyExistException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/placeBid/Fault/BidAlreadyExistException"),
-        @FaultAction(className = GeneralException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/placeBid/Fault/GeneralException")
-    })
-    public void placeBid(
-        @WebParam(name = "type", targetNamespace = "")
-        BidTypeEnum type,
-        @WebParam(name = "bid", targetNamespace = "")
-        BidEntity bid)
-        throws BidAlreadyExistException_Exception, GeneralException_Exception
-    ;
-
-    /**
-     * 
      * @param id
      * @return
      *     returns java.math.BigDecimal
-     * @throws GeneralException_Exception
      * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -200,6 +190,28 @@ public interface ProxyWebService {
         @WebParam(name = "id", targetNamespace = "")
         Long id)
         throws GeneralException_Exception
+    ;
+
+    /**
+     * 
+     * @param type
+     * @param bid
+     * @throws BidAlreadyExistException_Exception
+     * @throws GeneralException_Exception
+     */
+    @WebMethod
+    @RequestWrapper(localName = "placeBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.PlaceBid")
+    @ResponseWrapper(localName = "placeBidResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.PlaceBidResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/placeBidRequest", output = "http://ws.session.ejb/ProxyWebService/placeBidResponse", fault = {
+        @FaultAction(className = BidAlreadyExistException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/placeBid/Fault/BidAlreadyExistException"),
+        @FaultAction(className = GeneralException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/placeBid/Fault/GeneralException")
+    })
+    public void placeBid(
+        @WebParam(name = "type", targetNamespace = "")
+        BidTypeEnum type,
+        @WebParam(name = "bid", targetNamespace = "")
+        BidEntity bid)
+        throws BidAlreadyExistException_Exception, GeneralException_Exception
     ;
 
 }

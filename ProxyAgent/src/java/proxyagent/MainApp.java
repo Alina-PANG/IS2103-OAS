@@ -9,6 +9,9 @@ import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -40,8 +43,6 @@ public class MainApp {
         this.bidEntityController = bidEntityController;
         this.auctionEntityController = auctionEntityController;
     }
-    
-    
 
     public void runApp() {
         Scanner sc = new Scanner(System.in);
@@ -107,10 +108,13 @@ public class MainApp {
                         viewAuctionListingDetail();
                         break;
                     case 4:
+                        viewCreditBalance();
                         break;
                     case 5:
+                        configureProxyBidding();
                         break;
                     case 6:
+                        configureSnippingBidding();
                         break;
                     case 7:
                         break;
@@ -128,6 +132,50 @@ public class MainApp {
 
     }
 
+    private void configureProxyBidding() {
+        Scanner sc = new Scanner(System.in);
+        BigDecimal maxPrice;
+        Long aid;
+
+        System.out.println("******* [Premium Customer] Configure Proxy Bidding for Auction Listing *******");
+        System.out.println("Please input the auction id that you want to put proxy bid: ");
+        aid = sc.nextLong();
+        System.out.print("Please input the max price that you want to pay: ");
+        maxPrice = sc.nextBigDecimal();
+
+    }
+
+    private void configureSnippingBidding() {
+        Scanner sc = new Scanner(System.in);
+        BigDecimal maxPrice;
+        Long aid;
+        Date timeDuration;
+
+        System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
+        System.out.println("Please input the auction id that you want to put proxy bid: ");
+        aid = sc.nextLong();
+        System.out.print("Please input the max price that you want to pay: ");
+        maxPrice = sc.nextBigDecimal();
+        System.out.println("Please input the time duration before the listing expired to place your bid (in the format hh:mm:ss dd/mm/yyyy): ");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        try {
+            timeDuration = formatter.parse(sc.nextLine().trim());
+        } catch (ParseException ex) {
+            System.err.println("Please input the date time in the correct format!");
+        }
+
+    }
+
+    private void viewCreditBalance() {
+        System.out.println("******* [Premium Customer] View Credit Balance *******");
+        try {
+            BigDecimal value = viewCreditBalance(currentCustomerEntity.getId());
+            System.out.println("Your Credit Balance is " + value);
+        } catch (GeneralException_Exception | CustomerNotFoundException_Exception ex) {
+            System.err.println("[Warning] an error has occured: " + ex.getMessage());
+        }
+    }
+
     private void viewAuctionListingDetail() {
         Scanner sc = new Scanner(System.in);
         System.out.println("******* [Premium Customer] View Auction Listing Detail *******");
@@ -139,7 +187,7 @@ public class MainApp {
             List<ws.client.AuctionEntity> list = viewAuctionListByName(input);
             showList(list);
             System.out.println("Please input the id of the Auction List:");
-            ws.client.AuctionEntity al = viewAuctionListDetails(sc.nextLong());
+            ws.client.AuctionEntity al = viewAuctionListDetails(sc.nextLong());//???
 
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("[Immutable] Status: " + al.getStatus());
@@ -211,7 +259,7 @@ public class MainApp {
             postLogin();
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Please input a valid type!");
-        } catch (CustomerNotFoundException_Exception| IncorrectPasswordException_Exception | CustomerAlreadyPremiumException_Exception |CustomerNotPremiumException_Exception ex) {
+        } catch (CustomerNotFoundException_Exception | IncorrectPasswordException_Exception | CustomerAlreadyPremiumException_Exception | CustomerNotPremiumException_Exception ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
     }
@@ -265,6 +313,5 @@ public class MainApp {
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         return port.viewAuctionListDetails(id);
     }
-
 
 }

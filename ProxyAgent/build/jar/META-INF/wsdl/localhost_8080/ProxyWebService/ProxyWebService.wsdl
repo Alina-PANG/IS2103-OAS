@@ -4,6 +4,12 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/ProxyWebService/ProxyWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="persist">
+<part name="parameters" element="tns:persist"/>
+</message>
+<message name="persistResponse">
+<part name="parameters" element="tns:persistResponse"/>
+</message>
 <message name="registration">
 <part name="parameters" element="tns:registration"/>
 </message>
@@ -43,23 +49,14 @@
 <message name="viewAuctionListByNameResponse">
 <part name="parameters" element="tns:viewAuctionListByNameResponse"/>
 </message>
-<message name="placeBid">
-<part name="parameters" element="tns:placeBid"/>
-</message>
-<message name="placeBidResponse">
-<part name="parameters" element="tns:placeBidResponse"/>
-</message>
-<message name="BidAlreadyExistException">
-<part name="fault" element="tns:BidAlreadyExistException"/>
-</message>
-<message name="GeneralException">
-<part name="fault" element="tns:GeneralException"/>
-</message>
 <message name="viewCreditBalance">
 <part name="parameters" element="tns:viewCreditBalance"/>
 </message>
 <message name="viewCreditBalanceResponse">
 <part name="parameters" element="tns:viewCreditBalanceResponse"/>
+</message>
+<message name="GeneralException">
+<part name="fault" element="tns:GeneralException"/>
 </message>
 <message name="viewAllAuctionListings">
 <part name="parameters" element="tns:viewAllAuctionListings"/>
@@ -73,7 +70,20 @@
 <message name="viewWonAuctionListingsResponse">
 <part name="parameters" element="tns:viewWonAuctionListingsResponse"/>
 </message>
+<message name="placeBid">
+<part name="parameters" element="tns:placeBid"/>
+</message>
+<message name="placeBidResponse">
+<part name="parameters" element="tns:placeBidResponse"/>
+</message>
+<message name="BidAlreadyExistException">
+<part name="fault" element="tns:BidAlreadyExistException"/>
+</message>
 <portType name="ProxyWebService">
+<operation name="persist">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/persistRequest" message="tns:persist"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/persistResponse" message="tns:persistResponse"/>
+</operation>
 <operation name="registration">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/registrationResponse" message="tns:registrationResponse"/>
@@ -98,12 +108,6 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameResponse" message="tns:viewAuctionListByNameResponse"/>
 <fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByName/Fault/AuctionNotFoundException"/>
 </operation>
-<operation name="placeBid">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidRequest" message="tns:placeBid"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidResponse" message="tns:placeBidResponse"/>
-<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/BidAlreadyExistException"/>
-<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/GeneralException"/>
-</operation>
 <operation name="viewCreditBalance">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceRequest" message="tns:viewCreditBalance"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceResponse" message="tns:viewCreditBalanceResponse"/>
@@ -120,9 +124,24 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListingsResponse" message="tns:viewWonAuctionListingsResponse"/>
 <fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListings/Fault/GeneralException"/>
 </operation>
+<operation name="placeBid">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidRequest" message="tns:placeBid"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidResponse" message="tns:placeBidResponse"/>
+<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/BidAlreadyExistException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/GeneralException"/>
+</operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="persist">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="registration">
 <soap:operation soapAction=""/>
 <input>
@@ -183,21 +202,6 @@
 <soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="placeBid">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="BidAlreadyExistException">
-<soap:fault name="BidAlreadyExistException" use="literal"/>
-</fault>
-<fault name="GeneralException">
-<soap:fault name="GeneralException" use="literal"/>
-</fault>
-</operation>
 <operation name="viewCreditBalance">
 <soap:operation soapAction=""/>
 <input>
@@ -233,6 +237,21 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
+</fault>
+</operation>
+<operation name="placeBid">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="BidAlreadyExistException">
+<soap:fault name="BidAlreadyExistException" use="literal"/>
+</fault>
 <fault name="GeneralException">
 <soap:fault name="GeneralException" use="literal"/>
 </fault>
