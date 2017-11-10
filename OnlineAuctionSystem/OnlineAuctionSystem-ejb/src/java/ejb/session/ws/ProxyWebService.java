@@ -55,6 +55,7 @@ public class ProxyWebService {
         if(c.getCustomerTypeEnum().equals(CustomerTypeEnum.PREMIUM))
             throw new CustomerAlreadyPremiumException("Customer "+username+" is already a premium customer!");
         c.setCustomerTypeEnum(CustomerTypeEnum.PREMIUM);
+        
         return c;
     }
     

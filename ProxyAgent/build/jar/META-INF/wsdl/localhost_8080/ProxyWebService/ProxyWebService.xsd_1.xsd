@@ -30,6 +30,10 @@
 
 <xs:element name="viewAllAuctionListingsResponse" type="tns:viewAllAuctionListingsResponse"/>
 
+<xs:element name="viewAuctionListByName" type="tns:viewAuctionListByName"/>
+
+<xs:element name="viewAuctionListByNameResponse" type="tns:viewAuctionListByNameResponse"/>
+
 <xs:element name="viewAuctionListDetails" type="tns:viewAuctionListDetails"/>
 
 <xs:element name="viewAuctionListDetailsResponse" type="tns:viewAuctionListDetailsResponse"/>
@@ -151,19 +155,31 @@
 
 <xs:complexType name="viewAuctionListDetails">
 <xs:sequence>
-<xs:element name="productName" type="xs:string" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="viewAuctionListDetailsResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="AuctionNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListByName">
+<xs:sequence>
+<xs:element name="productName" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListByNameResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 

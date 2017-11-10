@@ -8,13 +8,10 @@ package proxyagent;
 import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
-import entity.AuctionEntity;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import util.exception.BidNotFoundException;
-import util.exception.GeneralException;
 import ws.client.AuctionNotFoundException_Exception;
 import ws.client.CustomerAlreadyPremiumException_Exception;
 import ws.client.CustomerEntity;
@@ -43,6 +40,8 @@ public class MainApp {
         this.bidEntityController = bidEntityController;
         this.auctionEntityController = auctionEntityController;
     }
+    
+    
 
     public void runApp() {
         Scanner sc = new Scanner(System.in);
@@ -200,7 +199,7 @@ public class MainApp {
             System.out.println("******* [OAS System Web Service] Login *******");
             System.out.print("Please input your username: ");
             String username = sc.nextLine().trim();
-            System.out.println("Please input your password: ");
+            System.out.print("Please input your password: ");
             String password = sc.nextLine().trim();
 
             if (input == 1) {
@@ -212,7 +211,7 @@ public class MainApp {
             postLogin();
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Please input a valid type!");
-        } catch (Exception ex) {
+        } catch (CustomerNotFoundException_Exception| IncorrectPasswordException_Exception | CustomerAlreadyPremiumException_Exception |CustomerNotPremiumException_Exception ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
     }
@@ -266,5 +265,6 @@ public class MainApp {
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         return port.viewAuctionListDetails(id);
     }
+
 
 }

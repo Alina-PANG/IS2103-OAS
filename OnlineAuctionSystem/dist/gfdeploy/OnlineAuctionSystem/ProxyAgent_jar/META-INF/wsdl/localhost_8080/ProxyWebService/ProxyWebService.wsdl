@@ -67,6 +67,12 @@
 <message name="viewWonAuctionListingsResponse">
 <part name="parameters" element="tns:viewWonAuctionListingsResponse"/>
 </message>
+<message name="viewAuctionListByName">
+<part name="parameters" element="tns:viewAuctionListByName"/>
+</message>
+<message name="viewAuctionListByNameResponse">
+<part name="parameters" element="tns:viewAuctionListByNameResponse"/>
+</message>
 <portType name="ProxyWebService">
 <operation name="customerLogin">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
@@ -108,6 +114,11 @@
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListingsRequest" message="tns:viewWonAuctionListings"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListingsResponse" message="tns:viewWonAuctionListingsResponse"/>
 <fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListings/Fault/GeneralException"/>
+</operation>
+<operation name="viewAuctionListByName">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameRequest" message="tns:viewAuctionListByName"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameResponse" message="tns:viewAuctionListByNameResponse"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByName/Fault/AuctionNotFoundException"/>
 </operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
@@ -212,6 +223,18 @@
 </output>
 <fault name="GeneralException">
 <soap:fault name="GeneralException" use="literal"/>
+</fault>
+</operation>
+<operation name="viewAuctionListByName">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
 </binding>
