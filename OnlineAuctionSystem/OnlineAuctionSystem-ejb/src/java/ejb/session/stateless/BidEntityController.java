@@ -28,6 +28,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.enumeration.CustomerTypeEnum;
 import util.enumeration.StatusEnum;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.AuctionNotFoundException;
@@ -88,7 +89,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
             c.getBidEntities().add(bid);
             a.getBidEntities().add(bid);
-            if(flag){
+            if (flag) {
                 c.getAuctionEntities().add(a);
                 a.getCustomerEntities().add(c);
             }
@@ -97,8 +98,8 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             em.persist(bid);
             em.flush();
             em.refresh(bid);
-            
-            checkProxyBid(a);    
+
+            checkProxyBid(a);
 
             return bid;
         } catch (PersistenceException ex) {
@@ -110,11 +111,15 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         }
-
     }
-    
-    private void checkProxyBid(AuctionEntity a){
-        
+
+    private void checkProxyBid(AuctionEntity a) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        List<BidEntity> list = a.getBidEntities();
+        for(BidEntity b: list){
+            if(b instanceof ProxyBiddingEntity){
+                createProxyBid((ProxyBiddingEntity)b, b.getCustomerEntity().getId(), a.getId()); 
+            }
+        }
     }
 
     @Override
@@ -201,8 +206,20 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             System.err.println("An errro has occured: " + ex.getMessage());
         }
     }
-    
-    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+
+    @Override
+    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        try{
+            createNewBid(bid, cid, aid);
+        } catch(BidAlreadyExistException ex){
+        }
         
+        BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
+        BigDecimal minPrice = auctionEntityController.getCurrentBidIncremental(b.getAmount()).add(b.getAmount());
+
+        if (bid.getMaxAmount().compareTo(minPrice) >= 0) {
+            BidEntity newBid = new BidEntity(minPrice);
+            createNewBid(newBid, cid, aid);
+        }
     }
 }

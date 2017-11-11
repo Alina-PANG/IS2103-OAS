@@ -24,6 +24,7 @@ import javax.persistence.PersistenceContext;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
+import util.exception.BidLessThanIncrementException;
 import util.exception.CustomerAlreadyPremiumException;
 import util.exception.CustomerNotFoundException;
 import util.exception.CustomerNotPremiumException;
@@ -127,7 +128,7 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createProxyBid")
-    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="maxPrice") BigDecimal maxPrice, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) {
-        
+    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException{
+        bidEntityController.createProxyBid(bid, cid, aid);
     }
 }

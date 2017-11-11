@@ -19,6 +19,7 @@ import util.exception.BidAlreadyExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
 import ws.client.AuctionNotFoundException_Exception;
+import ws.client.BidAlreadyExistException_Exception;
 import ws.client.BidEntity;
 import ws.client.CustomerAlreadyPremiumException_Exception;
 import ws.client.CustomerEntity;
@@ -164,14 +165,14 @@ public class MainApp {
         timeDuration = sc.nextInt();
 
         BidEntity bid = new BidEntity();
-       // try {
-    //        createSnippingBid(bid, maxPrice, timeDuration, aid, currentCustomerEntity.getId());
-   //     } catch (CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
-     //       System.err.println("");
-    //    }
+        try {
+           createSnippingBid(bid, maxPrice, timeDuration, aid, currentCustomerEntity.getId());
+        } catch (CustomerNotFoundException_Exception | AuctionNotFoundException_Exception | BidAlreadyExistException_Exception | GeneralException_Exception ex) {
+            System.err.println("[Warning] and error has occured: "+ex.getMessage());
+        }
 
     }
-
+    
     private void viewCreditBalance() {
         System.out.println("******* [Premium Customer] View Credit Balance *******");
         try {
@@ -318,6 +319,12 @@ public class MainApp {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         return port.viewAuctionListDetails(id);
+    }
+
+    private static void createSnippingBid(ws.client.BidEntity bid, java.math.BigDecimal maxPrice, int timeDuration, java.lang.Long aid, java.lang.Long cid) throws CustomerNotFoundException_Exception, AuctionNotFoundException_Exception, GeneralException_Exception, BidAlreadyExistException_Exception {
+        ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
+        ws.client.ProxyWebService port = service.getProxyWebServicePort();
+        port.createSnippingBid(bid, maxPrice, timeDuration, aid, cid);
     }
 
 }

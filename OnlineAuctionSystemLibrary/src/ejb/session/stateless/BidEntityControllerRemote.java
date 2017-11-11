@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.BidEntity;
 import entity.CustomerEntity;
+import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import util.exception.AuctionNotFoundException;
@@ -35,4 +36,6 @@ public interface BidEntityControllerRemote {
     public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException;
 
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException;
+    
+    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 }
