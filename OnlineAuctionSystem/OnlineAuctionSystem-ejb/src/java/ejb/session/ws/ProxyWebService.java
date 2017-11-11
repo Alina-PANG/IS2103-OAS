@@ -11,6 +11,7 @@ import ejb.session.stateless.CustomerEntityControllerLocal;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
+import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -20,7 +21,6 @@ import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import util.enumeration.BidTypeEnum;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
@@ -120,26 +120,14 @@ public class ProxyWebService {
         return auctionEntityController.viewWonAuction(cid);
     }
     
-    @WebMethod(operationName = "placeBid")
-    public void placeBid(@WebParam(name="type") BidTypeEnum type, @WebParam(name="bid") BidEntity bid) throws BidAlreadyExistException, GeneralException{
-        bidEntityController.createNewBid(bid);
-        if(type == BidTypeEnum.PROXY){
-            createProxyBid();
-        }
-        else if(type == BidTypeEnum.SNIPING){
-            createSnipingBid();
-        }
+
+    @WebMethod(operationName = "createSnippingBid")
+    public void createSnippingBid(@WebParam(name="bid")BidEntity bid, @WebParam(name="maxPrice") BigDecimal maxPrice, @WebParam(name="timeDuration" )int timeDuration, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException{
+        bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice); 
     }
 
-    private void createProxyBid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void createSnipingBid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void persist(Object object) {
-        em.persist(object);
+    @WebMethod(operationName = "createProxyBid")
+    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="maxPrice") BigDecimal maxPrice, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) {
+        
     }
 }

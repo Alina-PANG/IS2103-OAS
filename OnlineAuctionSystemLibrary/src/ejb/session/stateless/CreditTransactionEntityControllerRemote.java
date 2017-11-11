@@ -7,8 +7,11 @@ package ejb.session.stateless;
 
 import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import util.enumeration.TransactionTypeEnum;
+import util.exception.CustomerNotFoundException;
+import util.exception.GeneralException;
 
 
 /**
@@ -19,5 +22,5 @@ public interface CreditTransactionEntityControllerRemote {
      public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer);
 
     public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type);
-    
+    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException, CustomerNotFoundException ;
 }

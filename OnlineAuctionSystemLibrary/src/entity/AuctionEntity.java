@@ -40,9 +40,10 @@ public class AuctionEntity implements Serializable {
     private Long id;
     private Long winningBidId;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Future
     private Date startingTime;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-  //  @Future
+    @Future
     private Date endingTime;
     @Enumerated(EnumType.STRING)
     private StatusEnum status;

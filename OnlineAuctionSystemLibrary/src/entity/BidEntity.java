@@ -43,14 +43,21 @@ public class BidEntity implements Serializable {
     public BidEntity() {
     }
 
-    public BidEntity(BigDecimal amount, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntities) {
+    public BidEntity(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public BidEntity(BigDecimal amount, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntity) {
         this.amount = amount;
         this.auctionEntity = auctionEntity;
         this.customerEntity = customerEntity;
-        this.addressEntity = addressEntities;
+        this.addressEntity = addressEntity;
     }
 
 
+    
+
+    
 
     public Long getId() {
         return id;

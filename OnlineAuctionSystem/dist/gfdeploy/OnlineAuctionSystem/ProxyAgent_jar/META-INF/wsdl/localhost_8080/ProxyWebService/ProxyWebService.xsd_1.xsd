@@ -18,6 +18,10 @@
 
 <xs:element name="customerLoginResponse" type="tns:customerLoginResponse"/>
 
+<xs:element name="persist" type="tns:persist"/>
+
+<xs:element name="persistResponse" type="tns:persistResponse"/>
+
 <xs:element name="placeBid" type="tns:placeBid"/>
 
 <xs:element name="placeBidResponse" type="tns:placeBidResponse"/>
@@ -209,6 +213,16 @@
 <xs:sequence>
 <xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="persist">
+<xs:sequence>
+<xs:element name="arg0" type="xs:anyType" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="persistResponse">
+<xs:sequence/>
 </xs:complexType>
 
 <xs:complexType name="viewCreditBalance">

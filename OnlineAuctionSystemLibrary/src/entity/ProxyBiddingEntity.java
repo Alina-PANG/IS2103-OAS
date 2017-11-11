@@ -28,11 +28,13 @@ public class ProxyBiddingEntity extends BidEntity implements Serializable {
     public ProxyBiddingEntity() {
     }
 
-    public ProxyBiddingEntity(BigDecimal maxAmount, BigDecimal amount, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntities) {
-        super(amount, auctionEntity, customerEntity, addressEntities);
+    public ProxyBiddingEntity(BigDecimal maxAmount) {
+        super(new BigDecimal(-77));
         this.maxAmount = maxAmount;
     }
+
     
+
     /**
      * @return the maxAmount
      */

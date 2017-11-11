@@ -44,13 +44,21 @@ public class AddressEntity implements Serializable {
     public AddressEntity() {
     }
 
-    public AddressEntity(String addressLine, String postCode, boolean isDisabled, CustomerEntity customerEntity) {
+    public AddressEntity(String addressLine, String postCode, boolean isDisabled) {
+        this.addressLine = addressLine;
+        this.postCode = postCode;
+        this.isDisabled = isDisabled;
+        this.bidEntities = new ArrayList<BidEntity>();
+    }
+
+    public AddressEntity(String addressLine, String postCode, Boolean isDisabled, CustomerEntity customerEntity) {
         this.addressLine = addressLine;
         this.postCode = postCode;
         this.isDisabled = isDisabled;
         this.customerEntity = customerEntity;
         this.bidEntities = new ArrayList<BidEntity>();
     }
+    
 
     public Long getId() {
         return id;

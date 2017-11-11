@@ -14,17 +14,17 @@
 
 <xs:element name="IncorrectPasswordException" type="tns:IncorrectPasswordException"/>
 
+<xs:element name="createProxyBid" type="tns:createProxyBid"/>
+
+<xs:element name="createProxyBidResponse" type="tns:createProxyBidResponse"/>
+
+<xs:element name="createSnippingBid" type="tns:createSnippingBid"/>
+
+<xs:element name="createSnippingBidResponse" type="tns:createSnippingBidResponse"/>
+
 <xs:element name="customerLogin" type="tns:customerLogin"/>
 
 <xs:element name="customerLoginResponse" type="tns:customerLoginResponse"/>
-
-<xs:element name="persist" type="tns:persist"/>
-
-<xs:element name="persistResponse" type="tns:persistResponse"/>
-
-<xs:element name="placeBid" type="tns:placeBid"/>
-
-<xs:element name="placeBidResponse" type="tns:placeBidResponse"/>
 
 <xs:element name="registration" type="tns:registration"/>
 
@@ -157,6 +157,29 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="createProxyBid">
+<xs:sequence>
+<xs:element name="bid" type="tns:proxyBiddingEntity" minOccurs="0"/>
+<xs:element name="maxPrice" type="xs:decimal" minOccurs="0"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
+<xs:element name="cid" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="proxyBiddingEntity">
+<xs:complexContent>
+<xs:extension base="tns:bidEntity">
+<xs:sequence>
+<xs:element name="maxAmount" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="createProxyBidResponse">
+<xs:sequence/>
+</xs:complexType>
+
 <xs:complexType name="viewAuctionListDetails">
 <xs:sequence>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
@@ -187,6 +210,32 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="createSnippingBid">
+<xs:sequence>
+<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
+<xs:element name="maxPrice" type="xs:decimal" minOccurs="0"/>
+<xs:element name="timeDuration" type="xs:int"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
+<xs:element name="cid" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createSnippingBidResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="BidAlreadyExistException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GeneralException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="viewAllAuctionListings">
 <xs:sequence/>
 </xs:complexType>
@@ -194,12 +243,6 @@
 <xs:complexType name="viewAllAuctionListingsResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="GeneralException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -213,16 +256,6 @@
 <xs:sequence>
 <xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="persist">
-<xs:sequence>
-<xs:element name="arg0" type="xs:anyType" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="persistResponse">
-<xs:sequence/>
 </xs:complexType>
 
 <xs:complexType name="viewCreditBalance">
@@ -256,23 +289,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="placeBid">
-<xs:sequence>
-<xs:element name="type" type="tns:bidTypeEnum" minOccurs="0"/>
-<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="placeBidResponse">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="BidAlreadyExistException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:simpleType name="statusEnum">
 <xs:restriction base="xs:string">
 <xs:enumeration value="ACTIVE"/>
@@ -292,14 +308,6 @@
 <xs:simpleType name="customerTypeEnum">
 <xs:restriction base="xs:string">
 <xs:enumeration value="PREMIUM"/>
-<xs:enumeration value="NORMAL"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="bidTypeEnum">
-<xs:restriction base="xs:string">
-<xs:enumeration value="SNIPING"/>
-<xs:enumeration value="PROXY"/>
 <xs:enumeration value="NORMAL"/>
 </xs:restriction>
 </xs:simpleType>

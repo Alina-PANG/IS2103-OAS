@@ -12,3 +12,6 @@ Online Auction System
 
 ### Setting Up:
 - Please copy the file glassfish-resources.xml into OnlineAuctionSystem-ejb/setup folder providing your own database password. 
+
+### Assumptions
+

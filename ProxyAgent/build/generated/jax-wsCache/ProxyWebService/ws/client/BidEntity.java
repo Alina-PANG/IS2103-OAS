@@ -4,6 +4,7 @@ package ws.client;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -37,6 +38,9 @@ import javax.xml.bind.annotation.XmlType;
     "auctionEntity",
     "customerEntity",
     "id"
+})
+@XmlSeeAlso({
+    ProxyBiddingEntity.class
 })
 public class BidEntity {
 

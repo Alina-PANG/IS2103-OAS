@@ -129,7 +129,7 @@ public class SalesStaffModule {
                     System.err.println("[Warning] End Date cannot be later than Start Date!");
                 }
             } while (startDate.compareTo(endDate) > 0);
-            System.out.print("Reserve Price: ");
+            System.out.print("Reserve Price (0 if no reserve price): ");
             reservePrice = sc.nextBigDecimal();
             sc.nextLine();
             System.out.print("Product Name: ");

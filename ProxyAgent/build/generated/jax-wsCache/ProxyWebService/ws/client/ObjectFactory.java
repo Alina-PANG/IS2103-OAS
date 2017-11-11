@@ -31,12 +31,12 @@ public class ObjectFactory {
     private final static QName _CustomerNotPremiumException_QNAME = new QName("http://ws.session.ejb/", "CustomerNotPremiumException");
     private final static QName _GeneralException_QNAME = new QName("http://ws.session.ejb/", "GeneralException");
     private final static QName _IncorrectPasswordException_QNAME = new QName("http://ws.session.ejb/", "IncorrectPasswordException");
+    private final static QName _CreateProxyBid_QNAME = new QName("http://ws.session.ejb/", "createProxyBid");
+    private final static QName _CreateProxyBidResponse_QNAME = new QName("http://ws.session.ejb/", "createProxyBidResponse");
+    private final static QName _CreateSnippingBid_QNAME = new QName("http://ws.session.ejb/", "createSnippingBid");
+    private final static QName _CreateSnippingBidResponse_QNAME = new QName("http://ws.session.ejb/", "createSnippingBidResponse");
     private final static QName _CustomerLogin_QNAME = new QName("http://ws.session.ejb/", "customerLogin");
     private final static QName _CustomerLoginResponse_QNAME = new QName("http://ws.session.ejb/", "customerLoginResponse");
-    private final static QName _Persist_QNAME = new QName("http://ws.session.ejb/", "persist");
-    private final static QName _PersistResponse_QNAME = new QName("http://ws.session.ejb/", "persistResponse");
-    private final static QName _PlaceBid_QNAME = new QName("http://ws.session.ejb/", "placeBid");
-    private final static QName _PlaceBidResponse_QNAME = new QName("http://ws.session.ejb/", "placeBidResponse");
     private final static QName _Registration_QNAME = new QName("http://ws.session.ejb/", "registration");
     private final static QName _RegistrationResponse_QNAME = new QName("http://ws.session.ejb/", "registrationResponse");
     private final static QName _ViewAllAuctionListings_QNAME = new QName("http://ws.session.ejb/", "viewAllAuctionListings");
@@ -114,6 +114,38 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CreateProxyBid }
+     * 
+     */
+    public CreateProxyBid createCreateProxyBid() {
+        return new CreateProxyBid();
+    }
+
+    /**
+     * Create an instance of {@link CreateProxyBidResponse }
+     * 
+     */
+    public CreateProxyBidResponse createCreateProxyBidResponse() {
+        return new CreateProxyBidResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateSnippingBid }
+     * 
+     */
+    public CreateSnippingBid createCreateSnippingBid() {
+        return new CreateSnippingBid();
+    }
+
+    /**
+     * Create an instance of {@link CreateSnippingBidResponse }
+     * 
+     */
+    public CreateSnippingBidResponse createCreateSnippingBidResponse() {
+        return new CreateSnippingBidResponse();
+    }
+
+    /**
      * Create an instance of {@link CustomerLogin }
      * 
      */
@@ -127,38 +159,6 @@ public class ObjectFactory {
      */
     public CustomerLoginResponse createCustomerLoginResponse() {
         return new CustomerLoginResponse();
-    }
-
-    /**
-     * Create an instance of {@link Persist }
-     * 
-     */
-    public Persist createPersist() {
-        return new Persist();
-    }
-
-    /**
-     * Create an instance of {@link PersistResponse }
-     * 
-     */
-    public PersistResponse createPersistResponse() {
-        return new PersistResponse();
-    }
-
-    /**
-     * Create an instance of {@link PlaceBid }
-     * 
-     */
-    public PlaceBid createPlaceBid() {
-        return new PlaceBid();
-    }
-
-    /**
-     * Create an instance of {@link PlaceBidResponse }
-     * 
-     */
-    public PlaceBidResponse createPlaceBidResponse() {
-        return new PlaceBidResponse();
     }
 
     /**
@@ -306,6 +306,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProxyBiddingEntity }
+     * 
+     */
+    public ProxyBiddingEntity createProxyBiddingEntity() {
+        return new ProxyBiddingEntity();
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AuctionNotFoundException }{@code >}}
      * 
      */
@@ -369,6 +377,42 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CreateProxyBid }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "createProxyBid")
+    public JAXBElement<CreateProxyBid> createCreateProxyBid(CreateProxyBid value) {
+        return new JAXBElement<CreateProxyBid>(_CreateProxyBid_QNAME, CreateProxyBid.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CreateProxyBidResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "createProxyBidResponse")
+    public JAXBElement<CreateProxyBidResponse> createCreateProxyBidResponse(CreateProxyBidResponse value) {
+        return new JAXBElement<CreateProxyBidResponse>(_CreateProxyBidResponse_QNAME, CreateProxyBidResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CreateSnippingBid }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "createSnippingBid")
+    public JAXBElement<CreateSnippingBid> createCreateSnippingBid(CreateSnippingBid value) {
+        return new JAXBElement<CreateSnippingBid>(_CreateSnippingBid_QNAME, CreateSnippingBid.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CreateSnippingBidResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "createSnippingBidResponse")
+    public JAXBElement<CreateSnippingBidResponse> createCreateSnippingBidResponse(CreateSnippingBidResponse value) {
+        return new JAXBElement<CreateSnippingBidResponse>(_CreateSnippingBidResponse_QNAME, CreateSnippingBidResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CustomerLogin }{@code >}}
      * 
      */
@@ -384,42 +428,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "customerLoginResponse")
     public JAXBElement<CustomerLoginResponse> createCustomerLoginResponse(CustomerLoginResponse value) {
         return new JAXBElement<CustomerLoginResponse>(_CustomerLoginResponse_QNAME, CustomerLoginResponse.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Persist }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "persist")
-    public JAXBElement<Persist> createPersist(Persist value) {
-        return new JAXBElement<Persist>(_Persist_QNAME, Persist.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link PersistResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "persistResponse")
-    public JAXBElement<PersistResponse> createPersistResponse(PersistResponse value) {
-        return new JAXBElement<PersistResponse>(_PersistResponse_QNAME, PersistResponse.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link PlaceBid }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "placeBid")
-    public JAXBElement<PlaceBid> createPlaceBid(PlaceBid value) {
-        return new JAXBElement<PlaceBid>(_PlaceBid_QNAME, PlaceBid.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link PlaceBidResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "placeBidResponse")
-    public JAXBElement<PlaceBidResponse> createPlaceBidResponse(PlaceBidResponse value) {
-        return new JAXBElement<PlaceBidResponse>(_PlaceBidResponse_QNAME, PlaceBidResponse.class, null, value);
     }
 
     /**

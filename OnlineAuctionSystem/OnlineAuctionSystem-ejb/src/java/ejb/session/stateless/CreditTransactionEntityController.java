@@ -14,9 +14,12 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.CreditPackageNotFoundException;
+import util.exception.CustomerNotFoundException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -30,47 +33,59 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
-    
+
     private CreditPackageEntityControllerLocal creditPackageEntityControllerLocal;
+    private CustomerEntityControllerLocal customerEntityController;
 
     //comment for future modification
     @Override
-    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type)
-    {
-        try{
-        CreditTransactionEntity credittransaction = new CreditTransactionEntity();
-        credittransaction.setCustomerEntity(customer);
-        credittransaction.setTransactionTypeEnum(type);//
-        credittransaction.setUnitOfPurchase(num);//how many package has the customer purchased
-        credittransaction.setCreditPackageEntity(creditPackageEntityControllerLocal.retrieveCreditPackageById(id));
-        credittransaction.setTotalValue(creditPackageEntityControllerLocal.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num)));
-        
-        em.persist(credittransaction);
-        em.flush();
-        em.refresh(credittransaction);
-        
-        }
-        catch(CreditPackageNotFoundException ex)
-        {
-            System.out.println(ex.getMessage()+" !");
+    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type) {
+        try {
+            CreditTransactionEntity credittransaction = new CreditTransactionEntity();
+            credittransaction.setCustomerEntity(customer);
+            credittransaction.setTransactionTypeEnum(type);//
+            credittransaction.setUnitOfPurchase(num);//how many package has the customer purchased
+            credittransaction.setCreditPackageEntity(creditPackageEntityControllerLocal.retrieveCreditPackageById(id));
+            credittransaction.setTotalValue(creditPackageEntityControllerLocal.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num)));
+
+            em.persist(credittransaction);
+            em.flush();
+            em.refresh(credittransaction);
+
+        } catch (CreditPackageNotFoundException ex) {
+            System.out.println(ex.getMessage() + " !");
         }
     }
 
+    @Override
+    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException,  CustomerNotFoundException {
+        try {
+            CreditTransactionEntity ct = new CreditTransactionEntity(amount, type);
+            CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
+            ct.setCustomerEntity(c);
+            em.persist(ct);
+            em.flush();
+            em.refresh(ct);
+            c.getCreditTransactionEntities().add(ct);
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        }
+    }
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    
-   
     @Override
-    public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer)
-    {
-        Query query = em.createQuery("SELECT c FROM CreditTransactionEntity c WHERE c.customerEntity LIKE :cust").setParameter("cust",customer);
-        
+    public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer) {
+        Query query = em.createQuery("SELECT c FROM CreditTransactionEntity c WHERE c.customerEntity LIKE :cust").setParameter("cust", customer);
+
         return query.getResultList();
 
         //find all credit transactionentity list provided with customer entity class
-       
     }
-
 
 }

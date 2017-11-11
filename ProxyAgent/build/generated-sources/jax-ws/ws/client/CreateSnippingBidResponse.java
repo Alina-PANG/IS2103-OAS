@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for placeBidResponse complex type.
+ * <p>Java class for createSnippingBidResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="placeBidResponse"&gt;
+ * &lt;complexType name="createSnippingBidResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "placeBidResponse")
-public class PlaceBidResponse {
+@XmlType(name = "createSnippingBidResponse")
+public class CreateSnippingBidResponse {
 
 
 }

@@ -7,16 +7,16 @@ package ejb.session.stateless;
 
 import entity.AuctionEntity;
 import entity.BidEntity;
+import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
-import javax.ejb.SessionContext;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -24,6 +24,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolationException;
 import util.enumeration.StatusEnum;
+import util.enumeration.TransactionTypeEnum;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.GeneralException;
 import util.exception.AuctionNotFoundException;
@@ -45,13 +46,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @EJB
     private BidEntityControllerLocal bidEntityController;
 
-    @Resource
-    private SessionContext sessionContext;
-
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
-
-    private TimerService timerService;
 
     /**
      *
@@ -85,6 +81,53 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 throw new GeneralException("Start and End Date and time cannot be later than today!");
             }
         }
+    }
+
+    @Schedule(hour = "*", minute = "1", second = "*", info = "everyMinute")
+    public void automaticTimer() throws GeneralException {
+        System.out.println("Timer: Every minute");
+        List<AuctionEntity> list = viewAllAuction();
+
+        for (AuctionEntity ae : list) {
+            if (ae.getEndingTime().after(new Date())) {
+                ae.setStatus(StatusEnum.CLOSED);
+                closeAuction(ae);
+                System.out.println("Auction "+ae.getId()+" has been closed.");
+            }
+            if (ae.getStartingTime().after(new Date())) {
+                ae.setStatus(StatusEnum.ACTIVE);
+                System.out.println("Auction "+ae.getId()+" has been opened.");
+            }
+        }
+    }
+
+    private BidEntity closeAuction(AuctionEntity ae) {
+        if (ae.getBidEntities().size() != 0) {
+            try {
+                Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.auctionEntity.reservePrice < b.amount AND b.amount = (SELECT MAX(b.amount) FROM BidEntity b WHERE b.auctionEntity.id = :aid)");
+                query.setParameter("aid", ae.getId());
+                // if highest bid is above the reserve price
+                BidEntity bid = (BidEntity) query.getSingleResult();
+                ae.setWinningBidId(bid.getId());
+
+                List<BidEntity> bidList = ae.getBidEntities();
+                for (BidEntity b : bidList) {
+                    if (!b.getId().equals(bid.getId())) {
+                        CustomerEntity c = b.getCustomerEntity();
+                        c.addCreditBalance(b.getAmount());   
+                        CreditTransactionEntity ct = new CreditTransactionEntity(b.getAmount(), TransactionTypeEnum.REFUND);
+                        c.getCreditTransactionEntities().add(ct);
+                        ct.setCustomerEntity(c);
+                        em.remove(b);
+                    }
+                }
+
+                return bid;
+            } catch (NoResultException ex) {
+                System.out.println("Auction " + ae.getId() + " closed without having a winner.");
+            }
+        }
+        return null;
     }
 
     private BidEntity closingFindWinningBid(AuctionEntity ae) {
@@ -291,29 +334,29 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     @Override
-    public Double getCurrentBidIncremental(BigDecimal currentprice) {
-        Double incremental = 0.00;
+    public BigDecimal getCurrentBidIncremental(BigDecimal currentprice) {
+        BigDecimal incremental = new BigDecimal(0);
         if (currentprice.compareTo(BigDecimal.valueOf(0.00)) == 1
                 && currentprice.compareTo(BigDecimal.valueOf(0.99)) == -1) {
-            incremental = 0.05;
+            incremental = new BigDecimal(0.05);
         } else if (currentprice.compareTo(BigDecimal.valueOf(5.00)) == -1) {
-            incremental = 0.25;
+            incremental = new BigDecimal(0.25);
         } else if (currentprice.compareTo(BigDecimal.valueOf(25.00)) == -1) {
-            incremental = 0.50;
+            incremental = new BigDecimal(0.50);
         } else if (currentprice.compareTo(BigDecimal.valueOf(100.00)) == -1) {
-            incremental = 1.00;
+            incremental = new BigDecimal(1.00);
         } else if (currentprice.compareTo(BigDecimal.valueOf(250.00)) == -1) {
-            incremental = 2.50;
+            incremental = new BigDecimal(2.50);
         } else if (currentprice.compareTo(BigDecimal.valueOf(500.00)) == -1) {
-            incremental = 5.00;
+            incremental = new BigDecimal(5.00);
         } else if (currentprice.compareTo(BigDecimal.valueOf(1000.00)) == -1) {
-            incremental = 10.00;
+            incremental = new BigDecimal(10.00);
         } else if (currentprice.compareTo(BigDecimal.valueOf(2500.00)) == -1) {
-            incremental = 25.00;
+            incremental = new BigDecimal(25.00);
         } else if (currentprice.compareTo(BigDecimal.valueOf(5000.00)) == -1) {
-            incremental = 50.00;
+            incremental = new BigDecimal(50.00);
         } else {
-            incremental = 100.00;
+            incremental = new BigDecimal(100.00);
         }
 
         return incremental;
@@ -328,10 +371,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         newbid.setAuctionEntity(auctionentity);
         newbid.setCustomerEntity(customer);
         BigDecimal currentprice = getCurrentWinningBidEntity(productid).getAmount();
-        BigDecimal currentincremental = BigDecimal.valueOf(getCurrentBidIncremental(getCurrentWinningBidEntity(productid).getAmount()));
+        BigDecimal currentincremental = getCurrentBidIncremental(currentprice);
         BigDecimal newprice = currentprice.add(currentincremental);
         newbid.setAmount(newprice);
-        newbid = bidEntityController.createNewBid(newbid);
+       // newbid = bidEntityController.createNewBid(newbid);
 
         //add customerentity and bidentity into auction entity
         auctionentity.getBidEntities().add(newbid);
@@ -344,4 +387,3 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
 }
-

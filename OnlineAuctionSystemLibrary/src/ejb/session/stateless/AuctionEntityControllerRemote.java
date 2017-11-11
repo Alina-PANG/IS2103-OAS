@@ -45,7 +45,7 @@ public interface AuctionEntityControllerRemote {
 
     public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
 
-    public Double getCurrentBidIncremental(BigDecimal currentprice);
+    public BigDecimal getCurrentBidIncremental(BigDecimal currentprice);
     
     public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException,BidAlreadyExistException,GeneralException;
 

@@ -29,12 +29,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.CustomerTypeEnum;
 import util.enumeration.EmployeeAccessRightEnum;
-import util.enumeration.StatusEnum;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AuctionAlreadyExistException;
+import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
+import util.exception.BidLessThanIncrementException;
 import util.exception.CreditPackageAlreadyExistException;
 import util.exception.CustomerAlreadyExistException;
+import util.exception.CustomerNotFoundException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.StaffAlreadyExistException;
@@ -99,11 +101,12 @@ public class DataInitializationSessionBean {
             AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
             auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(92), "Apple", "Sweet Apple"));
 
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30), ae1, c, a));
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(20), ae1, c, a));
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60), ae1, c, a));
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30), ae2, c, a));
-        } catch (AddressAlreadyExistsException | StaffAlreadyExistException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(20)), c.getId(), ae1.getId());
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60)), c.getId(), ae1.getId());
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
+            
+        } catch (AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | AddressAlreadyExistsException | StaffAlreadyExistException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
             System.out.println("Error in Singleton");
         }
     }

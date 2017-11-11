@@ -9,13 +9,17 @@ import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import javax.jws.WebParam;
+import util.exception.AuctionNotFoundException;
+import util.exception.BidAlreadyExistException;
+import util.exception.CustomerNotFoundException;
+import util.exception.GeneralException;
 import ws.client.AuctionNotFoundException_Exception;
+import ws.client.BidEntity;
 import ws.client.CustomerAlreadyPremiumException_Exception;
 import ws.client.CustomerEntity;
 import ws.client.CustomerNotFoundException_Exception;
@@ -149,20 +153,22 @@ public class MainApp {
         Scanner sc = new Scanner(System.in);
         BigDecimal maxPrice;
         Long aid;
-        Date timeDuration;
+        int timeDuration;
 
         System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
         System.out.println("Please input the auction id that you want to put proxy bid: ");
         aid = sc.nextLong();
         System.out.print("Please input the max price that you want to pay: ");
         maxPrice = sc.nextBigDecimal();
-        System.out.println("Please input the time duration before the listing expired to place your bid (in the format hh:mm:ss dd/mm/yyyy): ");
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-        try {
-            timeDuration = formatter.parse(sc.nextLine().trim());
-        } catch (ParseException ex) {
-            System.err.println("Please input the date time in the correct format!");
-        }
+        System.out.println("Please input the time duration before the listing expired to place your bid (in minutes): ");
+        timeDuration = sc.nextInt();
+
+        BidEntity bid = new BidEntity();
+       // try {
+    //        createSnippingBid(bid, maxPrice, timeDuration, aid, currentCustomerEntity.getId());
+   //     } catch (CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
+     //       System.err.println("");
+    //    }
 
     }
 
