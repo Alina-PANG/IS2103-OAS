@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="ACTIVE"/&gt;
  *     &lt;enumeration value="CLOSED"/&gt;
  *     &lt;enumeration value="DISABLED"/&gt;
+ *     &lt;enumeration value="PENDING"/&gt;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
@@ -27,7 +28,8 @@ public enum StatusEnum {
 
     ACTIVE,
     CLOSED,
-    DISABLED;
+    DISABLED,
+    PENDING;
 
     public String value() {
         return name();

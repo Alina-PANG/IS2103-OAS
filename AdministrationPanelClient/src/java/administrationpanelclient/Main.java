@@ -9,6 +9,7 @@ import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CreditPackageEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import javax.ejb.EJB;
 
 /**
@@ -29,13 +30,15 @@ public class Main {
     @EJB
     private static AuctionEntityControllerRemote auctionEntityController;
 
-    
+    @EJB
+    private static TimerSessionBeanRemote timerSessionBean;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MainApp mainApp = new MainApp(staffEntityController, creditPackageEntityController, bidEntityController, auctionEntityController);
+        MainApp mainApp = new MainApp(timerSessionBean, staffEntityController, creditPackageEntityController, bidEntityController, auctionEntityController);
         mainApp.runApp();
     }
-    
+
 }

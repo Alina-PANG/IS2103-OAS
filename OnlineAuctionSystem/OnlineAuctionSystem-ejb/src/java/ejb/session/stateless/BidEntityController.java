@@ -75,7 +75,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
         BigDecimal more = bid.getAmount();
 
-        if (a.getEndingTime().compareTo(new Date()) <= 0) {
+        if (a.getEndingTime().after(new Date())) {
             throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
         }
 
@@ -118,6 +118,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             c.getBidEntities().add(bid);
             c.setCreditBalance(c.getCreditBalance().subtract(more));
             a.getBidEntities().add(bid);
+            a.setWinningBidId(new Long(0));
             if (flag) {
                 c.getAuctionEntities().add(a);
                 a.getCustomerEntities().add(c);

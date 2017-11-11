@@ -205,7 +205,7 @@ public class SalesStaffModule {
             auctionEntityController.updateAuction(al);
             System.out.println("[System] Auction Listing with id = " + al.getId() + " has been updated successfully!");
         } catch (AuctionNotFoundException | GeneralException | AuctionAlreadyExistException ex) {
-            System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured while updating auction: " + ex.getMessage());
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid input!");
         } catch (ParseException ex) {
@@ -278,19 +278,19 @@ public class SalesStaffModule {
         try {
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("[Immutable] Status: " + al.getStatus());
-            System.out.print("[Immutable] Winning Bid Amount: ");
+            System.out.print("[Immutable] Current Highest Bid: ");
 
-            if (al.getWinningBidId().equals(new Long(0))) {
-                System.out.println("" + bidEntityController.retrieveById(al.getWinningBidId()).getAmount());
+            if (!al.getWinningBidId().equals(new Long(-10))) {
+                System.out.println("" + auctionEntityController.getCurrentWinningBidEntity(al.getId()).getAmount());
             } else {
-                System.out.println("No winning bid yet.");
+                System.out.println("No bid yet.");
             }
             System.out.println("1. Start Date: " + al.getStartingTime());
             System.out.println("2. End Date: " + al.getEndingTime());
             System.out.println("3. Reserve Price: " + al.getReservePrice());
             System.out.println("4. Product Name: " + al.getProductName());
             System.out.println("5. Product Description: " + al.getProductDescription());
-        } catch (BidNotFoundException ex) {
+        } catch (AuctionNotFoundException ex) {
             System.err.println("[Warning] An error has occured: "+ex.getMessage());
         }
     }
@@ -299,9 +299,12 @@ public class SalesStaffModule {
         System.out.println("******* [Auction Listing] View All Auction Listings with Bids but Below Researve Price ******* ");
         Scanner sc = new Scanner(System.in);
         try {
-            showList(auctionEntityController.viewNoWinningAuction());
+            List<AuctionEntity> alList = auctionEntityController.viewNoWinningAuction();
+            showList(alList);
             System.out.print("Input the id of the Auction Listing that you want to retrieve:");
             Long aid = sc.nextLong();
+            AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+            if(alList.contains(a)){
             List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
             showBid(list);
             System.out.println("Input the id of the Bid tht you want to assign as the winning bid (any other key for cancel): ");
@@ -312,6 +315,9 @@ public class SalesStaffModule {
             }
             else {
                 System.out.println("[System] Action canceled.");
+            }
+            }else{
+                System.err.println("[Warning] The input auction list id does not exist!");
             }
         } catch (AuctionNotFoundException | GeneralException ex) {
             System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());

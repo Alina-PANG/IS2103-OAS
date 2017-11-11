@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.enumeration;
+package ejb.session.stateless;
 
 /**
  *
  * @author alina
  */
-public enum StatusEnum {
-    ACTIVE,
-    CLOSED,
-    DISABLED,
-    PENDING
+
+public interface TimerSessionBeanRemote {
+    
 }

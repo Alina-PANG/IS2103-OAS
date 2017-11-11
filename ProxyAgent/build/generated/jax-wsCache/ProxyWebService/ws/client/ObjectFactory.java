@@ -34,6 +34,7 @@ public class ObjectFactory {
     private final static QName _CustomerNotPremiumException_QNAME = new QName("http://ws.session.ejb/", "CustomerNotPremiumException");
     private final static QName _GeneralException_QNAME = new QName("http://ws.session.ejb/", "GeneralException");
     private final static QName _IncorrectPasswordException_QNAME = new QName("http://ws.session.ejb/", "IncorrectPasswordException");
+    private final static QName _NotEnoughCreditException_QNAME = new QName("http://ws.session.ejb/", "NotEnoughCreditException");
     private final static QName _CreateProxyBid_QNAME = new QName("http://ws.session.ejb/", "createProxyBid");
     private final static QName _CreateProxyBidResponse_QNAME = new QName("http://ws.session.ejb/", "createProxyBidResponse");
     private final static QName _CreateSnippingBid_QNAME = new QName("http://ws.session.ejb/", "createSnippingBid");
@@ -138,6 +139,14 @@ public class ObjectFactory {
      */
     public IncorrectPasswordException createIncorrectPasswordException() {
         return new IncorrectPasswordException();
+    }
+
+    /**
+     * Create an instance of {@link NotEnoughCreditException }
+     * 
+     */
+    public NotEnoughCreditException createNotEnoughCreditException() {
+        return new NotEnoughCreditException();
     }
 
     /**
@@ -293,11 +302,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AddressEntity }
+     * Create an instance of {@link AuctionEntity }
      * 
      */
-    public AddressEntity createAddressEntity() {
-        return new AddressEntity();
+    public AuctionEntity createAuctionEntity() {
+        return new AuctionEntity();
     }
 
     /**
@@ -309,11 +318,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AuctionEntity }
+     * Create an instance of {@link AddressEntity }
      * 
      */
-    public AuctionEntity createAuctionEntity() {
-        return new AuctionEntity();
+    public AddressEntity createAddressEntity() {
+        return new AddressEntity();
     }
 
     /**
@@ -428,6 +437,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "IncorrectPasswordException")
     public JAXBElement<IncorrectPasswordException> createIncorrectPasswordException(IncorrectPasswordException value) {
         return new JAXBElement<IncorrectPasswordException>(_IncorrectPasswordException_QNAME, IncorrectPasswordException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link NotEnoughCreditException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "NotEnoughCreditException")
+    public JAXBElement<NotEnoughCreditException> createNotEnoughCreditException(NotEnoughCreditException value) {
+        return new JAXBElement<NotEnoughCreditException>(_NotEnoughCreditException_QNAME, NotEnoughCreditException.class, null, value);
     }
 
     /**

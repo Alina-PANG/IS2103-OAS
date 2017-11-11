@@ -6,6 +6,7 @@
 package auctionclient;
 
 import ejb.session.stateless.CustomerEntityControllerRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -23,8 +24,14 @@ public class MainApp {
     private ProfileModule profilemodule;
     private AuctionModule auctionmodule;
     
+    private TimerSessionBeanRemote timerSessionBean;
+    
 
     public MainApp() {
+    }
+
+    public MainApp(TimerSessionBeanRemote timerSessionBean) {
+        this.timerSessionBean = timerSessionBean;
     }
     
     

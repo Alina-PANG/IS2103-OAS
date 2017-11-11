@@ -51,4 +51,6 @@ public interface AuctionEntityControllerLocal {
     public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException;
 
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
+
+    public BidEntity closeAuction(AuctionEntity ae);
 }

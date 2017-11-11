@@ -54,20 +54,19 @@ public class ProxyWebService {
 
     @EJB
     private CustomerEntityControllerLocal customerEntityController;
-    
-    
-    
+
     @WebMethod(operationName = "registration")
-    public CustomerEntity registration(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws CustomerNotFoundException, IncorrectPasswordException, CustomerAlreadyPremiumException{
+    public CustomerEntity registration(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws CustomerNotFoundException, IncorrectPasswordException, CustomerAlreadyPremiumException {
         System.out.println("******* [OAS Web Service] Registration");
-        CustomerEntity c =  customerEntityController.customerLogin(username, password);
-        if(c.getCustomerTypeEnum().equals(CustomerTypeEnum.PREMIUM))
-            throw new CustomerAlreadyPremiumException("Customer "+username+" is already a premium customer!");
+        CustomerEntity c = customerEntityController.customerLogin(username, password);
+        if (c.getCustomerTypeEnum().equals(CustomerTypeEnum.PREMIUM)) {
+            throw new CustomerAlreadyPremiumException("Customer " + username + " is already a premium customer!");
+        }
         c.setCustomerTypeEnum(CustomerTypeEnum.PREMIUM);
-        
+
         return c;
     }
-    
+
     /**
      *
      * @param username
@@ -78,65 +77,102 @@ public class ProxyWebService {
      * @throws DuplicateException
      */
     @WebMethod(operationName = "customerLogin")
-    public CustomerEntity customerLogin(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws CustomerNotFoundException, IncorrectPasswordException, CustomerNotPremiumException{
+    public CustomerEntity customerLogin(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws CustomerNotFoundException, IncorrectPasswordException, CustomerNotPremiumException {
         System.out.println("******* [OAS Web Service] Remote Login");
-        
+
         CustomerEntity c = customerEntityController.customerLogin(username, password);
-        detachBidAddress(c.getBidEntities(), c.getAddressEntities());
-        
-        if(c.getCustomerTypeEnum() == CustomerTypeEnum.NORMAL)
-            throw new CustomerNotPremiumException("Customer "+username+" is not a premium customer!");
+        //     c.getAddressEntities().forEach((each) -> {
+        //        each.setCustomerEntity(null);
+        //     });
+        //c.getAuctionEntities().forEach((each) -> {
+        //    each.setCustomerEntities(null);
+        //});
+        //     c.getBidEntities().forEach((each) -> {
+        //         each.setCustomerEntity(null);
+        //      });
+        c.setAddressEntities(null);
+        c.setBidEntities(null);
+        c.setAuctionEntities(null);
+        c.setCreditTransactionEntities(null);
+        if (c.getCustomerTypeEnum() == CustomerTypeEnum.NORMAL) {
+            throw new CustomerNotPremiumException("Customer " + username + " is not a premium customer!");
+        }
         return c;
     }
-    
-    private void detachBidAddress(List<BidEntity> bids, List<AddressEntity> addresses){
-        for(BidEntity b: bids){
+
+    /*
+    private void detachEntities(List<BidEntity> bids, List<AuctionEntity> auctions, List<AddressEntity> addresses) {
+        for (BidEntity b : bids) {
             em.detach(b);
             b.setAddressEntity(null);
+            b.setCustomerEntity(null);
+            b.setAuctionEntity(null);
         }
-        
-        for(AddressEntity ad: addresses){
-            em.detach(ad);
-            ad.setBidEntities(null);
+        for (AuctionEntity a : auctions) {
+            em.detach(a);
+            a.setBidEntities(null);
+            a.setCustomerEntities(null);
+        }
+        for (AddressEntity a : addresses) {
+            em.detach(a);
+            a.setCustomerEntity(null);
+            a.setBidEntities(null);
         }
     }
-    
+     */
     @WebMethod(operationName = "viewAuctionListDetails")
     public AuctionEntity viewAuctionListDetails(@WebParam(name = "id") Long id) throws AuctionNotFoundException {
-        return auctionEntityController.retrieveAuctionById(id);
+        AuctionEntity a = auctionEntityController.retrieveAuctionById(id);
+        a.setBidEntities(null);
+        return a;
     }
-    
+
     @WebMethod(operationName = "viewAuctionListByName")
-    public List<AuctionEntity> viewAuctionListByName(@WebParam(name = "productName") String productName) throws AuctionNotFoundException{
-        return auctionEntityController.retrieveAuctionByProductName(productName);
+    public List<AuctionEntity> viewAuctionListByName(@WebParam(name = "productName") String productName) throws AuctionNotFoundException {
+        List<AuctionEntity> aList = auctionEntityController.retrieveAuctionByProductName(productName);
+        for (AuctionEntity a : aList) {
+            a.setBidEntities(null);
+        }
+        return aList;
     }
-    
+
     @WebMethod(operationName = "viewCreditBalance")
-    public BigDecimal viewCreditBalance(@WebParam(name = "id") Long id)  throws CustomerNotFoundException, GeneralException{
+    public BigDecimal viewCreditBalance(@WebParam(name = "id") Long id) throws CustomerNotFoundException, GeneralException {
         System.out.println("******* [OAS Web Service] View Credit Balance");
-        return customerEntityController.retrieveCustomerById(id).getCreditBalance();
+        CustomerEntity c = customerEntityController.retrieveCustomerById(id);
+        return c.getCreditBalance();
     }
-    
+
     @WebMethod(operationName = "viewAllAuctionListings")
-    public List<AuctionEntity> viewAllAuctionListings() throws GeneralException{
+    public List<AuctionEntity> viewAllAuctionListings() throws GeneralException {
         System.out.println("******* [OAS Web Service] View All Auction Listings");
-        return auctionEntityController.viewAllAuction();
+        List<AuctionEntity> aList = auctionEntityController.viewAllAuction();
+        for (AuctionEntity a : aList) {
+            a.setBidEntities(null);
+            a.setCustomerEntities(null);
+        }
+        return aList;
     }
-    
+
     @WebMethod(operationName = "viewWonAuctionListings")
-    public List<AuctionEntity> viewWonAuctionListings(@WebParam(name = "id") Long cid) throws GeneralException{
+    public List<AuctionEntity> viewWonAuctionListings(@WebParam(name = "id") Long cid) throws GeneralException {
         System.out.println("******* [OAS Web Service] View Won Auction Listings");
-        return auctionEntityController.viewWonAuction(cid);
+        List<AuctionEntity> aList = auctionEntityController.viewWonAuction(cid);
+
+        for (AuctionEntity a : aList) {
+            a.setBidEntities(null);
+            a.setCustomerEntities(null);
+        }
+        return aList;
     }
-    
 
     @WebMethod(operationName = "createSnippingBid")
-    public void createSnippingBid(@WebParam(name="bid")BidEntity bid, @WebParam(name="maxPrice") BigDecimal maxPrice, @WebParam(name="timeDuration" )int timeDuration, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException{
-        bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice); 
+    public void createSnippingBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+        bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice);
     }
 
     @WebMethod(operationName = "createProxyBid")
-    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException{
+    public void createProxyBid(@WebParam(name = "bid") ProxyBiddingEntity bid, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
         bidEntityController.createProxyBid(bid, cid, aid);
     }
 }

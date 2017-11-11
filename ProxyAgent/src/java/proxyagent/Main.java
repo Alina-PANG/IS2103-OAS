@@ -8,6 +8,7 @@ package proxyagent;
 import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import javax.ejb.EJB;
 
 /**
@@ -17,6 +18,9 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
+    private static TimerSessionBeanRemote timerSessionBean;
+
+    @EJB
     private static CustomerEntityControllerRemote customerEntityController;
 
     @EJB
@@ -24,12 +28,14 @@ public class Main {
 
     @EJB
     private static AuctionEntityControllerRemote auctionEntityController;
+    
+    
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MainApp mainApp = new MainApp(customerEntityController, bidEntityController, auctionEntityController);
+        MainApp mainApp = new MainApp(customerEntityController, bidEntityController, auctionEntityController,timerSessionBean);
         mainApp.runApp();
     }
 

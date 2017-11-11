@@ -19,51 +19,6 @@
 <message name="CustomerNotPremiumException">
 <part name="fault" element="tns:CustomerNotPremiumException"/>
 </message>
-<message name="registration">
-<part name="parameters" element="tns:registration"/>
-</message>
-<message name="registrationResponse">
-<part name="parameters" element="tns:registrationResponse"/>
-</message>
-<message name="CustomerAlreadyPremiumException">
-<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
-</message>
-<message name="viewAuctionListDetails">
-<part name="parameters" element="tns:viewAuctionListDetails"/>
-</message>
-<message name="viewAuctionListDetailsResponse">
-<part name="parameters" element="tns:viewAuctionListDetailsResponse"/>
-</message>
-<message name="AuctionNotFoundException">
-<part name="fault" element="tns:AuctionNotFoundException"/>
-</message>
-<message name="viewAuctionListByName">
-<part name="parameters" element="tns:viewAuctionListByName"/>
-</message>
-<message name="viewAuctionListByNameResponse">
-<part name="parameters" element="tns:viewAuctionListByNameResponse"/>
-</message>
-<message name="viewCreditBalance">
-<part name="parameters" element="tns:viewCreditBalance"/>
-</message>
-<message name="viewCreditBalanceResponse">
-<part name="parameters" element="tns:viewCreditBalanceResponse"/>
-</message>
-<message name="GeneralException">
-<part name="fault" element="tns:GeneralException"/>
-</message>
-<message name="viewAllAuctionListings">
-<part name="parameters" element="tns:viewAllAuctionListings"/>
-</message>
-<message name="viewAllAuctionListingsResponse">
-<part name="parameters" element="tns:viewAllAuctionListingsResponse"/>
-</message>
-<message name="viewWonAuctionListings">
-<part name="parameters" element="tns:viewWonAuctionListings"/>
-</message>
-<message name="viewWonAuctionListingsResponse">
-<part name="parameters" element="tns:viewWonAuctionListingsResponse"/>
-</message>
 <message name="createProxyBid">
 <part name="parameters" element="tns:createProxyBid"/>
 </message>
@@ -79,8 +34,56 @@
 <message name="BidAlreadyExistException">
 <part name="fault" element="tns:BidAlreadyExistException"/>
 </message>
+<message name="NotEnoughCreditException">
+<part name="fault" element="tns:NotEnoughCreditException"/>
+</message>
 <message name="BidLessThanIncrementException">
 <part name="fault" element="tns:BidLessThanIncrementException"/>
+</message>
+<message name="GeneralException">
+<part name="fault" element="tns:GeneralException"/>
+</message>
+<message name="AuctionNotFoundException">
+<part name="fault" element="tns:AuctionNotFoundException"/>
+</message>
+<message name="registration">
+<part name="parameters" element="tns:registration"/>
+</message>
+<message name="registrationResponse">
+<part name="parameters" element="tns:registrationResponse"/>
+</message>
+<message name="CustomerAlreadyPremiumException">
+<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
+</message>
+<message name="viewAuctionListDetails">
+<part name="parameters" element="tns:viewAuctionListDetails"/>
+</message>
+<message name="viewAuctionListDetailsResponse">
+<part name="parameters" element="tns:viewAuctionListDetailsResponse"/>
+</message>
+<message name="viewAuctionListByName">
+<part name="parameters" element="tns:viewAuctionListByName"/>
+</message>
+<message name="viewAuctionListByNameResponse">
+<part name="parameters" element="tns:viewAuctionListByNameResponse"/>
+</message>
+<message name="viewCreditBalance">
+<part name="parameters" element="tns:viewCreditBalance"/>
+</message>
+<message name="viewCreditBalanceResponse">
+<part name="parameters" element="tns:viewCreditBalanceResponse"/>
+</message>
+<message name="viewAllAuctionListings">
+<part name="parameters" element="tns:viewAllAuctionListings"/>
+</message>
+<message name="viewAllAuctionListingsResponse">
+<part name="parameters" element="tns:viewAllAuctionListingsResponse"/>
+</message>
+<message name="viewWonAuctionListings">
+<part name="parameters" element="tns:viewWonAuctionListings"/>
+</message>
+<message name="viewWonAuctionListingsResponse">
+<part name="parameters" element="tns:viewWonAuctionListingsResponse"/>
 </message>
 <message name="createSnippingBid">
 <part name="parameters" element="tns:createSnippingBid"/>
@@ -95,6 +98,18 @@
 <fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
 <fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
 <fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
+</operation>
+<operation name="createProxyBid">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidRequest" message="tns:createProxyBid"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidResponse" message="tns:createProxyBidResponse"/>
+<fault message="tns:AuctionClosedException" name="AuctionClosedException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionClosedException"/>
+<fault message="tns:AuctionNotOpenException" name="AuctionNotOpenException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotOpenException"/>
+<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidAlreadyExistException"/>
+<fault message="tns:NotEnoughCreditException" name="NotEnoughCreditException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/NotEnoughCreditException"/>
+<fault message="tns:BidLessThanIncrementException" name="BidLessThanIncrementException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidLessThanIncrementException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/GeneralException"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/CustomerNotFoundException"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotFoundException"/>
 </operation>
 <operation name="registration">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
@@ -129,17 +144,6 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListingsResponse" message="tns:viewWonAuctionListingsResponse"/>
 <fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListings/Fault/GeneralException"/>
 </operation>
-<operation name="createProxyBid">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidRequest" message="tns:createProxyBid"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidResponse" message="tns:createProxyBidResponse"/>
-<fault message="tns:AuctionClosedException" name="AuctionClosedException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionClosedException"/>
-<fault message="tns:AuctionNotOpenException" name="AuctionNotOpenException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotOpenException"/>
-<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidAlreadyExistException"/>
-<fault message="tns:BidLessThanIncrementException" name="BidLessThanIncrementException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidLessThanIncrementException"/>
-<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/GeneralException"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/CustomerNotFoundException"/>
-<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotFoundException"/>
-</operation>
 <operation name="createSnippingBid">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidRequest" message="tns:createSnippingBid"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidResponse" message="tns:createSnippingBidResponse"/>
@@ -167,6 +171,39 @@
 </fault>
 <fault name="CustomerNotPremiumException">
 <soap:fault name="CustomerNotPremiumException" use="literal"/>
+</fault>
+</operation>
+<operation name="createProxyBid">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="AuctionClosedException">
+<soap:fault name="AuctionClosedException" use="literal"/>
+</fault>
+<fault name="AuctionNotOpenException">
+<soap:fault name="AuctionNotOpenException" use="literal"/>
+</fault>
+<fault name="BidAlreadyExistException">
+<soap:fault name="BidAlreadyExistException" use="literal"/>
+</fault>
+<fault name="NotEnoughCreditException">
+<soap:fault name="NotEnoughCreditException" use="literal"/>
+</fault>
+<fault name="BidLessThanIncrementException">
+<soap:fault name="BidLessThanIncrementException" use="literal"/>
+</fault>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
+</fault>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
 <operation name="registration">
@@ -248,36 +285,6 @@
 </output>
 <fault name="GeneralException">
 <soap:fault name="GeneralException" use="literal"/>
-</fault>
-</operation>
-<operation name="createProxyBid">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="AuctionClosedException">
-<soap:fault name="AuctionClosedException" use="literal"/>
-</fault>
-<fault name="AuctionNotOpenException">
-<soap:fault name="AuctionNotOpenException" use="literal"/>
-</fault>
-<fault name="BidAlreadyExistException">
-<soap:fault name="BidAlreadyExistException" use="literal"/>
-</fault>
-<fault name="BidLessThanIncrementException">
-<soap:fault name="BidLessThanIncrementException" use="literal"/>
-</fault>
-<fault name="GeneralException">
-<soap:fault name="GeneralException" use="literal"/>
-</fault>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="AuctionNotFoundException">
-<soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
 <operation name="createSnippingBid">

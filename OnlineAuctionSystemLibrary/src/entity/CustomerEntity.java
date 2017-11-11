@@ -20,8 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlTransient;
 import util.enumeration.CustomerTypeEnum;
 
 /**
@@ -213,6 +212,7 @@ public class CustomerEntity implements Serializable {
     /**
      * @return the addressEntities
      */
+    @XmlTransient
     public List<AddressEntity> getAddressEntities() {
         return addressEntities;
     }

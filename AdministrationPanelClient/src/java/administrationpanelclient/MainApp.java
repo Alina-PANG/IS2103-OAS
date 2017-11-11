@@ -9,6 +9,7 @@ import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CreditPackageEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import entity.StaffEntity;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -28,6 +29,7 @@ public class MainApp {
     private CreditPackageEntityControllerRemote creditPackageEntityController;
     private BidEntityControllerRemote bidEntityController;
     private AuctionEntityControllerRemote auctionEntityController;
+    private TimerSessionBeanRemote timerSessionBean;
 
     // Define entities
     private StaffEntity currentStaffEntity;
@@ -40,11 +42,12 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(StaffEntityControllerRemote staffEntityController, CreditPackageEntityControllerRemote creditPackageEntityController, BidEntityControllerRemote bidEntityController, AuctionEntityControllerRemote auctionEntityController) {
+    public MainApp(TimerSessionBeanRemote timerSessionBean, StaffEntityControllerRemote staffEntityController, CreditPackageEntityControllerRemote creditPackageEntityController, BidEntityControllerRemote bidEntityController, AuctionEntityControllerRemote auctionEntityController) {
         this.staffEntityController = staffEntityController;
         this.creditPackageEntityController = creditPackageEntityController;
         this.bidEntityController = bidEntityController;
         this.auctionEntityController = auctionEntityController;
+        this.timerSessionBean = timerSessionBean;
     }
 
     public void runApp() {
@@ -115,6 +118,7 @@ public class MainApp {
             currentStaffEntity = staffEntityController.staffLogin(username, password);
             System.out.println("[System] You have successfully logged in as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "!");
             postLoginOperation();
+            
         } catch (StaffNotFoundException | IncorrectPasswordException | DuplicateException ex) {
             System.err.println("[Warning] An error has occured while trying to login: " + ex.getMessage());
         }

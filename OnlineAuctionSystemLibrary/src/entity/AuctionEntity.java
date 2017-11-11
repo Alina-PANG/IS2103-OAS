@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.Future;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import util.enumeration.StatusEnum;
 
@@ -40,10 +41,8 @@ public class AuctionEntity implements Serializable {
     private Long id;
     private Long winningBidId;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Future
     private Date startingTime;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Future
     private Date endingTime;
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
@@ -64,17 +63,13 @@ public class AuctionEntity implements Serializable {
     public AuctionEntity(Date startingTime, Date endingTime, BigDecimal reservePrice, String productName, String productDescription) {
         this.startingTime = startingTime;
         this.endingTime = endingTime;
-        if(this.startingTime.compareTo(new Date()) < 0){
-            this.status = StatusEnum.ACTIVE;
-        }
-        else
-            this.status = StatusEnum.CLOSED;
+        this.status = StatusEnum.PENDING;
         this.reservePrice = reservePrice;
         this.productName = productName;
         this.productDescription = productDescription;
         this.bidEntities = new ArrayList<BidEntity>();
         this.customerEntities = new ArrayList<CustomerEntity>();
-        this.winningBidId = new Long(0);
+        this.winningBidId = new Long(-10);
     }
 
     public Long getId() {
@@ -227,7 +222,6 @@ public class AuctionEntity implements Serializable {
     public void setBidEntities(List<BidEntity> bidEntities) {
         this.bidEntities = bidEntities;
     }
-
 
     /**
      * @return the status

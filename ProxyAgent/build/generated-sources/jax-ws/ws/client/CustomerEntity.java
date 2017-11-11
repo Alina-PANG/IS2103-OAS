@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="addressEntities" type="{http://ws.session.ejb/}addressEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="auctionEntities" type="{http://ws.session.ejb/}auctionEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="bidEntities" type="{http://ws.session.ejb/}bidEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="contactNumber" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
@@ -44,7 +43,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "customerEntity", propOrder = {
-    "addressEntities",
     "auctionEntities",
     "bidEntities",
     "contactNumber",
@@ -61,8 +59,6 @@ import javax.xml.bind.annotation.XmlType;
 public class CustomerEntity {
 
     @XmlElement(nillable = true)
-    protected List<AddressEntity> addressEntities;
-    @XmlElement(nillable = true)
     protected List<AuctionEntity> auctionEntities;
     @XmlElement(nillable = true)
     protected List<BidEntity> bidEntities;
@@ -78,35 +74,6 @@ public class CustomerEntity {
     protected String lastName;
     protected String password;
     protected String username;
-
-    /**
-     * Gets the value of the addressEntities property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the addressEntities property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAddressEntities().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AddressEntity }
-     * 
-     * 
-     */
-    public List<AddressEntity> getAddressEntities() {
-        if (addressEntities == null) {
-            addressEntities = new ArrayList<AddressEntity>();
-        }
-        return this.addressEntities;
-    }
 
     /**
      * Gets the value of the auctionEntities property.

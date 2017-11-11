@@ -8,10 +8,12 @@ package proxyagent;
 import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
+import ejb.session.stateless.TimerSessionBeanRemote;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import util.exception.NotEnoughCreditException;
 import ws.client.AuctionClosedException_Exception;
 import ws.client.AuctionNotFoundException_Exception;
 import ws.client.AuctionNotOpenException_Exception;
@@ -24,6 +26,7 @@ import ws.client.CustomerNotFoundException_Exception;
 import ws.client.CustomerNotPremiumException_Exception;
 import ws.client.GeneralException_Exception;
 import ws.client.IncorrectPasswordException_Exception;
+import ws.client.NotEnoughCreditException_Exception;
 import ws.client.ProxyBiddingEntity;
 
 /**
@@ -35,16 +38,18 @@ public class MainApp {
     private CustomerEntityControllerRemote customerEntityController;
     private BidEntityControllerRemote bidEntityController;
     private AuctionEntityControllerRemote auctionEntityController;
+    private TimerSessionBeanRemote timerSessionBean;
 
     private CustomerEntity currentCustomerEntity;
 
     public MainApp() {
     }
 
-    public MainApp(CustomerEntityControllerRemote customerEntityController, BidEntityControllerRemote bidEntityController, AuctionEntityControllerRemote auctionEntityController) {
+    public MainApp(CustomerEntityControllerRemote customerEntityController, BidEntityControllerRemote bidEntityController, AuctionEntityControllerRemote auctionEntityController, TimerSessionBeanRemote timerSessionBean) {
         this.customerEntityController = customerEntityController;
         this.bidEntityController = bidEntityController;
         this.auctionEntityController = auctionEntityController;
+        this.timerSessionBean = timerSessionBean;
     }
 
     public void runApp() {
@@ -52,6 +57,7 @@ public class MainApp {
         int response = 0;
 
         while (true) {
+            System.out.println("");
             menu1();
             try {
                 response = sc.nextInt();
@@ -86,10 +92,10 @@ public class MainApp {
         System.out.println("2. View won auction listings");
         System.out.println("3. View Auction Listing Details");
         System.out.println("4. View Credit Balance");
-        System.out.println("5. Configure Proxy Bidding for Auction Listing [not supported]");
-        System.out.println("6. Configure Sniping for Auction Listing [not supported]");
+        System.out.println("5. Configure Proxy Bidding for Auction Listing");
+        System.out.println("6. Configure Sniping for Auction Listing");
         System.out.println("7. Logout");
-        System.out.println("Please input your choice: ");
+        System.out.print("Please input your choice: ");
     }
 
     private void postLogin() {
@@ -102,22 +108,28 @@ public class MainApp {
                 response = sc.nextInt();
                 switch (response) {
                     case 1:
+                        System.out.println("");
                         System.out.println("******* [Premium Customer] View All Auction Listing *******");
                         viewAllAuction();
                         break;
                     case 2:
+                        System.out.println("");
                         viewWonAuction();
                         break;
                     case 3:
+                        System.out.println("");
                         viewAuctionListingDetail();
                         break;
                     case 4:
+                        System.out.println("");
                         viewCreditBalance();
                         break;
                     case 5:
+                        System.out.println("");
                         configureProxyBidding();
                         break;
                     case 6:
+                        System.out.println("");
                         configureSnippingBidding();
                         break;
                     case 7:
@@ -143,7 +155,7 @@ public class MainApp {
 
         System.out.println("******* [Premium Customer] Configure Proxy Bidding for Auction Listing *******");
         viewAllAuction();
-        System.out.println("Please input the auction id that you want to put proxy bid: ");
+        System.out.print("Please input the auction id that you want to put proxy bid: ");
         aid = sc.nextLong();
         System.out.print("Please input the max price that you want to pay: ");
         maxPrice = sc.nextBigDecimal();
@@ -153,7 +165,7 @@ public class MainApp {
         try {
             createProxyBid(bid, aid, currentCustomerEntity.getId());
             System.out.println("[System] Proxy bid has been created successfully!");
-        } catch (AuctionNotOpenException_Exception | GeneralException_Exception | BidAlreadyExistException_Exception | AuctionNotFoundException_Exception | BidLessThanIncrementException_Exception | CustomerNotFoundException_Exception | AuctionClosedException_Exception ex) {
+        } catch (NotEnoughCreditException_Exception |AuctionNotOpenException_Exception | GeneralException_Exception | BidAlreadyExistException_Exception | AuctionNotFoundException_Exception | BidLessThanIncrementException_Exception | CustomerNotFoundException_Exception | AuctionClosedException_Exception ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
     }
@@ -165,7 +177,7 @@ public class MainApp {
         int timeDuration;
 
         System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
-        System.out.println("Please input the auction id that you want to put proxy bid: ");
+        System.out.println("Please input the auction id that you want to put for snipping bid: ");
         aid = sc.nextLong();
         System.out.print("Please input the max price that you want to pay: ");
         maxPrice = sc.nextBigDecimal();
@@ -207,12 +219,12 @@ public class MainApp {
 
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("[Immutable] Status: " + al.getStatus());
-            System.out.print("[Immutable] Winning Bid Amount: ");
+            System.out.print("[Immutable] Current Highest Bid: ");
 
-            if (al.getWinningBidId().equals(new Long(0))) {
-                System.out.println("" + bidEntityController.retrieveById(al.getWinningBidId()).getAmount());
+            if (!al.getWinningBidId().equals(new Long(-10))) {
+                System.out.println("" + auctionEntityController.getCurrentWinningBidEntity(al.getId()).getAmount());
             } else {
-                System.out.println("No winning bid yet.");
+                System.out.println("No bid yet.");
             }
             System.out.println("1. Start Date: " + al.getStartingTime());
             System.out.println("2. End Date: " + al.getEndingTime());
@@ -336,7 +348,7 @@ public class MainApp {
         port.createSnippingBid(bid, maxPrice, timeDuration, aid, cid);
     }
 
-    private static void createProxyBid(ws.client.ProxyBiddingEntity bid, java.lang.Long aid, java.lang.Long cid) throws AuctionNotOpenException_Exception, GeneralException_Exception, BidAlreadyExistException_Exception, AuctionNotFoundException_Exception, BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionClosedException_Exception {
+    private static void createProxyBid(ws.client.ProxyBiddingEntity bid, java.lang.Long aid, java.lang.Long cid) throws NotEnoughCreditException_Exception, AuctionNotOpenException_Exception, GeneralException_Exception, BidAlreadyExistException_Exception, AuctionNotFoundException_Exception, BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionClosedException_Exception {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         port.createProxyBid(bid, aid, cid);

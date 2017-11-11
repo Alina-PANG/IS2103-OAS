@@ -59,6 +59,17 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public AuctionEntity createNewAuction(AuctionEntity ae) throws AuctionAlreadyExistException, GeneralException {
         try {
+
+            if (ae.getStartingTime().after(ae.getEndingTime())) {
+                throw new GeneralException("starting time is after ending time!");
+            }
+            if (ae.getStartingTime().before(new Date())) {
+                throw new GeneralException("starting date cannot be before the current time!");
+            }
+            if (ae.getEndingTime().before(new Date())) {
+                throw new GeneralException("ending date cannot be before the current time!");
+            }
+
             em.persist(ae);
             em.flush();
             em.refresh(ae);
@@ -72,36 +83,11 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        } catch (ConstraintViolationException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
-                throw new AuctionAlreadyExistException("Auction with same identification number already exist!");
-            } else {
-                throw new GeneralException("Start and End Date and time cannot be later than today!");
-            }
         }
     }
 
-    @Schedule(hour = "*", minute = "1", second = "*", info = "everyMinute")
-    public void automaticTimer() throws GeneralException {
-        System.out.println("Timer: Every minute");
-        List<AuctionEntity> list = viewAllAuction();
 
-        for (AuctionEntity ae : list) {
-            if (ae.getEndingTime().after(new Date())) {
-                ae.setStatus(StatusEnum.CLOSED);
-                closeAuction(ae);
-                System.out.println("Auction "+ae.getId()+" has been closed.");
-            }
-            if (ae.getStartingTime().after(new Date())) {
-                ae.setStatus(StatusEnum.ACTIVE);
-                System.out.println("Auction "+ae.getId()+" has been opened.");
-            }
-        }
-    }
-
-    private BidEntity closeAuction(AuctionEntity ae) {
+    public BidEntity closeAuction(AuctionEntity ae) {
         if (ae.getBidEntities().size() != 0) {
             try {
                 Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.auctionEntity.reservePrice < b.amount AND b.amount = (SELECT MAX(b.amount) FROM BidEntity b WHERE b.auctionEntity.id = :aid)");
@@ -114,7 +100,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 for (BidEntity b : bidList) {
                     if (!b.getId().equals(bid.getId())) {
                         CustomerEntity c = b.getCustomerEntity();
-                        c.addCreditBalance(b.getAmount());   
+                        c.addCreditBalance(b.getAmount());
                         CreditTransactionEntity ct = new CreditTransactionEntity(b.getAmount(), TransactionTypeEnum.REFUND);
                         c.getCreditTransactionEntities().add(ct);
                         ct.setCustomerEntity(c);
@@ -191,14 +177,30 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      */
     @Override
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException {
+        if (newAuction.getStartingTime().after(newAuction.getEndingTime())) {
+            throw new GeneralException("starting time is after ending time!");
+        }
+
         AuctionEntity oldAuction = retrieveAuctionById(newAuction.getId());
 
         oldAuction.setStatus(newAuction.getStatus());
         oldAuction.setReservePrice(newAuction.getReservePrice());
-        // oldAuction.setWinningBidId(newAuction.getWinningBidId());
+        //oldAuction.setWinningBidId(newAuction.getWinningBidId());
         //oldAuction.setProductCode(newAuction.getProductCode());
         oldAuction.setProductName(newAuction.getProductName());
         oldAuction.setProductDescription(newAuction.getProductDescription());
+        if (!newAuction.getStartingTime().equals(oldAuction.getStartingTime())) {
+            if (newAuction.getStartingTime().before(new Date())) {
+                throw new GeneralException("starting date cannot be before the current time!");
+            }
+            oldAuction.setStartingTime(newAuction.getStartingTime());
+        }
+        if (!newAuction.getEndingTime().equals(oldAuction.getEndingTime())) {
+            if (newAuction.getEndingTime().before(new Date())) {
+                throw new GeneralException("ending date cannot be before the current time!");
+            }
+            oldAuction.setEndingTime(newAuction.getEndingTime());
+        }
 
         try {
             em.flush();
@@ -213,7 +215,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         }
-
         return oldAuction;
     }
 
@@ -334,7 +335,9 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice) {
-        if(currentprice == null) currentprice = new BigDecimal(0);
+        if (currentprice == null) {
+            currentprice = new BigDecimal(0);
+        }
         BigDecimal incremental = new BigDecimal(0);
         if (currentprice.compareTo(BigDecimal.valueOf(0.00)) == 1
                 && currentprice.compareTo(BigDecimal.valueOf(0.99)) == -1) {
@@ -371,13 +374,14 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         newbid.setAuctionEntity(auctionentity);
         newbid.setCustomerEntity(customer);
         BidEntity currentWinningBid = getCurrentWinningBidEntity(productid);
-        if(currentWinningBid == null)
+        if (currentWinningBid == null) {
             throw new GeneralException("No winning bid yet!");
+        }
         BigDecimal currentprice = currentWinningBid.getAmount();
         BigDecimal currentincremental = getCurrentBidIncremental(currentprice);
         BigDecimal newprice = currentprice.add(currentincremental);
         newbid.setAmount(newprice);
-       // newbid = bidEntityController.createNewBid(newbid);
+        // newbid = bidEntityController.createNewBid(newbid);
 
         //add customerentity and bidentity into auction entity
         auctionentity.getBidEntities().add(newbid);

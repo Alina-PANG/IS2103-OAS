@@ -11,6 +11,7 @@ import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.CreditPackageEntityControllerLocal;
 import ejb.session.stateless.CustomerEntityControllerLocal;
 import ejb.session.stateless.StaffEntityControllerLocal;
+import ejb.session.stateless.TimerSessionBeanLocal;
 import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
@@ -55,6 +56,10 @@ import util.exception.StaffNotFoundException;
 public class DataInitializationSessionBean {
 
     @EJB
+    private TimerSessionBeanLocal timerSessionBean;
+
+
+    @EJB
     private AddressEntityControllerLocal addressEntityController;
 
     @EJB
@@ -71,6 +76,10 @@ public class DataInitializationSessionBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityController;
+    
+    
+    
+    
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
@@ -111,14 +120,14 @@ public class DataInitializationSessionBean {
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
 
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 11/11/2017"), formatter.parse("16:36:22 11/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
-            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 11/11/2017"), formatter.parse("23:59:59 20/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
+            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 12/11/2017"), formatter.parse("16:36:22 12/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
+            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 12/11/2017"), formatter.parse("23:59:59 20/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
             auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(92), "Apple", "Sweet Apple"));
 
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(20)), c.getId(), ae1.getId());
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(60)), c2.getId(), ae1.getId());
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae2.getId());
 
         } catch (AuctionClosedException | AuctionNotOpenException |NotEnoughCreditException| AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | AddressAlreadyExistsException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
             System.out.println("Error in Singleton 2: "+ex.getMessage());
