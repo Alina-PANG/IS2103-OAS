@@ -1,7 +1,6 @@
 
 package ws.client;
 
-import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -18,7 +17,6 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="bid" type="{http://ws.session.ejb/}proxyBiddingEntity" minOccurs="0"/&gt;
- *         &lt;element name="maxPrice" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *         &lt;element name="aid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *         &lt;element name="cid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
@@ -32,14 +30,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createProxyBid", propOrder = {
     "bid",
-    "maxPrice",
     "aid",
     "cid"
 })
 public class CreateProxyBid {
 
     protected ProxyBiddingEntity bid;
-    protected BigDecimal maxPrice;
     protected Long aid;
     protected Long cid;
 
@@ -65,30 +61,6 @@ public class CreateProxyBid {
      */
     public void setBid(ProxyBiddingEntity value) {
         this.bid = value;
-    }
-
-    /**
-     * Gets the value of the maxPrice property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public BigDecimal getMaxPrice() {
-        return maxPrice;
-    }
-
-    /**
-     * Sets the value of the maxPrice property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setMaxPrice(BigDecimal value) {
-        this.maxPrice = value;
     }
 
     /**

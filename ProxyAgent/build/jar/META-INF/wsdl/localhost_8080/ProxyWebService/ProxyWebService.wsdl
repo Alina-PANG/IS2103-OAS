@@ -4,17 +4,11 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/ProxyWebService/ProxyWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="persist">
-<part name="parameters" element="tns:persist"/>
+<message name="customerLogin">
+<part name="parameters" element="tns:customerLogin"/>
 </message>
-<message name="persistResponse">
-<part name="parameters" element="tns:persistResponse"/>
-</message>
-<message name="registration">
-<part name="parameters" element="tns:registration"/>
-</message>
-<message name="registrationResponse">
-<part name="parameters" element="tns:registrationResponse"/>
+<message name="customerLoginResponse">
+<part name="parameters" element="tns:customerLoginResponse"/>
 </message>
 <message name="CustomerNotFoundException">
 <part name="fault" element="tns:CustomerNotFoundException"/>
@@ -22,17 +16,17 @@
 <message name="IncorrectPasswordException">
 <part name="fault" element="tns:IncorrectPasswordException"/>
 </message>
-<message name="CustomerAlreadyPremiumException">
-<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
-</message>
-<message name="customerLogin">
-<part name="parameters" element="tns:customerLogin"/>
-</message>
-<message name="customerLoginResponse">
-<part name="parameters" element="tns:customerLoginResponse"/>
-</message>
 <message name="CustomerNotPremiumException">
 <part name="fault" element="tns:CustomerNotPremiumException"/>
+</message>
+<message name="registration">
+<part name="parameters" element="tns:registration"/>
+</message>
+<message name="registrationResponse">
+<part name="parameters" element="tns:registrationResponse"/>
+</message>
+<message name="CustomerAlreadyPremiumException">
+<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
 </message>
 <message name="viewAuctionListDetails">
 <part name="parameters" element="tns:viewAuctionListDetails"/>
@@ -70,19 +64,37 @@
 <message name="viewWonAuctionListingsResponse">
 <part name="parameters" element="tns:viewWonAuctionListingsResponse"/>
 </message>
-<message name="placeBid">
-<part name="parameters" element="tns:placeBid"/>
+<message name="createProxyBid">
+<part name="parameters" element="tns:createProxyBid"/>
 </message>
-<message name="placeBidResponse">
-<part name="parameters" element="tns:placeBidResponse"/>
+<message name="createProxyBidResponse">
+<part name="parameters" element="tns:createProxyBidResponse"/>
+</message>
+<message name="AuctionClosedException">
+<part name="fault" element="tns:AuctionClosedException"/>
+</message>
+<message name="AuctionNotOpenException">
+<part name="fault" element="tns:AuctionNotOpenException"/>
 </message>
 <message name="BidAlreadyExistException">
 <part name="fault" element="tns:BidAlreadyExistException"/>
 </message>
+<message name="BidLessThanIncrementException">
+<part name="fault" element="tns:BidLessThanIncrementException"/>
+</message>
+<message name="createSnippingBid">
+<part name="parameters" element="tns:createSnippingBid"/>
+</message>
+<message name="createSnippingBidResponse">
+<part name="parameters" element="tns:createSnippingBidResponse"/>
+</message>
 <portType name="ProxyWebService">
-<operation name="persist">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/persistRequest" message="tns:persist"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/persistResponse" message="tns:persistResponse"/>
+<operation name="customerLogin">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
+<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
+<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
 </operation>
 <operation name="registration">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
@@ -90,13 +102,6 @@
 <fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerNotFoundException"/>
 <fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/IncorrectPasswordException"/>
 <fault message="tns:CustomerAlreadyPremiumException" name="CustomerAlreadyPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerAlreadyPremiumException"/>
-</operation>
-<operation name="customerLogin">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
-<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
-<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
 </operation>
 <operation name="viewAuctionListDetails">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsRequest" message="tns:viewAuctionListDetails"/>
@@ -124,16 +129,29 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListingsResponse" message="tns:viewWonAuctionListingsResponse"/>
 <fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWonAuctionListings/Fault/GeneralException"/>
 </operation>
-<operation name="placeBid">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidRequest" message="tns:placeBid"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/placeBidResponse" message="tns:placeBidResponse"/>
-<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/BidAlreadyExistException"/>
-<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/placeBid/Fault/GeneralException"/>
+<operation name="createProxyBid">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidRequest" message="tns:createProxyBid"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidResponse" message="tns:createProxyBidResponse"/>
+<fault message="tns:AuctionClosedException" name="AuctionClosedException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionClosedException"/>
+<fault message="tns:AuctionNotOpenException" name="AuctionNotOpenException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotOpenException"/>
+<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidAlreadyExistException"/>
+<fault message="tns:BidLessThanIncrementException" name="BidLessThanIncrementException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidLessThanIncrementException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/GeneralException"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/CustomerNotFoundException"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotFoundException"/>
+</operation>
+<operation name="createSnippingBid">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidRequest" message="tns:createSnippingBid"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidResponse" message="tns:createSnippingBidResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/CustomerNotFoundException"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/AuctionNotFoundException"/>
+<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/BidAlreadyExistException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/GeneralException"/>
 </operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="persist">
+<operation name="customerLogin">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -141,6 +159,15 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="IncorrectPasswordException">
+<soap:fault name="IncorrectPasswordException" use="literal"/>
+</fault>
+<fault name="CustomerNotPremiumException">
+<soap:fault name="CustomerNotPremiumException" use="literal"/>
+</fault>
 </operation>
 <operation name="registration">
 <soap:operation soapAction=""/>
@@ -158,24 +185,6 @@
 </fault>
 <fault name="CustomerAlreadyPremiumException">
 <soap:fault name="CustomerAlreadyPremiumException" use="literal"/>
-</fault>
-</operation>
-<operation name="customerLogin">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="IncorrectPasswordException">
-<soap:fault name="IncorrectPasswordException" use="literal"/>
-</fault>
-<fault name="CustomerNotPremiumException">
-<soap:fault name="CustomerNotPremiumException" use="literal"/>
 </fault>
 </operation>
 <operation name="viewAuctionListDetails">
@@ -241,7 +250,7 @@
 <soap:fault name="GeneralException" use="literal"/>
 </fault>
 </operation>
-<operation name="placeBid">
+<operation name="createProxyBid">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -249,6 +258,42 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="AuctionClosedException">
+<soap:fault name="AuctionClosedException" use="literal"/>
+</fault>
+<fault name="AuctionNotOpenException">
+<soap:fault name="AuctionNotOpenException" use="literal"/>
+</fault>
+<fault name="BidAlreadyExistException">
+<soap:fault name="BidAlreadyExistException" use="literal"/>
+</fault>
+<fault name="BidLessThanIncrementException">
+<soap:fault name="BidLessThanIncrementException" use="literal"/>
+</fault>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
+</fault>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="createSnippingBid">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
+</fault>
 <fault name="BidAlreadyExistException">
 <soap:fault name="BidAlreadyExistException" use="literal"/>
 </fault>

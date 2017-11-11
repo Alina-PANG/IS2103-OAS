@@ -12,9 +12,11 @@ import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javafx.util.Pair;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.SessionContext;
@@ -28,15 +30,17 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import util.enumeration.CustomerTypeEnum;
 import util.enumeration.StatusEnum;
 import util.enumeration.TransactionTypeEnum;
+import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
+import util.exception.AuctionNotOpenException;
 import util.exception.GeneralException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidLessThanIncrementException;
 import util.exception.BidNotFoundException;
 import util.exception.CustomerNotFoundException;
+import util.exception.NotEnoughCreditException;
 
 /**
  *
@@ -47,58 +51,85 @@ import util.exception.CustomerNotFoundException;
 @Remote(BidEntityControllerRemote.class)
 public class BidEntityController implements BidEntityControllerRemote, BidEntityControllerLocal {
 
+    @EJB
+    private AddressEntityControllerLocal addressEntityControllerLocal;
+
+    @EJB
+    private CustomerEntityControllerLocal customerEntityController;
+
+    @EJB
+    private AuctionEntityControllerLocal auctionEntityController;
+
+    @EJB
+    private CreditTransactionEntityControllerLocal ctController;
+
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
-    private AddressEntityControllerLocal addressEntityControllerLocal;
-    private CustomerEntityControllerLocal customerEntityController;
-    private AuctionEntityControllerLocal auctionEntityController;
-    private CreditTransactionEntityControllerLocal ctController;
 
     @Resource
     private SessionContext sessionContext;
 
     @Override
-    public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
-        BigDecimal currentPrice = auctionEntityController.getCurrentWinningBidEntity(aid).getAmount();
+    public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+        CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
+        AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+        BigDecimal more = bid.getAmount();
+
+        if (a.getEndingTime().compareTo(new Date()) <= 0) {
+            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
+        }
+
+        BigDecimal currentPrice;
+        BidEntity currentWinningBid = auctionEntityController.getCurrentWinningBidEntity(aid);
+        if (currentWinningBid == null) {
+            currentPrice = new BigDecimal(0);
+        } else {
+            currentPrice = currentWinningBid.getAmount();
+        }
+
         BigDecimal minPrice = currentPrice.add(auctionEntityController.getCurrentBidIncremental(currentPrice));
         if (bid.getAmount().compareTo(minPrice) < 0) {
             throw new BidLessThanIncrementException("The bid is less than the increment amount!");
         }
 
         try {
-            CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
-            AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
             boolean flag = true;
 
             try {
+                System.out.println("remove previous bid");
                 Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid");
                 query.setParameter("cid", cid);
                 query.setParameter("aid", aid);
                 BidEntity b = (BidEntity) query.getSingleResult();
-                ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
-
+                more.subtract(b.getAmount());
                 c.getBidEntities().remove(b);
                 a.getBidEntities().remove(b);
-                b.setCustomerEntity(null);
-                b.setAuctionEntity(null);
                 flag = false;
                 em.remove(b);
+                ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
             } catch (NoResultException ex) {
                 System.out.println("No previous bid.");
             }
 
+            if (c.getCreditBalance().compareTo(more) < 0) {
+                throw new NotEnoughCreditException("Not Enough Balance! (Your Balance: " + c.getCreditBalance() + "; Required: " + more + ")");
+            }
+
             c.getBidEntities().add(bid);
+            c.setCreditBalance(c.getCreditBalance().subtract(more));
             a.getBidEntities().add(bid);
             if (flag) {
                 c.getAuctionEntities().add(a);
                 a.getCustomerEntities().add(c);
             }
-            ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
+            bid.setCustomerEntity(c);
+            bid.setAuctionEntity(a);
 
             em.persist(bid);
             em.flush();
             em.refresh(bid);
-
+            
+            ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
             checkProxyBid(a);
 
             return bid;
@@ -113,11 +144,11 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         }
     }
 
-    private void checkProxyBid(AuctionEntity a) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+    private void checkProxyBid(AuctionEntity a) throws AuctionClosedException, AuctionNotOpenException, NotEnoughCreditException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
         List<BidEntity> list = a.getBidEntities();
-        for(BidEntity b: list){
-            if(b instanceof ProxyBiddingEntity){
-                createProxyBid((ProxyBiddingEntity)b, b.getCustomerEntity().getId(), a.getId()); 
+        for (BidEntity b : list) {
+            if (b instanceof ProxyBiddingEntity) {
+                createProxyBid((ProxyBiddingEntity) b, b.getCustomerEntity().getId(), a.getId());
             }
         }
     }
@@ -198,7 +229,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 bid.setAmount(minPrice);
                 try {
                     createNewBid(bid, c.getId(), a.getId());
-                } catch (BidLessThanIncrementException | CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
+                } catch (AuctionClosedException | NotEnoughCreditException | AuctionNotOpenException | BidLessThanIncrementException | CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
                     System.err.println("An error has occured: " + ex.getMessage());
                 }
             }
@@ -208,12 +239,12 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     }
 
     @Override
-    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        try{
+    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        try {
             createNewBid(bid, cid, aid);
-        } catch(BidAlreadyExistException ex){
+        } catch (BidAlreadyExistException ex) {
         }
-        
+
         BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
         BigDecimal minPrice = auctionEntityController.getCurrentBidIncremental(b.getAmount()).add(b.getAmount());
 

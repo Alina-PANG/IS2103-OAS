@@ -319,10 +319,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException {
         List<BidEntity> bidlist = viewBidEntity(productid);
-        if (bidlist != null) {
-            BidEntity highestbid = new BidEntity();
+        if (bidlist != null && bidlist.size() != 0) {
+            BidEntity highestbid = new BidEntity(new BigDecimal(0));
             for (BidEntity bid : bidlist) {
-                if (bid.getAmount().compareTo(highestbid.getAmount()) == 1) {
+                if (bid.getAmount().compareTo(highestbid.getAmount()) > 0) {
                     highestbid = bid;
                 }
             }
@@ -330,11 +330,11 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         } else {
             return null;
         }
-
     }
 
     @Override
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice) {
+        if(currentprice == null) currentprice = new BigDecimal(0);
         BigDecimal incremental = new BigDecimal(0);
         if (currentprice.compareTo(BigDecimal.valueOf(0.00)) == 1
                 && currentprice.compareTo(BigDecimal.valueOf(0.99)) == -1) {
@@ -370,7 +370,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         AuctionEntity auctionentity = retrieveAvailabeAuctionById(productid);
         newbid.setAuctionEntity(auctionentity);
         newbid.setCustomerEntity(customer);
-        BigDecimal currentprice = getCurrentWinningBidEntity(productid).getAmount();
+        BidEntity currentWinningBid = getCurrentWinningBidEntity(productid);
+        if(currentWinningBid == null)
+            throw new GeneralException("No winning bid yet!");
+        BigDecimal currentprice = currentWinningBid.getAmount();
         BigDecimal currentincremental = getCurrentBidIncremental(currentprice);
         BigDecimal newprice = currentprice.add(currentincremental);
         newbid.setAmount(newprice);

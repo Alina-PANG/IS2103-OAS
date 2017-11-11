@@ -9,6 +9,7 @@ import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -34,7 +35,9 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
+    @EJB
     private CreditPackageEntityControllerLocal creditPackageEntityControllerLocal;
+    @EJB
     private CustomerEntityControllerLocal customerEntityController;
 
     //comment for future modification

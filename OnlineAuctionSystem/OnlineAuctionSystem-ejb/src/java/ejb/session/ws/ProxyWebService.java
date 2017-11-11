@@ -8,6 +8,7 @@ package ejb.session.ws;
 import ejb.session.stateless.AuctionEntityControllerLocal;
 import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.CustomerEntityControllerLocal;
+import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
@@ -22,7 +23,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.CustomerTypeEnum;
+import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
+import util.exception.AuctionNotOpenException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidLessThanIncrementException;
 import util.exception.CustomerAlreadyPremiumException;
@@ -31,6 +34,7 @@ import util.exception.CustomerNotPremiumException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
+import util.exception.NotEnoughCreditException;
 
 /**
  *
@@ -78,19 +82,23 @@ public class ProxyWebService {
         System.out.println("******* [OAS Web Service] Remote Login");
         
         CustomerEntity c = customerEntityController.customerLogin(username, password);
-        detachBidAddress(c.getBidEntities());
+        detachBidAddress(c.getBidEntities(), c.getAddressEntities());
         
         if(c.getCustomerTypeEnum() == CustomerTypeEnum.NORMAL)
             throw new CustomerNotPremiumException("Customer "+username+" is not a premium customer!");
         return c;
     }
     
-    private void detachBidAddress(List<BidEntity> bids){
+    private void detachBidAddress(List<BidEntity> bids, List<AddressEntity> addresses){
         for(BidEntity b: bids){
             em.detach(b);
             b.setAddressEntity(null);
         }
-   
+        
+        for(AddressEntity ad: addresses){
+            em.detach(ad);
+            ad.setBidEntities(null);
+        }
     }
     
     @WebMethod(operationName = "viewAuctionListDetails")
@@ -128,7 +136,7 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createProxyBid")
-    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException{
+    public void createProxyBid(@WebParam(name="bid")ProxyBiddingEntity bid, @WebParam(name="aid") Long aid, @WebParam(name="cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException{
         bidEntityController.createProxyBid(bid, cid, aid);
     }
 }

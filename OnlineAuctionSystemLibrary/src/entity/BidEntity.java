@@ -36,8 +36,7 @@ public class BidEntity implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private CustomerEntity customerEntity;
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private AddressEntity addressEntity;
 
     public BidEntity() {

@@ -24,8 +24,11 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _AuctionClosedException_QNAME = new QName("http://ws.session.ejb/", "AuctionClosedException");
     private final static QName _AuctionNotFoundException_QNAME = new QName("http://ws.session.ejb/", "AuctionNotFoundException");
+    private final static QName _AuctionNotOpenException_QNAME = new QName("http://ws.session.ejb/", "AuctionNotOpenException");
     private final static QName _BidAlreadyExistException_QNAME = new QName("http://ws.session.ejb/", "BidAlreadyExistException");
+    private final static QName _BidLessThanIncrementException_QNAME = new QName("http://ws.session.ejb/", "BidLessThanIncrementException");
     private final static QName _CustomerAlreadyPremiumException_QNAME = new QName("http://ws.session.ejb/", "CustomerAlreadyPremiumException");
     private final static QName _CustomerNotFoundException_QNAME = new QName("http://ws.session.ejb/", "CustomerNotFoundException");
     private final static QName _CustomerNotPremiumException_QNAME = new QName("http://ws.session.ejb/", "CustomerNotPremiumException");
@@ -58,6 +61,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link AuctionClosedException }
+     * 
+     */
+    public AuctionClosedException createAuctionClosedException() {
+        return new AuctionClosedException();
+    }
+
+    /**
      * Create an instance of {@link AuctionNotFoundException }
      * 
      */
@@ -66,11 +77,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link AuctionNotOpenException }
+     * 
+     */
+    public AuctionNotOpenException createAuctionNotOpenException() {
+        return new AuctionNotOpenException();
+    }
+
+    /**
      * Create an instance of {@link BidAlreadyExistException }
      * 
      */
     public BidAlreadyExistException createBidAlreadyExistException() {
         return new BidAlreadyExistException();
+    }
+
+    /**
+     * Create an instance of {@link BidLessThanIncrementException }
+     * 
+     */
+    public BidLessThanIncrementException createBidLessThanIncrementException() {
+        return new BidLessThanIncrementException();
     }
 
     /**
@@ -314,6 +341,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AuctionClosedException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "AuctionClosedException")
+    public JAXBElement<AuctionClosedException> createAuctionClosedException(AuctionClosedException value) {
+        return new JAXBElement<AuctionClosedException>(_AuctionClosedException_QNAME, AuctionClosedException.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AuctionNotFoundException }{@code >}}
      * 
      */
@@ -323,12 +359,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AuctionNotOpenException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "AuctionNotOpenException")
+    public JAXBElement<AuctionNotOpenException> createAuctionNotOpenException(AuctionNotOpenException value) {
+        return new JAXBElement<AuctionNotOpenException>(_AuctionNotOpenException_QNAME, AuctionNotOpenException.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link BidAlreadyExistException }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "BidAlreadyExistException")
     public JAXBElement<BidAlreadyExistException> createBidAlreadyExistException(BidAlreadyExistException value) {
         return new JAXBElement<BidAlreadyExistException>(_BidAlreadyExistException_QNAME, BidAlreadyExistException.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link BidLessThanIncrementException }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "BidLessThanIncrementException")
+    public JAXBElement<BidLessThanIncrementException> createBidLessThanIncrementException(BidLessThanIncrementException value) {
+        return new JAXBElement<BidLessThanIncrementException>(_BidLessThanIncrementException_QNAME, BidLessThanIncrementException.class, null, value);
     }
 
     /**

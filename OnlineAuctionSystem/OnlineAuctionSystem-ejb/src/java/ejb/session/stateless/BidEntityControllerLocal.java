@@ -10,12 +10,15 @@ import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.List;
+import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
+import util.exception.AuctionNotOpenException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidLessThanIncrementException;
 import util.exception.BidNotFoundException;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
+import util.exception.NotEnoughCreditException;
 
 /**
  *
@@ -33,10 +36,10 @@ public interface BidEntityControllerLocal {
 
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException;
 
-    public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException;
+    public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException;
 
     public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
-    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
+    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
 }

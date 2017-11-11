@@ -70,14 +70,23 @@
 <message name="createProxyBidResponse">
 <part name="parameters" element="tns:createProxyBidResponse"/>
 </message>
+<message name="AuctionClosedException">
+<part name="fault" element="tns:AuctionClosedException"/>
+</message>
+<message name="AuctionNotOpenException">
+<part name="fault" element="tns:AuctionNotOpenException"/>
+</message>
+<message name="BidAlreadyExistException">
+<part name="fault" element="tns:BidAlreadyExistException"/>
+</message>
+<message name="BidLessThanIncrementException">
+<part name="fault" element="tns:BidLessThanIncrementException"/>
+</message>
 <message name="createSnippingBid">
 <part name="parameters" element="tns:createSnippingBid"/>
 </message>
 <message name="createSnippingBidResponse">
 <part name="parameters" element="tns:createSnippingBidResponse"/>
-</message>
-<message name="BidAlreadyExistException">
-<part name="fault" element="tns:BidAlreadyExistException"/>
 </message>
 <portType name="ProxyWebService">
 <operation name="customerLogin">
@@ -123,6 +132,13 @@
 <operation name="createProxyBid">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidRequest" message="tns:createProxyBid"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidResponse" message="tns:createProxyBidResponse"/>
+<fault message="tns:AuctionClosedException" name="AuctionClosedException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionClosedException"/>
+<fault message="tns:AuctionNotOpenException" name="AuctionNotOpenException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotOpenException"/>
+<fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidAlreadyExistException"/>
+<fault message="tns:BidLessThanIncrementException" name="BidLessThanIncrementException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/BidLessThanIncrementException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/GeneralException"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/CustomerNotFoundException"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBid/Fault/AuctionNotFoundException"/>
 </operation>
 <operation name="createSnippingBid">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidRequest" message="tns:createSnippingBid"/>
@@ -242,6 +258,27 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="AuctionClosedException">
+<soap:fault name="AuctionClosedException" use="literal"/>
+</fault>
+<fault name="AuctionNotOpenException">
+<soap:fault name="AuctionNotOpenException" use="literal"/>
+</fault>
+<fault name="BidAlreadyExistException">
+<soap:fault name="BidAlreadyExistException" use="literal"/>
+</fault>
+<fault name="BidLessThanIncrementException">
+<soap:fault name="BidLessThanIncrementException" use="literal"/>
+</fault>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
+</fault>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
+</fault>
 </operation>
 <operation name="createSnippingBid">
 <soap:operation soapAction=""/>

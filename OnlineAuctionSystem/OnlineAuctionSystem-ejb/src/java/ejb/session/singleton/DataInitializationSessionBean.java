@@ -31,7 +31,9 @@ import util.enumeration.CustomerTypeEnum;
 import util.enumeration.EmployeeAccessRightEnum;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AuctionAlreadyExistException;
+import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
+import util.exception.AuctionNotOpenException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidLessThanIncrementException;
 import util.exception.CreditPackageAlreadyExistException;
@@ -39,6 +41,7 @@ import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
+import util.exception.NotEnoughCreditException;
 import util.exception.StaffAlreadyExistException;
 import util.exception.StaffNotFoundException;
 
@@ -68,19 +71,20 @@ public class DataInitializationSessionBean {
 
     @EJB
     private StaffEntityControllerLocal staffEntityController;
-    
-    
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
     @PostConstruct
     public void postConstruct() {
-        try {
-            staffEntityController.retrieveStaffByIdentificationNumber("01");
-        } catch (StaffNotFoundException | DuplicateException ex) {
+        if (em.find(StaffEntity.class, new Long(1)) == null) {
             initializeDataStaff();
         }
+
+        if (em.find(CustomerEntity.class, new Long(1)) == null) {
+            initializeCustomer();
+        }
+
     }
 
     private void initializeDataStaff() {
@@ -89,7 +93,17 @@ public class DataInitializationSessionBean {
             staffEntityController.createNewStaffEntity(new StaffEntity("Yue", "Ling", "02", "yueling", "000000", EmployeeAccessRightEnum.FINANCESTAFF));
             staffEntityController.createNewStaffEntity(new StaffEntity("Wei Liang", "Tan", "03", "weiliang", "000000", EmployeeAccessRightEnum.SALESSTAFF));
 
-            CustomerEntity c = customerEntityController.createNewCustomerEntity(new CustomerEntity("Jinzheng", "Xu", "jinzheng","000000","87111111", "jinzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
+        } catch (StaffAlreadyExistException | GeneralException ex) {
+            System.out.println("Error in Singleton 1: "+ex.getMessage());
+        }
+    }
+
+    private void initializeCustomer() {
+        try {
+            CustomerEntity c = customerEntityController.createNewCustomerEntity(new CustomerEntity("Jinzheng", "Xu", "jinzheng", "000000", "87111111", "jinzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
+            CustomerEntity c2 = customerEntityController.createNewCustomerEntity(new CustomerEntity("Yingshi", "Huang", "yingshi", "000000", "87122222", "jinsssgxu@u.nus.edu", CustomerTypeEnum.NORMAL));
+            c.setCreditBalance(new BigDecimal(2000));
+            c2.setCreditBalance(new BigDecimal(3000));
             AddressEntity a = addressEntityController.createAddress(new AddressEntity("PGPR", "118133", false, c));
 
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(5), new BigDecimal(5), "5 for 5", false));
@@ -97,19 +111,20 @@ public class DataInitializationSessionBean {
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
 
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 10/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
-            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/10/2017"), formatter.parse("23:59:59 03/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
+            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 11/11/2017"), formatter.parse("16:36:22 11/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
+            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 11/11/2017"), formatter.parse("23:59:59 20/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
             auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(92), "Apple", "Sweet Apple"));
 
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(20)), c.getId(), ae1.getId());
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
-            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60)), c.getId(), ae1.getId());
+            bidEntityController.createNewBid(new BidEntity(new BigDecimal(60)), c2.getId(), ae1.getId());
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae1.getId());
-            
-        } catch (AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | AddressAlreadyExistsException | StaffAlreadyExistException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
-            System.out.println("Error in Singleton");
+
+        } catch (AuctionClosedException | AuctionNotOpenException |NotEnoughCreditException| AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | AddressAlreadyExistsException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
+            System.out.println("Error in Singleton 2: "+ex.getMessage());
         }
     }
+
 
 }
 
