@@ -75,8 +75,10 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
         BigDecimal more = bid.getAmount();
 
-        if (a.getEndingTime().after(new Date())) {
+        if (a.getEndingTime().before(new Date())) {
             throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
+        } else if (a.getStartingTime().after(new Date())) {
+            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
         }
 
         BigDecimal currentPrice;
@@ -129,7 +131,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             em.persist(bid);
             em.flush();
             em.refresh(bid);
-            
+
             ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
             checkProxyBid(a);
 
@@ -165,6 +167,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         }
     }
 
+    @Override
     public void deleteBid(Long id) throws BidNotFoundException {
         BidEntity bid = retrieveById(id);
 
@@ -184,6 +187,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
     }
 
+    @Override
     public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException {
         BidEntity bid = retrieveById(bidid);
         AddressEntity address = addressEntityControllerLocal.getAddressById(addressid);
@@ -192,18 +196,42 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     }
 
     //customer has placed bids but the auction item has not reached the ending time yet
+    @Override
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException {
-        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity LIKE cust AND be.auctionEntity.status LIKE active")
-                .setParameter("cust", customer).setParameter("active", StatusEnum.ACTIVE);
+        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity = :custId AND be.auctionEntity.status = :status");
+        query.setParameter("custId", customer.getId());
+        query.setParameter("status", StatusEnum.ACTIVE);
 
         return query.getResultList();
     }
+    
+    @Override
+    public BidEntity viewMyBidInAuction(Long aid, Long cid) throws BidNotFoundException{
+        Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid");
+        query.setParameter("cid", cid);
+        query.setParameter("aid", aid);
+        
+        try{
+            return (BidEntity) query.getSingleResult();
+        }catch(NoResultException ex){
+            throw new BidNotFoundException("You currently have not placed any bid in auction "+aid+" !");
+        }
+    }
 
-    public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
+    @Override
+    public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+        if (a.getEndingTime().before(new Date())) {
+            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
+        } else if (a.getStartingTime().after(new Date())) {
+            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
+        }
+        
+        CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
+        
         bid.setAuctionEntity(a);
         bid.setCustomerEntity(c);
+
 
         TimerService timerService = sessionContext.getTimerService();
         Calendar cal = Calendar.getInstance();
@@ -241,6 +269,14 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
     @Override
     public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+
+        if (a.getEndingTime().before(new Date())) {
+            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
+        } else if (a.getStartingTime().after(new Date())) {
+            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
+        }
+
         try {
             createNewBid(bid, cid, aid);
         } catch (BidAlreadyExistException ex) {

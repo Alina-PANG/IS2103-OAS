@@ -8,7 +8,6 @@ package ejb.session.ws;
 import ejb.session.stateless.AuctionEntityControllerLocal;
 import ejb.session.stateless.BidEntityControllerLocal;
 import ejb.session.stateless.CustomerEntityControllerLocal;
-import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
@@ -28,6 +27,7 @@ import util.exception.AuctionNotFoundException;
 import util.exception.AuctionNotOpenException;
 import util.exception.BidAlreadyExistException;
 import util.exception.BidLessThanIncrementException;
+import util.exception.BidNotFoundException;
 import util.exception.CustomerAlreadyPremiumException;
 import util.exception.CustomerNotFoundException;
 import util.exception.CustomerNotPremiumException;
@@ -167,12 +167,49 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createSnippingBid")
-    public void createSnippingBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+    public void createSnippingBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
         bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice);
     }
 
     @WebMethod(operationName = "createProxyBid")
     public void createProxyBid(@WebParam(name = "bid") ProxyBiddingEntity bid, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
         bidEntityController.createProxyBid(bid, cid, aid);
+    }
+
+    @WebMethod(operationName = "viewCurrentHighestBid")
+    public BidEntity viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException {
+        BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
+        CustomerEntity c = b.getCustomerEntity();
+        AuctionEntity a = b.getAuctionEntity();
+        c.setBidEntities(null);
+        a.setBidEntities(null);
+        b.setAddressEntity(null);
+
+        return b;
+    }
+
+    @WebMethod(operationName = "viewMyBidInAuction")
+    public BidEntity viewMyBidInAuction(@WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws BidNotFoundException {
+        BidEntity b = bidEntityController.viewMyBidInAuction(aid, cid);
+        CustomerEntity c = b.getCustomerEntity();
+        AuctionEntity a = b.getAuctionEntity();
+        c.setBidEntities(null);
+        a.setBidEntities(null);
+        b.setAddressEntity(null);
+
+        return b;
+    }
+
+    @WebMethod(operationName = "viewWinningBid")
+    public BidEntity viewWinningBid(@WebParam(name = "bid") Long bid) throws BidNotFoundException {
+        BidEntity b = bidEntityController.retrieveById(bid);
+
+        CustomerEntity c = b.getCustomerEntity();
+        AuctionEntity a = b.getAuctionEntity();
+        c.setBidEntities(null);
+        a.setBidEntities(null);
+        b.setAddressEntity(null);
+
+        return b;
     }
 }

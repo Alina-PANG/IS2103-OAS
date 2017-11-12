@@ -32,13 +32,15 @@ public interface BidEntityControllerRemote {
 
     public void deleteBid(Long id) throws BidNotFoundException;
 
-    public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws GeneralException, CustomerNotFoundException, AuctionNotFoundException;
+    public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException;
 
     public BidEntity setAddressForWinningBid(Long addressid, Long bidid) throws GeneralException, BidNotFoundException;
 
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException;
-    
+
     public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
+
+    public BidEntity viewMyBidInAuction(Long aid, Long cid) throws BidNotFoundException;
 }

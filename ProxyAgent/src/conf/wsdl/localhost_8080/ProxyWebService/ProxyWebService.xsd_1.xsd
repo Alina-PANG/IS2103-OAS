@@ -10,6 +10,8 @@
 
 <xs:element name="BidLessThanIncrementException" type="tns:BidLessThanIncrementException"/>
 
+<xs:element name="BidNotFoundException" type="tns:BidNotFoundException"/>
+
 <xs:element name="CustomerAlreadyPremiumException" type="tns:CustomerAlreadyPremiumException"/>
 
 <xs:element name="CustomerNotFoundException" type="tns:CustomerNotFoundException"/>
@@ -54,20 +56,52 @@
 
 <xs:element name="viewCreditBalanceResponse" type="tns:viewCreditBalanceResponse"/>
 
+<xs:element name="viewCurrentHighestBid" type="tns:viewCurrentHighestBid"/>
+
+<xs:element name="viewCurrentHighestBidResponse" type="tns:viewCurrentHighestBidResponse"/>
+
+<xs:element name="viewMyBidInAuction" type="tns:viewMyBidInAuction"/>
+
+<xs:element name="viewMyBidInAuctionResponse" type="tns:viewMyBidInAuctionResponse"/>
+
+<xs:element name="viewWinningBid" type="tns:viewWinningBid"/>
+
+<xs:element name="viewWinningBidResponse" type="tns:viewWinningBidResponse"/>
+
 <xs:element name="viewWonAuctionListings" type="tns:viewWonAuctionListings"/>
 
 <xs:element name="viewWonAuctionListingsResponse" type="tns:viewWonAuctionListingsResponse"/>
 
-<xs:complexType name="customerLogin">
+<xs:complexType name="viewCurrentHighestBid">
 <xs:sequence>
-<xs:element name="username" type="xs:string" minOccurs="0"/>
-<xs:element name="password" type="xs:string" minOccurs="0"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="customerLoginResponse">
+<xs:complexType name="viewCurrentHighestBidResponse">
 <xs:sequence>
-<xs:element name="return" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="bidEntity">
+<xs:sequence>
+<xs:element name="addressEntity" type="tns:addressEntity" minOccurs="0"/>
+<xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+<xs:element name="auctionEntity" type="tns:auctionEntity" minOccurs="0"/>
+<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addressEntity">
+<xs:sequence>
+<xs:element name="addressLine" type="xs:string" minOccurs="0"/>
+<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
+<xs:element name="postCode" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -103,27 +137,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="bidEntity">
-<xs:sequence>
-<xs:element name="addressEntity" type="tns:addressEntity" minOccurs="0"/>
-<xs:element name="amount" type="xs:decimal" minOccurs="0"/>
-<xs:element name="auctionEntity" type="tns:auctionEntity" minOccurs="0"/>
-<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="addressEntity">
-<xs:sequence>
-<xs:element name="addressLine" type="xs:string" minOccurs="0"/>
-<xs:element name="bidEntities" type="tns:bidEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-<xs:element name="isDisabled" type="xs:boolean" minOccurs="0"/>
-<xs:element name="postCode" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="creditTransactionEntity">
 <xs:sequence>
 <xs:element name="creditPackageEntity" type="tns:creditPackageEntity" minOccurs="0"/>
@@ -146,6 +159,25 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="AuctionNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="customerLogin">
+<xs:sequence>
+<xs:element name="username" type="xs:string" minOccurs="0"/>
+<xs:element name="password" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="customerLoginResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:customerEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="CustomerNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
@@ -159,6 +191,24 @@
 </xs:complexType>
 
 <xs:complexType name="CustomerNotPremiumException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewWinningBid">
+<xs:sequence>
+<xs:element name="bid" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewWinningBidResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="BidNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
@@ -222,9 +272,16 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="AuctionNotFoundException">
+<xs:complexType name="viewMyBidInAuction">
 <xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
+<xs:element name="cid" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewMyBidInAuctionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

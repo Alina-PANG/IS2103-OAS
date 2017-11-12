@@ -15,21 +15,19 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolationException;
 import util.enumeration.StatusEnum;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.GeneralException;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
-import util.exception.BidNotFoundException;
+import util.exception.CustomerNotFoundException;
 
 /**
  *
@@ -41,10 +39,15 @@ import util.exception.BidNotFoundException;
 public class AuctionEntityController implements AuctionEntityControllerRemote, AuctionEntityControllerLocal {
 
     @EJB
+    private CreditTransactionEntityControllerLocal creditTransactionEntityController;
+
+    @EJB
     private CustomerEntityControllerLocal customerEntityController;
 
     @EJB
     private BidEntityControllerLocal bidEntityController;
+    
+    
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
@@ -237,9 +240,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             for (BidEntity bid : bidList) {
                 CustomerEntity c = bid.getCustomerEntity();
                 c.setCreditBalance(c.getCreditBalance().add(bid.getAmount()));
-                try {
-                    bidEntityController.deleteBid(bid.getId());
-                } catch (BidNotFoundException ex) {
+                try{
+                creditTransactionEntityController.createNewTransaction(c.getId(), TransactionTypeEnum.REFUND, bid.getAmount());
+                } catch(CustomerNotFoundException ex){
+                    System.out.println("Create transaction entity: Customer "+c.getId()+" not found!");
                 }
             }
             return false;
