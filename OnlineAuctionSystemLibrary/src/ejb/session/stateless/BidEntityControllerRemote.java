@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
+import entity.SnippingBidEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import util.exception.AuctionClosedException;
@@ -32,7 +33,7 @@ public interface BidEntityControllerRemote {
 
     public void deleteBid(Long id) throws BidNotFoundException;
 
-    public void createSnipingBid(int duration, BidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
+    public void createSnipingBid(int duration, SnippingBidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws NotEnoughCreditException, BidLessThanIncrementException, AuctionNotOpenException,AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException;
 
@@ -43,4 +44,5 @@ public interface BidEntityControllerRemote {
     public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
     public BidEntity viewMyBidInAuction(Long aid, Long cid) throws BidNotFoundException;
+    
 }

@@ -311,12 +311,23 @@
 
 <xs:complexType name="createSnippingBid">
 <xs:sequence>
-<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
+<xs:element name="bid" type="tns:snippingBidEntity" minOccurs="0"/>
 <xs:element name="maxPrice" type="xs:decimal" minOccurs="0"/>
 <xs:element name="timeDuration" type="xs:int"/>
 <xs:element name="aid" type="xs:long" minOccurs="0"/>
 <xs:element name="cid" type="xs:long" minOccurs="0"/>
 </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="snippingBidEntity">
+<xs:complexContent>
+<xs:extension base="tns:bidEntity">
+<xs:sequence>
+<xs:element name="maxAmount" type="xs:decimal" minOccurs="0"/>
+<xs:element name="timeduration" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="createSnippingBidResponse">

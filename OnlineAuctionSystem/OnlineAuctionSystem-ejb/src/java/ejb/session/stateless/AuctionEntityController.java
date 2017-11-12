@@ -282,8 +282,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      */
     @Override
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al, CustomerEntity c, IN(c.bidEntities) b WHERE c.id = :id AND al MEMBER OF c.auctionEntities AND al.winningBidId = b.id");
-        query.setParameter(":id", cid);
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.winningBidId = b.id AND b.customerEntity.id = :cid");
+        query.setParameter(":cid", cid);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (Exception ex) {

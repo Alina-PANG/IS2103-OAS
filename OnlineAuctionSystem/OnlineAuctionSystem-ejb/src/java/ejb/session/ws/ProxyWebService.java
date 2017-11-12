@@ -12,6 +12,7 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
+import entity.SnippingBidEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -167,7 +168,7 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createSnippingBid")
-    public void createSnippingBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+    public void createSnippingBid(@WebParam(name = "bid") SnippingBidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionNotOpenException, AuctionClosedException, BidLessThanIncrementException, NotEnoughCreditException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
         bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice);
     }
 
@@ -179,13 +180,16 @@ public class ProxyWebService {
     @WebMethod(operationName = "viewCurrentHighestBid")
     public BidEntity viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException {
         BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
-        CustomerEntity c = b.getCustomerEntity();
-        AuctionEntity a = b.getAuctionEntity();
-        c.setBidEntities(null);
-        a.setBidEntities(null);
-        b.setAddressEntity(null);
+        if (b != null) {
+            CustomerEntity c = b.getCustomerEntity();
+            AuctionEntity a = b.getAuctionEntity();
+            c.setBidEntities(null);
+            a.setBidEntities(null);
+            b.setAddressEntity(null);
+        }
 
         return b;
+
     }
 
     @WebMethod(operationName = "viewMyBidInAuction")

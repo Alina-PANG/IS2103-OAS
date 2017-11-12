@@ -168,7 +168,10 @@
 <operation name="createSnippingBid">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidRequest" message="tns:createSnippingBid"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBidResponse" message="tns:createSnippingBidResponse"/>
+<fault message="tns:AuctionNotOpenException" name="AuctionNotOpenException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/AuctionNotOpenException"/>
 <fault message="tns:AuctionClosedException" name="AuctionClosedException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/AuctionClosedException"/>
+<fault message="tns:BidLessThanIncrementException" name="BidLessThanIncrementException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/BidLessThanIncrementException"/>
+<fault message="tns:NotEnoughCreditException" name="NotEnoughCreditException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/NotEnoughCreditException"/>
 <fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/CustomerNotFoundException"/>
 <fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/AuctionNotFoundException"/>
 <fault message="tns:BidAlreadyExistException" name="BidAlreadyExistException" wsam:Action="http://ws.session.ejb/ProxyWebService/createSnippingBid/Fault/BidAlreadyExistException"/>
@@ -332,8 +335,17 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="AuctionNotOpenException">
+<soap:fault name="AuctionNotOpenException" use="literal"/>
+</fault>
 <fault name="AuctionClosedException">
 <soap:fault name="AuctionClosedException" use="literal"/>
+</fault>
+<fault name="BidLessThanIncrementException">
+<soap:fault name="BidLessThanIncrementException" use="literal"/>
+</fault>
+<fault name="NotEnoughCreditException">
+<soap:fault name="NotEnoughCreditException" use="literal"/>
 </fault>
 <fault name="CustomerNotFoundException">
 <soap:fault name="CustomerNotFoundException" use="literal"/>
