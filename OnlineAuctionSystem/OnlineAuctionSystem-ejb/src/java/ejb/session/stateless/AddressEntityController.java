@@ -50,12 +50,12 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
     public List<AddressEntity> viewAllAddress(CustomerEntity customer)
     {
         //same as view all transaction entity where customer entity is customer that passed in
-        Query query = em.createQuery("SELECT a FROM AddressEntity A WHERE A.customerEntity LIKE :cust").setParameter("cust",customer);
+        Query query = em.createQuery("SELECT a FROM AddressEntity a WHERE a.customerEntity.email LIKE :cust").setParameter("cust",customer.getEmail());
         
         return query.getResultList();
-
-       
     }
+    
+    //public void updateAddress
 
     
     @Override
@@ -68,9 +68,14 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
     
     public boolean deleteAddress(Long id) throws AddressNotFoundException {
         AddressEntity address = getAddressById(id);
+        if(address==null)
+        {
+            throw new AddressNotFoundException("This address does not exist!");
+        }
         
         if(address.getBidEntities() != null && address.getBidEntities().size() != 0){
             address.setIsDisabled(true);
+            
             return false;
         }else{
             em.remove(address);

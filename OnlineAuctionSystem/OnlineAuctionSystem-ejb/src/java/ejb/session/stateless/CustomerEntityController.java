@@ -5,8 +5,8 @@
  */
 package ejb.session.stateless;
 
-import entity.AuctionEntity;
 import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -37,17 +37,25 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
     @Override
     public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException
     {
-        try
-        {
-            CustomerEntity customer = em.find(CustomerEntity.class, email);//usage of jpa queru language
+       
+            Query query;
+            query = em.createQuery("SELECT c FROM CustomerEntity c WHERE c.email = :e").setParameter("e",email);
+            CustomerEntity customer = (CustomerEntity)query.getSingleResult();
             
+            if(customer!=null)
             return customer;
-        }
-        catch(PersistenceException ex)
-        {
-            throw new CustomerNotFoundException("This email "+email+" haven't registered an account!");
-        }
-        
+            else
+                throw new CustomerNotFoundException("This customer is not found!");
+    }
+    
+    @Override
+    public CustomerEntity updateCreditBalance(java.lang.Long customerid, BigDecimal newamount) throws CustomerNotFoundException, GeneralException{
+        CustomerEntity customer = retrieveCustomerById(customerid);
+        customer.setCreditBalance(newamount);
+        //em.persist(customer);
+        em.flush();
+        em.refresh(customer);
+        return customer;
     }
     
     
@@ -62,7 +70,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
 
             return customer;
         } else {
-            throw new IncorrectPasswordException("You must insert correct old password to change your new password!");
+            throw new IncorrectPasswordException("You must enter correct old password to change your new password!");
+            
         }
     }
     

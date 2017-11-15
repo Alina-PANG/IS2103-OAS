@@ -84,7 +84,7 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
     // "Insert Code > Add Business Method")
     @Override
     public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer) {
-        Query query = em.createQuery("SELECT c FROM CreditTransactionEntity c WHERE c.customerEntity LIKE :cust").setParameter("cust", customer);
+        Query query = em.createQuery("SELECT c FROM CreditTransactionEntity c WHERE c.customerEntity.id =:cust").setParameter("cust", customer.getId());
 
         return query.getResultList();
 

@@ -77,19 +77,21 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         BigDecimal more = bid.getAmount();
 
         if (a.getEndingTime().before(new Date())) {
-            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
+            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!");
         } else if (a.getStartingTime().after(new Date())) {
-            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
+            throw new AuctionClosedException("The auction has not been opened yet, please wait patiently!");
         }
 
         BigDecimal currentPrice;
         BidEntity currentWinningBid = auctionEntityController.getCurrentWinningBidEntity(aid);
-        System.out.println("current winning bid: " + currentWinningBid.getAmount());//debug
+       
+        //debug
         if (currentWinningBid == null) {
             currentPrice = new BigDecimal(0);
         } else {
             currentPrice = currentWinningBid.getAmount();
         }
+        System.out.println("Current winning bid: " + currentPrice);//debug
 
         BigDecimal minPrice = currentPrice.add(auctionEntityController.getCurrentBidIncremental(currentPrice));
         System.out.println("current winning bid: " + minPrice);//debug
@@ -125,7 +127,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 em.remove(b);
                 ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
             } catch (NoResultException ex) {
-                System.out.println("No previous bid.");
+                System.out.println("No previous bid!");
             }
 
             if (c.getCreditBalance().compareTo(more) < 0) {
@@ -192,7 +194,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     @Override
     public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException {
         Query query = em.createQuery("SELECT b FROM BidEntity b, AuctionEntity a, CustomerEntity c WHERE a MEMBER OF c.auctionEntities AND b MEMBER OF a.bidEntities AND b MEMBER OF c.bidEntities AND b.id = a.winningBidId AND c.id = :id");
-        query.setParameter(":id", customer.getId());
+        query.setParameter("id", customer.getId());
 
         try {
             return (List<BidEntity>) query.getResultList();
@@ -213,7 +215,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     //customer has placed bids but the auction item has not reached the ending time yet
     @Override
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException {
-        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity = :custId AND be.auctionEntity.status = :status");
+        Query query = em.createQuery("SELECT be FROM BidEntity be WHERE be.customerEntity.id = :custId AND be.auctionEntity.status = :status");
         query.setParameter("custId", customer.getId());
         query.setParameter("status", StatusEnum.ACTIVE);
 

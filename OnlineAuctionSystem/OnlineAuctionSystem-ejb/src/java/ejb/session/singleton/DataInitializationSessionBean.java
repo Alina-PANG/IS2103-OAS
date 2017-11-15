@@ -120,8 +120,8 @@ public class DataInitializationSessionBean {
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
 
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 12/11/2017"), formatter.parse("16:36:22 12/11/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
-            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 12/11/2017"), formatter.parse("23:59:59 20/11/2018"), new BigDecimal(10), "Cup", "Drink Water"));
+            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 12/11/2017"), formatter.parse("16:36:22 12/12/2017"), new BigDecimal(77), "Totoro", "Cute Totoro!"));
+            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 12/11/2017"), formatter.parse("23:59:59 20/12/2018"), new BigDecimal(10), "Cup", "Drink Water"));
             auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(92), "Apple", "Sweet Apple"));
 
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(20)), c.getId(), ae1.getId());

@@ -138,13 +138,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         ae.setWinningBidId(bid);
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     * @throws util.exception.AuctionNotFoundException
-     * @throws GeneralException
-     */
     @Override
     public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException {
         // retrieve the ae
@@ -253,6 +246,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
     }
 
+    @Override
     public List<AuctionEntity> viewAllAuction() throws GeneralException {
         Query query = em.createQuery("SELECT al FROM AuctionEntity al");
 
@@ -306,7 +300,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al,WHERE al.status LIKE status").setParameter("status", StatusEnum.ACTIVE);
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.status =:status").setParameter("status", StatusEnum.ACTIVE);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
@@ -316,16 +310,20 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException {
-        Query query = em.createQuery("SELECT ae FROM AuctionEntity ae WHERE ae.id LIKE aeid AND ae.status LIKE status")
+        Query query = em.createQuery("SELECT ae FROM AuctionEntity ae WHERE ae.id =:aeid AND ae.status =:status")
                 .setParameter("aeid", productid).setParameter("status", StatusEnum.ACTIVE);
+        if((AuctionEntity) query.getSingleResult()!=null)
         return (AuctionEntity) query.getSingleResult();
+        else
+            throw new AuctionNotFoundException("This product id is not valid!");
     }
 
     @Override
     public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException {
+        
         List<BidEntity> bidlist = viewBidEntity(productid);
-        if (bidlist != null && bidlist.size() != 0) {
-            BidEntity highestbid = new BidEntity(new BigDecimal(0));
+        if (!bidlist.isEmpty()) {
+            BidEntity highestbid = new BidEntity(new BigDecimal("0.00"));
             for (BidEntity bid : bidlist) {
                 if (bid.getAmount().compareTo(highestbid.getAmount()) > 0) {
                     highestbid = bid;
@@ -369,32 +367,5 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return incremental;
     }
 
-    @Override
-    public BidEntity placeNewBid(Long productid, CustomerEntity customer) throws AuctionNotFoundException, BidAlreadyExistException, GeneralException {
-
-        //create new bid entity
-        BidEntity newbid = new BidEntity();
-        AuctionEntity auctionentity = retrieveAvailabeAuctionById(productid);
-        newbid.setAuctionEntity(auctionentity);
-        newbid.setCustomerEntity(customer);
-        BidEntity currentWinningBid = getCurrentWinningBidEntity(productid);
-        if (currentWinningBid == null) {
-            throw new GeneralException("No winning bid yet!");
-        }
-        BigDecimal currentprice = currentWinningBid.getAmount();
-        BigDecimal currentincremental = getCurrentBidIncremental(currentprice);
-        BigDecimal newprice = currentprice.add(currentincremental);
-        newbid.setAmount(newprice);
-        // newbid = bidEntityController.createNewBid(newbid);
-
-        //add customerentity and bidentity into auction entity
-        auctionentity.getBidEntities().add(newbid);
-        auctionentity.getCustomerEntities().add(customer);
-
-        //add bid entity to customer entity
-        customer.getBidEntities().add(newbid);
-
-        return newbid;
-    }
 
 }

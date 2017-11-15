@@ -143,6 +143,5 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
     {
        CreditPackageEntity creditpackage = retrieveCreditPackageById(creditpackageid);
        creditpackage.getCustomerEntities().add(customer);
-       
     }
 }
