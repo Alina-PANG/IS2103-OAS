@@ -33,7 +33,7 @@ public class AddressEntity implements Serializable {
     private Long id;
     @Column(length = 64, unique = true, nullable = false)
     private String addressLine;
-    @Column(length = 6)
+    @Column(length = 6,nullable=false)
     private String postCode;
     private Boolean isDisabled;
     @OneToMany(mappedBy = "addressEntity")

@@ -58,6 +58,8 @@ public class CustomerEntity implements Serializable {
     private CustomerTypeEnum customerTypeEnum;
     @ManyToMany(mappedBy = "customerEntities")
     private List<AuctionEntity> auctionEntities;
+    @ManyToMany
+    private List<CreditPackageEntity> creditpackageentities;
 
     public CustomerEntity() {
         this.creditBalance = new BigDecimal(0);
@@ -284,5 +286,19 @@ public class CustomerEntity implements Serializable {
      */
     public void setAuctionEntities(List<AuctionEntity> auctionEntities) {
         this.auctionEntities = auctionEntities;
+    }
+
+    /**
+     * @return the creditpackageentities
+     */
+    public List<CreditPackageEntity> getCreditpackageentities() {
+        return creditpackageentities;
+    }
+
+    /**
+     * @param creditpackageentities the creditpackageentities to set
+     */
+    public void setCreditpackageentities(List<CreditPackageEntity> creditpackageentities) {
+        this.creditpackageentities = creditpackageentities;
     }
 }
