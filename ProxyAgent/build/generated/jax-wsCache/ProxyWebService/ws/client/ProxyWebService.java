@@ -32,14 +32,14 @@ public interface ProxyWebService {
      * @param bid
      * @param aid
      * @param cid
-     * @throws NotEnoughCreditException_Exception
-     * @throws BidAlreadyExistException_Exception
      * @throws AuctionNotFoundException_Exception
      * @throws BidLessThanIncrementException_Exception
+     * @throws NotEnoughCreditException_Exception
+     * @throws AuctionClosedException_Exception
+     * @throws AuctionNotOpenException_Exception
+     * @throws BidAlreadyExistException_Exception
      * @throws CustomerNotFoundException_Exception
      * @throws GeneralException_Exception
-     * @throws AuctionNotOpenException_Exception
-     * @throws AuctionClosedException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createProxyBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateProxyBid")
@@ -70,9 +70,9 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
-     * @throws CustomerNotFoundException_Exception
-     * @throws IncorrectPasswordException_Exception
      * @throws CustomerNotPremiumException_Exception
+     * @throws IncorrectPasswordException_Exception
+     * @throws CustomerNotFoundException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -97,9 +97,9 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
+     * @throws IncorrectPasswordException_Exception
      * @throws CustomerAlreadyPremiumException_Exception
      * @throws CustomerNotFoundException_Exception
-     * @throws IncorrectPasswordException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -224,14 +224,14 @@ public interface ProxyWebService {
      * @param aid
      * @param timeDuration
      * @param cid
-     * @throws NotEnoughCreditException_Exception
-     * @throws BidAlreadyExistException_Exception
      * @throws AuctionNotFoundException_Exception
+     * @throws NotEnoughCreditException_Exception
      * @throws BidLessThanIncrementException_Exception
-     * @throws CustomerNotFoundException_Exception
-     * @throws GeneralException_Exception
-     * @throws AuctionClosedException_Exception
      * @throws AuctionNotOpenException_Exception
+     * @throws AuctionClosedException_Exception
+     * @throws BidAlreadyExistException_Exception
+     * @throws GeneralException_Exception
+     * @throws CustomerNotFoundException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createSnippingBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateSnippingBid")

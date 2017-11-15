@@ -75,22 +75,21 @@ public class MainApp {
                     case 3:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid number!");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (response == 3) {
                     break;
                 }
             } catch (InputMismatchException ex) {
-                System.err.println("[Warning] Please input a valid type!");
+                System.err.println("[Warning] Invalid Type!");
             }
         }
     }
 
     private void menu2() {
         System.out.println("");
-        System.out.println("******* [OAS System Web Service] Premium Customer Operations");
-        System.out.println("Please choose an action: ");
+        System.out.println("******* [OAS System Web Service] Premium Customer Operations ******");
         System.out.println("1. Browse all auction listings");
         System.out.println("2. View won auction listings");
         System.out.println("3. View Auction Listing Details");
@@ -98,7 +97,7 @@ public class MainApp {
         System.out.println("5. Configure Proxy Bidding for Auction Listing");
         System.out.println("6. Configure Sniping for Auction Listing");
         System.out.println("7. Logout");
-        System.out.print("Please input your choice: ");
+        System.out.println("Please enter number of the operation that you want to perform->");
     }
 
     private void postLogin() {
@@ -138,11 +137,11 @@ public class MainApp {
                     case 7:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid number!");
+                        System.err.println("[Warning] Invalid Option! Please try again!");
                         break;
                 }
             } catch (InputMismatchException ex) {
-                System.err.println("[Warning] Please input a valid type!");
+                System.err.println("[Warning] Invalid Type!");
             }
             if (response == 7) {
                 break;
@@ -158,9 +157,9 @@ public class MainApp {
 
         System.out.println("******* [Premium Customer] Configure Proxy Bidding for Auction Listing *******");
         viewAllAuction();
-        System.out.print("Please input the auction id that you want to put proxy bid: ");
+        System.out.print("Enter auction id that you want to put proxy bid->");
         aid = sc.nextLong();
-        System.out.print("Please input the max price that you want to pay: ");
+        System.out.print("Enter the max price that you want to pay->");
         maxPrice = sc.nextBigDecimal();
 
         ProxyBiddingEntity bid = new ProxyBiddingEntity();
@@ -180,11 +179,11 @@ public class MainApp {
         int timeDuration;
 
         System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
-        System.out.print("Please input the auction id that you want to put for snipping bid: \n> ");
+        System.out.print("Enter the auction id that you want to put for snipping bid-> ");
         aid = sc.nextLong();
-        System.out.print("Please input the max price that you want to pay: ");
+        System.out.print("Enter the max price that you want to pay->");
         maxPrice = sc.nextBigDecimal();
-        System.out.print("Please input the time duration before the listing expired to place your bid (in minutes): \n> ");
+        System.out.print("Enter the time duration before the listing expired to place your bid (in minutes)->");
         timeDuration = sc.nextInt();
 
         try {
@@ -194,7 +193,7 @@ public class MainApp {
             System.out.println("[System] Proxy bid has been created successfully!");
 
         } catch (AuctionNotOpenException_Exception | BidLessThanIncrementException_Exception | NotEnoughCreditException_Exception | AuctionClosedException_Exception | CustomerNotFoundException_Exception | AuctionNotFoundException_Exception | BidAlreadyExistException_Exception | GeneralException_Exception ex) {
-            System.err.println("[Warning] and error has occured: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
 
     }
@@ -205,21 +204,21 @@ public class MainApp {
             BigDecimal value = viewCreditBalance(currentCustomerEntity.getId());
             System.out.println("Your Credit Balance is " + value);
         } catch (GeneralException_Exception | CustomerNotFoundException_Exception ex) {
-            System.err.println("[Warning] an error has occured: " + ex.getMessage());
+            System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
     }
 
     private void viewAuctionListingDetail() {
         Scanner sc = new Scanner(System.in);
         System.out.println("******* [Premium Customer] View Auction Listing Detail *******");
-        System.out.println("Please input the relevant auction / product name for searching:");
-        System.out.print("> ");
+        System.out.println("Enter the relevant auction / product name for searching->");
+        
         String input = sc.nextLine().trim();
 
         try {
             List<ws.client.AuctionEntity> list = viewAuctionListByName(input);
             showList(list);
-            System.out.println("Please input the id of the Auction List:");
+            System.out.println("Enter id of the Auction List->");
             ws.client.AuctionEntity al = viewAuctionListDetails(sc.nextLong());//???
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("0. Status: " + al.getStatus());
@@ -245,7 +244,7 @@ public class MainApp {
                     BidEntity b = viewWinningBid(al.getId());
                     System.out.println("" + b.getAmount());
                 } catch (BidNotFoundException_Exception ex) {
-                    System.out.println("No winning bid yet, either pending for system process or no one has bid it.");
+                    System.out.println("No winning bid yet, either pending for system process or no one has bid it.\n");
                 }
             }
 
@@ -299,11 +298,11 @@ public class MainApp {
 
     private void menu1() {
         System.out.println("******* [OAS System Web Service] Menu ******");
-        System.out.println("Please choose an action: ");
+       
         System.out.println("1. Registration");
         System.out.println("2. Login");
         System.out.println("3. Exit");
-        System.out.print("Please input your choice: ");
+        System.out.println("Please input number of the operation that you want to perform->");
     }
 
     private void readUsernameAndPassword(int input) {
@@ -311,9 +310,9 @@ public class MainApp {
 
         try {
             System.out.println("******* [OAS System Web Service] Login *******");
-            System.out.print("Please input your username: ");
+            System.out.print("Enter your username-> ");
             String username = sc.nextLine().trim();
-            System.out.print("Please input your password: ");
+            System.out.print("Enter your password-> ");
             String password = sc.nextLine().trim();
 
             if (input == 1) {
@@ -324,7 +323,7 @@ public class MainApp {
 
             postLogin();
         } catch (InputMismatchException ex) {
-            System.err.println("[Warning] Please input a valid type!");
+            System.err.println("[Warning] Invalid Type!");
         } catch (CustomerNotFoundException_Exception | IncorrectPasswordException_Exception | CustomerAlreadyPremiumException_Exception | CustomerNotPremiumException_Exception ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
