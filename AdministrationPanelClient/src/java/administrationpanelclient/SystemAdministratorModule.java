@@ -68,7 +68,7 @@ public class SystemAdministratorModule {
                     case 6:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (choice == 6) {
@@ -88,8 +88,8 @@ public class SystemAdministratorModule {
         System.out.println("4. Delete Employee");
         System.out.println("5. View All Employees");
         System.out.println("6. Exit");
-        System.out.println("Please input the operation that you want to perform:");
-        System.out.print("> ");
+        System.out.println("Please enter number of the operation that you want to perform:");
+        System.out.print("-> ");
     }
 
     private void createNewEmployee() {
@@ -100,15 +100,15 @@ public class SystemAdministratorModule {
             System.out.print("Acess Right (manager/financestaff/salesstaff): ");
             EmployeeAccessRightEnum accessRight = null;
             accessRight = EmployeeAccessRightEnum.valueOf(sc.nextLine().trim().toUpperCase());
-            System.out.print("First Name: ");
+            System.out.print("Enter first name->");
             String firstName = sc.nextLine().trim();
-            System.out.print("Last Name: ");
+            System.out.print("Enter last name->");
             String lastName = sc.nextLine().trim();
-            System.out.print("Identification Number: ");
+            System.out.print("Enter identification number-> ");
             String idNum = sc.nextLine().trim();
-            System.out.print("Username: ");
+            System.out.print("Enter username->");
             String username = sc.nextLine().trim();
-            System.out.print("Password: ");
+            System.out.print("Enter password-> ");
             String password = sc.nextLine().trim();
 
             try {
@@ -136,33 +136,33 @@ public class SystemAdministratorModule {
             while (true) {
                 viewEmployeeDetails(staff);
                 System.out.println("7. Finish");
-                System.out.print("Input the number you want to change:");
+                System.out.print("Enter number of the operation you want to change:");
                 option = sc.nextInt();
                 sc.nextLine();
 
                 switch (option) {
                     case 1:
-                        System.out.print("First Name: ");
+                        System.out.print("Enter first name-> ");
                         staff.setFirstName(sc.nextLine().trim());
                         break;
                     case 2:
-                        System.out.println("Last Name:");
+                        System.out.println("Enter last name->");
                         staff.setLastName(sc.nextLine().trim());
                         break;
                     case 3:
-                        System.out.print("Identification Number: ");
+                        System.out.print("Enter identification number-> ");
                         staff.setIdentificationNumber(sc.nextLine().trim());
                         break;
                     case 4:
-                        System.out.print("Username: ");
+                        System.out.print("Enter username-> ");
                         staff.setUsername(sc.nextLine().trim());
                         break;
                     case 5:
-                        System.out.print("Password: ");
+                        System.out.print("Enter password-> ");
                         staff.setPassword(sc.nextLine().trim());
                         break;
                     case 6:
-                        System.out.print("Acess Right: ");
+                        System.out.print("Enter access Right-> ");
                         EmployeeAccessRightEnum accessRight = null;
                         do {
                             try {
@@ -177,7 +177,7 @@ public class SystemAdministratorModule {
                     case 7:
                         break;
                     default:
-                        System.out.println("Please put a valid input!");
+                        System.out.println("[Warning] Invalid input! Please try again!");
                 }
                 if (option == 7) {
                     break;
@@ -188,13 +188,13 @@ public class SystemAdministratorModule {
         } catch (StaffNotFoundException | GeneralException ex) {
             System.err.println("[Warning] An error has occured while updating employee: " + ex.getMessage());
         }catch (InputMismatchException ex) {
-            System.err.println("[Warning] Please input a valid response number.");
+            System.err.println("[Warning] Invalid input! Please try again!");
         }
     }
 
     private StaffEntity findEmployee() throws GeneralException, StaffNotFoundException, InputMismatchException {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Please input the id of the employee: ");
+        System.out.print("Please enter id of the employee->");
         Long id = sc.nextLong();
         StaffEntity staff = staffEntityController.retrieveStaffById(id);
         return staff;

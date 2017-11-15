@@ -68,7 +68,7 @@ public class MainApp {
                     case 2:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
 
@@ -88,7 +88,7 @@ public class MainApp {
         System.out.println("1. Login");
         System.out.println("2. Exit");
         System.out.println("Please input the operation that you want to perform:");
-        System.out.print("> ");
+        System.out.print("-> ");
     }
 
     private void menu02() {
@@ -98,7 +98,7 @@ public class MainApp {
         System.out.println("2. Change Password");
         System.out.println("3. Logout");
         System.out.println("Please input the operation that you want to perform:");
-        System.out.print("> ");
+        System.out.print("-> ");
     }
 
     private void doLogin() {
@@ -109,9 +109,9 @@ public class MainApp {
         // login
         System.out.println("");
         System.out.println("******* [OAS System] Employee Login *******");
-        System.out.print("Username: ");
+        System.out.print("Username->");
         username = sc.nextLine().trim();
-        System.out.print("Password: ");
+        System.out.print("Password->");
         password = sc.nextLine().trim();
 
         try {
@@ -143,7 +143,7 @@ public class MainApp {
                     case 3:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                 }
 
                 if (response2 == 3) {
