@@ -70,12 +70,11 @@ public class AuctionModule {
         Scanner scanner = new Scanner(System.in);
         List<AuctionEntity> availableAuctionList = auctionEntityControllerRemote.viewAvailableAuctionEntity();
         System.out.println("******* [Customer] View Auction Listing *******");
-        System.out.println("Product ID---Product name");
+        System.out.printf("%35s%35s","Auction Item ID","Auction Item Name");
         
         for(AuctionEntity auctionentity: availableAuctionList)
         {
-            System.out.print(auctionentity.getId()+"---");
-            System.out.println(auctionentity.getProductName());
+            System.out.printf("%35s%35s",auctionentity.getId(),auctionentity.getProductName());
         }
         
         //ask whether want to view details of a specific auction item
@@ -234,15 +233,15 @@ public class AuctionModule {
         List<BidEntity> bidlist = bidEntityControllerRemote.viewMyBidsInProcess(customer);
         if(!bidlist.isEmpty()){
         System.out.println("Below are the auctions that you have placed bids but haven't reached auction ending time yet:");
-        System.out.println("Product ID---Product name---Your bid---Current Winning Bid");
+        System.out.printf("%35s%35s%35s%35s\n","Auction Item ID|","Auction Item Name|","Your Bid Amount|","Current Winning Bid Amount");
         for(BidEntity bid :bidlist)
         {
-            System.out.print(bid.getAuctionEntity().getId()+"---");
-            System.out.print(bid.getAuctionEntity().getProductName()+"---");
-            System.out.print(bid.getAmount()+"---");
-            System.out.print(auctionEntityControllerRemote
+            System.out.printf("%35s%35s%35s%35s\n",bid.getAuctionEntity().getId()+"|",
+                    bid.getAuctionEntity().getProductName()+"|",
+                    bid.getAmount()+"|",
+                    auctionEntityControllerRemote
                     .getCurrentWinningBidEntity(bid.getAuctionEntity().getId())
-                    .getAmount()+"\n");
+                    .getAmount()+"|");
         }
         System.out.println("Do you want to place new bid?(Y/N)->");
         if(scanner.nextLine().trim().equals("Y"))

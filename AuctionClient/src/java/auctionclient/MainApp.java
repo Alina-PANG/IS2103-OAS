@@ -175,8 +175,8 @@ public class MainApp {
         password = scanner.nextLine().trim();
         if(password.equals(customer.getPassword()))
         {
+            System.out.println("[System] You have successfully logged in as "+ customer.getFirstName()+" "+customer.getLastName());
             menuMain(customer);
-            
         }    
         else
         {
