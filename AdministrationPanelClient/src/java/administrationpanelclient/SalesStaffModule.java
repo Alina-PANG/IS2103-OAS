@@ -331,7 +331,7 @@ public class SalesStaffModule {
     }
 
     private void showBid(List<BidEntity> list) {
-        System.out.printf("%5s%5s%10s%30s\n","ID|", "Amount|", "In Auction Name");
+        System.out.printf("%5s%10s%30s\n","ID|", "Amount|", "In Auction Name");
         for (BidEntity b : list) {
             System.out.printf("%5s%10s%30s\n",b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
         }
