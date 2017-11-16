@@ -308,9 +308,15 @@ public class SalesStaffModule {
             List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
             showBid(list);
             System.out.println("Enter id of the Bid that you want to assign as the winning bid (any other key for cancel): ");
-            int response = sc.nextInt();
-            if(0 < response && response <= list.size()){
-                auctionEntityController.assignWinningBid(aid, new Long(response));
+            Long response = sc.nextLong();
+            Boolean contains=false;
+            for(BidEntity bid:list){
+                if(bid.getId()==response){
+                    contains=true;
+                }
+            }
+            if(contains){///response should be id of bid instead of number
+                auctionEntityController.assignWinningBid(aid, response);
                 System.out.println("[System] Assign successful!");
             }
             else {
@@ -325,9 +331,9 @@ public class SalesStaffModule {
     }
 
     private void showBid(List<BidEntity> list) {
-        System.out.printf("%5s%10s%30s\n", "ID|", "Amount|", "In Auction Name");
+        System.out.printf("%5s%5s%10s%30s\n","ID|", "Amount|", "In Auction Name");
         for (BidEntity b : list) {
-            System.out.printf("%5s%10s%30s\n", b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
+            System.out.printf("%5s%10s%30s\n",b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
         }
     }
 
