@@ -374,7 +374,8 @@ public class ProfileModule {
         }
         System.out.println("******* [Customer] Address Update *******");
         System.out.println("Enter id of the address to update->");
-        AddressEntity address = addressEntityControllerRemote.getAddressById(scanner.nextLong());
+        Long aid=scanner.nextLong();
+        AddressEntity address = addressEntityControllerRemote.getAddressById(aid);
         System.out.println("1. Update address line");
         System.out.println("2. Update postal code");
         System.out.println("Enter number of the operation that you want to perform");
@@ -386,7 +387,7 @@ public class ProfileModule {
             {
                 scanner.nextLine();
                 System.out.println("Enter new address line->");
-                address.setAddressLine(scanner.nextLine().trim());
+                address = addressEntityControllerRemote.updateAddressLine(aid, scanner.nextLine().trim());
                 System.out.println("[System] New address line updated successfully!");
                 manageAddress();
             }
@@ -394,7 +395,7 @@ public class ProfileModule {
             {
                 scanner.nextLine();
                 System.out.println("Enter new postal code->");
-                address.setPostCode(scanner.nextLine().trim());
+                address = addressEntityControllerRemote.updateAddressCode(aid, scanner.nextLine().trim());
                 System.out.println("[System] New postal code updated successfully!");
                 manageAddress();
             }
@@ -413,6 +414,9 @@ public class ProfileModule {
         catch(InputMismatchException ex){
             System.err.println("[Warning] Invalid Type!");
             manageAddress();
+        }
+        catch(AddressNotFoundException ex){
+            System.err.println("[Warning] "+ex.getMessage());
         }
 
     }

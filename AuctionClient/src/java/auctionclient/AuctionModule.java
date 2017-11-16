@@ -60,9 +60,6 @@ public class AuctionModule {
         
     }
 
-   
-   
-    
     public void viewAuctionListing()
     {
         try
@@ -70,11 +67,11 @@ public class AuctionModule {
         Scanner scanner = new Scanner(System.in);
         List<AuctionEntity> availableAuctionList = auctionEntityControllerRemote.viewAvailableAuctionEntity();
         System.out.println("******* [Customer] View Auction Listing *******");
-        System.out.printf("%35s%35s","Auction Item ID","Auction Item Name");
+        System.out.printf("%35s%35s\n","Auction Item ID","Auction Item Name");
         
         for(AuctionEntity auctionentity: availableAuctionList)
         {
-            System.out.printf("%35s%35s",auctionentity.getId(),auctionentity.getProductName());
+            System.out.printf("%35s%35s\n",auctionentity.getId(),auctionentity.getProductName());
         }
         
         //ask whether want to view details of a specific auction item
@@ -258,14 +255,19 @@ public class AuctionModule {
         
         
             System.out.println("Back to menu?(Y/N)->");
-                while(!scanner.nextLine().trim().equals("Y"))
-                {
+            if(scanner.nextLine().trim().equals("Y")){
+                    mainapp = new MainApp(customerEntityControllerRemote, creditPackageEntityControllerRemote, bidEntityControllerRemote, auctionEntityControllerRemote, creditTransactionEntityControllerRemote, addressEntityControllerRemote, timerSessionBean);
+                    mainapp.menuMain(customer);
+            }
+            while(!scanner.nextLine().trim().equals("Y"))
+            {
                     scanner.nextLine();
                     System.out.println("->");
                     if(scanner.nextLine().trim().equals("Y"))
                     mainapp = new MainApp(customerEntityControllerRemote, creditPackageEntityControllerRemote, bidEntityControllerRemote, auctionEntityControllerRemote, creditTransactionEntityControllerRemote, addressEntityControllerRemote, timerSessionBean);
                     mainapp.menuMain(customer);
-                } 
+            } 
+                
         
         }
         else{

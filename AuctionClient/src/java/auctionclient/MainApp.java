@@ -16,6 +16,7 @@ import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import javafx.application.Platform;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
@@ -195,6 +196,7 @@ public class MainApp {
     
     public void menuMain(CustomerEntity customer)//pass in customer entity who just logged in
     {
+       while(true){
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
@@ -257,6 +259,12 @@ public class MainApp {
             catch(InputMismatchException ex){
             System.err.println("[Warning] Invalid Type!");
             }
-        }        
+        }
+        if(response==7)
+        {
+            break;
+        }
+       }
+        
     }
 }
