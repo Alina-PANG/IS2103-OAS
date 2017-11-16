@@ -26,6 +26,9 @@ public interface AddressEntityControllerLocal {
 
     public boolean deleteAddress(Long id) throws AddressNotFoundException;
 
-    
+    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException;
+
+    public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException;
+
     
 }
