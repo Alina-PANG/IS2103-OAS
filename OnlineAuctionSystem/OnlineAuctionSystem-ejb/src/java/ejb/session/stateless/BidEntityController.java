@@ -10,9 +10,7 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
-import entity.SnippingBidEntity;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javafx.util.Pair;
@@ -24,8 +22,6 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -99,12 +95,6 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             if(((ProxyBiddingEntity) bid).getMaxAmount().compareTo(minPrice) < 0){
                 throw new BidLessThanIncrementException("The proxy bidding max price "+((ProxyBiddingEntity) bid).getMaxAmount()+" is less than the increment amount "+minPrice+" !");
             }
-        }
-        else if(bid instanceof SnippingBidEntity){
-            if(((SnippingBidEntity) bid).getMaxAmount().compareTo(minPrice) < 0){
-                throw new BidLessThanIncrementException("The snipping bidding max price "+((SnippingBidEntity) bid).getMaxAmount()+" is less than the increment amount "+minPrice+" !");
-            }
-        
         }
         else {
             if (bid.getAmount().compareTo(minPrice) < 0) {
@@ -232,57 +222,6 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             return (BidEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new BidNotFoundException("You currently have not placed any bid in auction " + aid + " !");
-        }
-    }
-
-    @Override
-    public void createSnipingBid(int duration, SnippingBidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws NotEnoughCreditException, BidLessThanIncrementException, AuctionNotOpenException, AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
-        if (a.getEndingTime().before(new Date())) {
-            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
-        } else if (a.getStartingTime().after(new Date())) {
-            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
-        }
-
-        bid.setMaxAmount(maxPrice);
-
-        try {
-            createNewBid(bid, cid, aid);
-        } catch (BidAlreadyExistException ex) {
-        }
-
-        TimerService timerService = sessionContext.getTimerService();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(bid.getAuctionEntity().getEndingTime());
-        duration = 0 - duration;
-        cal.add(Calendar.MINUTE, duration);
-        bid.setTimeduration(cal.getTime());
-
-        Timer timer = timerService.createSingleActionTimer(cal.getTime(), new TimerConfig(bid, true));
-    }
-
-    @Timeout
-    private void putSnipingBid(Timer timer) {
-        BigDecimal maxPrice = (BigDecimal) ((Pair) timer.getInfo()).getValue();
-        BidEntity bid = (BidEntity) ((Pair) timer.getInfo()).getKey();
-
-        CustomerEntity c = bid.getCustomerEntity();
-        AuctionEntity a = bid.getAuctionEntity();
-
-        try {
-            BigDecimal currentPrice = auctionEntityController.getCurrentWinningBidEntity(a.getId()).getAmount();
-            BigDecimal minPrice = currentPrice.add(auctionEntityController.getCurrentBidIncremental(currentPrice));
-
-            if (maxPrice.compareTo(minPrice) >= 0) {
-                bid.setAmount(minPrice);
-                try {
-                    createNewBid(bid, c.getId(), a.getId());
-                } catch (AuctionClosedException | NotEnoughCreditException | AuctionNotOpenException | BidLessThanIncrementException | CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
-                    System.err.println("An error has occured: " + ex.getMessage());
-                }
-            }
-        } catch (AuctionNotFoundException ex) {
-            System.err.println("An errro has occured: " + ex.getMessage());
         }
     }
 

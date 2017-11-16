@@ -9,12 +9,17 @@ import ejb.session.stateless.AuctionEntityControllerRemote;
 import ejb.session.stateless.BidEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import ejb.session.stateless.TimerSessionBeanRemote;
-import ws.client.SnippingBidEntity;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import ws.client.AuctionClosedException_Exception;
+import ws.client.AuctionEntity;
 import ws.client.AuctionNotFoundException_Exception;
 import ws.client.AuctionNotOpenException_Exception;
 import ws.client.BidAlreadyExistException_Exception;
@@ -177,7 +182,8 @@ public class MainApp {
         Scanner sc = new Scanner(System.in);
         BigDecimal maxPrice;
         Long aid;
-        int timeDuration;
+        int duration;
+        AuctionEntity a;
 
         System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
         System.out.print("Please input the auction id that you want to put for snipping bid: \n> ");
@@ -185,18 +191,54 @@ public class MainApp {
         System.out.print("Please input the max price that you want to pay: ");
         maxPrice = sc.nextBigDecimal();
         System.out.print("Please input the time duration before the listing expired to place your bid (in minutes): \n> ");
-        timeDuration = sc.nextInt();
+        duration = sc.nextInt();
 
         try {
-            ws.client.SnippingBidEntity bid = new ws.client.SnippingBidEntity();
+            a = viewAuctionListDetails(aid);
+            Date endTime = a.getEndingTime().toGregorianCalendar().getTime();
+            Date startTime = a.getStartingTime().toGregorianCalendar().getTime();
+
+            if (endTime.before(new Date())) {
+                System.err.println("The auction has already been closed, no more bid is allowed!");
+            } else if (startTime.after(new Date())) {
+                System.err.println("The auction has not been opende yet, please wait patiently!");
+            } else {
+                // calculate and put snipping bid
+                Timer timer = new Timer("snipping bid with cid=" + currentCustomerEntity.getId());
+                GregorianCalendar cal = a.getEndingTime().toGregorianCalendar();
+                duration = 0 - duration;
+                cal.add(Calendar.MINUTE, duration);
+                if (cal.getTime().before(startTime)) {
+                    System.err.println("Your Snipping Bid time cannot be before the auction starting time!");
+                } else if (cal.getTime().after(endTime)) {
+                    System.err.println("Your Snipping Bid time cannot be after the auction ending time!");
+                } else {
+                    timer.schedule(new TimerTask() {
+                        public void run() {
+                            try {
+                                BidEntity bid = new BidEntity();
+                                bid.setAmount(maxPrice);
+                                createSnippingBid(bid, aid, currentCustomerEntity.getId());
+                            } catch (BidLessThanIncrementException_Exception | CustomerNotFoundException_Exception | AuctionNotFoundException_Exception | AuctionClosedException_Exception | BidAlreadyExistException_Exception | AuctionNotOpenException_Exception | NotEnoughCreditException_Exception | GeneralException_Exception ex) {
+
+                            }
+                        }
+                    }, cal.getTime());
+                }
+            }
+        } catch (AuctionNotFoundException_Exception ex) {
+            System.err.println("An error has occured: " + ex.getMessage());//added
+        }
+
+        /*try {
+            SnippingBidEntity bid = new SnippingBidEntity();
             bid.setAmount(new BigDecimal(-101));
             createSnippingBid(bid, maxPrice, timeDuration, aid, currentCustomerEntity.getId());
             System.out.println("[System] Proxy bid has been created successfully!");
 
         } catch (AuctionNotOpenException_Exception | BidLessThanIncrementException_Exception | NotEnoughCreditException_Exception | AuctionClosedException_Exception | CustomerNotFoundException_Exception | AuctionNotFoundException_Exception | BidAlreadyExistException_Exception | GeneralException_Exception ex) {
             System.err.println("[Warning] and error has occured: " + ex.getMessage());
-        }
-
+        }*/
     }
 
     private void viewCreditBalance() {
@@ -217,7 +259,7 @@ public class MainApp {
         String input = sc.nextLine().trim();
 
         try {
-            List<ws.client.AuctionEntity> list = viewAuctionListByName(input);
+            List<ws.client.AuctionEntity> list = viewAuctionListByName(input);//???
             showList(list);
             System.out.println("Please input the id of the Auction List:");
             ws.client.AuctionEntity al = viewAuctionListDetails(sc.nextLong());//???
@@ -404,12 +446,10 @@ public class MainApp {
         return port.viewWinningBid(bid);
     }
 
-    private static void createSnippingBid(ws.client.SnippingBidEntity bid, java.math.BigDecimal maxPrice, int timeDuration, java.lang.Long aid, java.lang.Long cid) throws AuctionNotFoundException_Exception, GeneralException_Exception, CustomerNotFoundException_Exception, BidAlreadyExistException_Exception, AuctionNotOpenException_Exception, NotEnoughCreditException_Exception, BidLessThanIncrementException_Exception, AuctionClosedException_Exception {
+    private static void createSnippingBid(ws.client.BidEntity bid, java.lang.Long aid, java.lang.Long cid) throws BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionNotFoundException_Exception, AuctionClosedException_Exception, BidAlreadyExistException_Exception, AuctionNotOpenException_Exception, NotEnoughCreditException_Exception, GeneralException_Exception {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
-        port.createSnippingBid(bid, maxPrice, timeDuration, aid, cid);
+        port.createSnippingBid(bid, aid, cid);
     }
-
- 
 
 }

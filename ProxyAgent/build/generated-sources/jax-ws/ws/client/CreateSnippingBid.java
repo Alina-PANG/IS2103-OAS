@@ -1,7 +1,6 @@
 
 package ws.client;
 
-import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -17,9 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="bid" type="{http://ws.session.ejb/}snippingBidEntity" minOccurs="0"/&gt;
- *         &lt;element name="maxPrice" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
- *         &lt;element name="timeDuration" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="bid" type="{http://ws.session.ejb/}bidEntity" minOccurs="0"/&gt;
  *         &lt;element name="aid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *         &lt;element name="cid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
@@ -33,16 +30,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "createSnippingBid", propOrder = {
     "bid",
-    "maxPrice",
-    "timeDuration",
     "aid",
     "cid"
 })
 public class CreateSnippingBid {
 
-    protected SnippingBidEntity bid;
-    protected BigDecimal maxPrice;
-    protected int timeDuration;
+    protected BidEntity bid;
     protected Long aid;
     protected Long cid;
 
@@ -51,10 +44,10 @@ public class CreateSnippingBid {
      * 
      * @return
      *     possible object is
-     *     {@link SnippingBidEntity }
+     *     {@link BidEntity }
      *     
      */
-    public SnippingBidEntity getBid() {
+    public BidEntity getBid() {
         return bid;
     }
 
@@ -63,51 +56,11 @@ public class CreateSnippingBid {
      * 
      * @param value
      *     allowed object is
-     *     {@link SnippingBidEntity }
+     *     {@link BidEntity }
      *     
      */
-    public void setBid(SnippingBidEntity value) {
+    public void setBid(BidEntity value) {
         this.bid = value;
-    }
-
-    /**
-     * Gets the value of the maxPrice property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public BigDecimal getMaxPrice() {
-        return maxPrice;
-    }
-
-    /**
-     * Sets the value of the maxPrice property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setMaxPrice(BigDecimal value) {
-        this.maxPrice = value;
-    }
-
-    /**
-     * Gets the value of the timeDuration property.
-     * 
-     */
-    public int getTimeDuration() {
-        return timeDuration;
-    }
-
-    /**
-     * Sets the value of the timeDuration property.
-     * 
-     */
-    public void setTimeDuration(int value) {
-        this.timeDuration = value;
     }
 
     /**

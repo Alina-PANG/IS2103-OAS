@@ -12,7 +12,6 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
-import entity.SnippingBidEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -168,8 +167,8 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createSnippingBid")
-    public void createSnippingBid(@WebParam(name = "bid") SnippingBidEntity bid, @WebParam(name = "maxPrice") BigDecimal maxPrice, @WebParam(name = "timeDuration") int timeDuration, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionNotOpenException, AuctionClosedException, BidLessThanIncrementException, NotEnoughCreditException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
-        bidEntityController.createSnipingBid(timeDuration, bid, cid, aid, maxPrice);
+    public void createSnippingBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionNotOpenException, AuctionClosedException, BidLessThanIncrementException, NotEnoughCreditException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
+        bidEntityController.createNewBid(bid, cid, aid);
     }
 
     @WebMethod(operationName = "createProxyBid")
