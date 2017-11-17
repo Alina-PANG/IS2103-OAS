@@ -8,8 +8,6 @@ package ejb.session.stateless;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
-import entity.SnippingBidEntity;
-import java.math.BigDecimal;
 import java.util.List;
 import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
@@ -43,7 +41,7 @@ public interface BidEntityControllerLocal {
 
     public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
 
-    public void createSnipingBid(int duration, SnippingBidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws NotEnoughCreditException, BidLessThanIncrementException, AuctionNotOpenException,AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
+   
 
     public BidEntity viewMyBidInAuction(Long aid, Long cid) throws BidNotFoundException;
 

@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.AuctionEntity;
 import entity.BidEntity;
-import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,7 +25,7 @@ import util.enumeration.TransactionTypeEnum;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.GeneralException;
 import util.exception.AuctionNotFoundException;
-import util.exception.BidAlreadyExistException;
+import util.exception.BidNotFoundException;
 import util.exception.CustomerNotFoundException;
 
 /**
@@ -46,8 +45,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @EJB
     private BidEntityControllerLocal bidEntityController;
-    
-    
 
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
@@ -94,32 +91,34 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public BidEntity closeAuction(AuctionEntity ae) {
         if (ae.getBidEntities().size() != 0) {
             try {
-                Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.auctionEntity.reservePrice < b.amount AND b.amount = (SELECT MAX(b.amount) FROM BidEntity b WHERE b.auctionEntity.id = :aid)");
+                Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.auctionEntity.reservePrice < b.amount AND b.id = b.auctionEntity.winningBidId");
                 query.setParameter("aid", ae.getId());
-                // if highest bid is above the reserve price
+
                 BidEntity bid = (BidEntity) query.getSingleResult();
-                ae.setWinningBidId(bid.getId());
 
                 List<BidEntity> bidList = ae.getBidEntities();
                 for (BidEntity b : bidList) {
                     if (!b.getId().equals(bid.getId())) {
-                        CustomerEntity c = b.getCustomerEntity();
-                        c.addCreditBalance(b.getAmount());
-                        CreditTransactionEntity ct = new CreditTransactionEntity(b.getAmount(), TransactionTypeEnum.REFUND);
-                        c.getCreditTransactionEntities().add(ct);
-                        ct.setCustomerEntity(c);
-                        em.remove(b);
+                        try {
+                            creditTransactionEntityController.createNewTransaction(b.getCustomerEntity().getId(), TransactionTypeEnum.REFUND, b.getAmount());
+                            bidEntityController.deleteBid(b.getId());
+                        } catch (BidNotFoundException ex) {
+                            System.err.println("Auction Controller - CloseAuction - BidNotFound");
+                        }
                     }
                 }
 
                 return bid;
             } catch (NoResultException ex) {
-                System.out.println("Auction " + ae.getId() + " closed without having a winner.");
+                System.err.println("Auction " + ae.getId() + " closed without having a winner.");
+            } catch (GeneralException | CustomerNotFoundException ex) {
+                System.err.println("Close Auction - Create Transaction" + ex.getMessage());
             }
         }
         return null;
     }
 
+    /*
     private BidEntity closingFindWinningBid(AuctionEntity ae) {
         Query query = em.createQuery("SELECT b FROM BidEntity b, AuctionEntity al WHERE b MEMBER OF al.bidEntities AND al.id = :id AND b.amount = (SELECT MAX(b.amount) FROM b WHERE b MEMBER OF al)");
         query.setParameter(":id", ae.getId());
@@ -131,12 +130,13 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
 
         return list.get(0);
-    }
-
+    }*/
     @Override
-    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException {
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException{
         AuctionEntity ae = retrieveAuctionById(aid);
+        BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
+/*<<<<<<< HEAD
         em.flush();
         em.refresh(ae);
     }
@@ -148,12 +148,32 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         em.flush();
         em.refresh(ae);
         return ae;
+=======
+
+        List<BidEntity> bidList = ae.getBidEntities();
+        for (BidEntity b : bidList) {
+            if (!b.getId().equals(bid)) {
+                try {
+                    creditTransactionEntityController.createNewTransaction(b.getCustomerEntity().getId(), TransactionTypeEnum.REFUND, b.getAmount());
+                    bidEntityController.deleteBid(b.getId());
+                } catch (BidNotFoundException ex) {
+                    System.err.println("Auction Controller - CloseAuction - BidNotFound");
+                } catch (NoResultException ex) {
+                    System.err.println("Auction " + ae.getId() + " closed without having a winner.");
+                } catch (GeneralException | CustomerNotFoundException ex) {
+                    System.err.println("Close Auction - Create Transaction" + ex.getMessage());
+                }
+            }
+        }
+>>>>>>> master*/
     }
 
     @Override
-    public AuctionEntity retrieveAuctionById(Long id) throws AuctionNotFoundException {
+    public AuctionEntity
+            retrieveAuctionById(Long id) throws AuctionNotFoundException {
         // retrieve the ae
-        AuctionEntity ae = em.find(AuctionEntity.class, id);
+        AuctionEntity ae = em.find(AuctionEntity.class,
+                 id);
 
         // check and throw exception
         if (ae == null) {
@@ -245,10 +265,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             for (BidEntity bid : bidList) {
                 CustomerEntity c = bid.getCustomerEntity();
                 c.setCreditBalance(c.getCreditBalance().add(bid.getAmount()));
-                try{
-                creditTransactionEntityController.createNewTransaction(c.getId(), TransactionTypeEnum.REFUND, bid.getAmount());
-                } catch(CustomerNotFoundException ex){
-                    System.out.println("Create transaction entity: Customer "+c.getId()+" not found!");
+                try {
+                    creditTransactionEntityController.createNewTransaction(c.getId(), TransactionTypeEnum.REFUND, bid.getAmount());
+                } catch (CustomerNotFoundException ex) {
+                    System.out.println("Create transaction entity: Customer " + c.getId() + " not found!");
                 }
             }
             return false;
@@ -271,7 +291,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.status = :status AND al.reservePrice > (SELECT MAX(b.amount) FROM BidEntity b WHERE b MEMBER OF al.bidEntities)");
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.status = :status AND b.id = al.winningBidId AND al.reservePrice > b.amount");
         query.setParameter("status", StatusEnum.CLOSED);
         try {
             return (List<AuctionEntity>) query.getResultList();
@@ -289,7 +309,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException {
         Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.winningBidId = b.id AND b.customerEntity.id = :cid");
-        query.setParameter(":cid", cid);
+        query.setParameter("cid", cid);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (Exception ex) {
@@ -324,15 +344,16 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException {
         Query query = em.createQuery("SELECT ae FROM AuctionEntity ae WHERE ae.id =:aeid AND ae.status =:status")
                 .setParameter("aeid", productid).setParameter("status", StatusEnum.ACTIVE);
-        if((AuctionEntity) query.getSingleResult()!=null)
-        return (AuctionEntity) query.getSingleResult();
-        else
+        if ((AuctionEntity) query.getSingleResult() != null) {
+            return (AuctionEntity) query.getSingleResult();
+        } else {
             throw new AuctionNotFoundException("This product id is not valid!");
+        }
     }
 
     @Override
     public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException {
-        
+
         List<BidEntity> bidlist = viewBidEntity(productid);
         if (!bidlist.isEmpty()) {
             BidEntity highestbid = new BidEntity(new BigDecimal("0.00"));
@@ -378,6 +399,5 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
         return incremental;
     }
-
 
 }

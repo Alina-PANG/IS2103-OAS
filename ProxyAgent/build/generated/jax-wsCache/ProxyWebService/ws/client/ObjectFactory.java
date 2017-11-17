@@ -413,14 +413,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SnippingBidEntity }
-     * 
-     */
-    public SnippingBidEntity createSnippingBidEntity() {
-        return new SnippingBidEntity();
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AuctionClosedException }{@code >}}
      * 
      */

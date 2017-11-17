@@ -40,8 +40,7 @@ import javax.xml.bind.annotation.XmlType;
     "id"
 })
 @XmlSeeAlso({
-    ProxyBiddingEntity.class,
-    SnippingBidEntity.class
+    ProxyBiddingEntity.class
 })
 public class BidEntity {
 

@@ -269,7 +269,8 @@ public class SalesStaffModule {
             throw new AuctionNotFoundException("No Auction Listing has name like " + name);
         } else {
             showList(list);
-            System.out.println("Enter ID of the package that you want to retrieve: ");
+            System.out.print("Enter the ID of the package that you want to retrieve: \n> ");
+
             return auctionEntityController.retrieveAuctionById(sc.nextLong());
         }
     }
@@ -337,8 +338,12 @@ public class SalesStaffModule {
                 System.err.println("[Warning] The input auction list id does not exist!");
             }   
             }
+/*<<<<<<< HEAD
     
             catch (AuctionNotFoundException |GeneralException |BidNotFoundException ex) {
+=======
+        } catch (AuctionNotFoundException | GeneralException | BidNotFoundException ex) {
+>>>>>>> master*/
             System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());
             } 
     }

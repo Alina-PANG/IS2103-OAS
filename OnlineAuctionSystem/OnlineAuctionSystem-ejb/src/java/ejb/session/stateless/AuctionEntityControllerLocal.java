@@ -13,6 +13,7 @@ import java.util.List;
 import util.exception.AuctionAlreadyExistException;
 import util.exception.AuctionNotFoundException;
 import util.exception.BidAlreadyExistException;
+import util.exception.BidNotFoundException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 
@@ -46,7 +47,7 @@ public interface AuctionEntityControllerLocal {
 
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice);
 
-    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException;
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException;
 
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
 

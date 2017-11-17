@@ -10,24 +10,18 @@ import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
-import entity.SnippingBidEntity;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javafx.util.Pair;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -74,74 +68,38 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException {
         CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
-        BigDecimal more = bid.getAmount();
+        BigDecimal currentPrice = new BigDecimal(0);
+        BidEntity currentWinningBid = null;
+        try {
+            currentWinningBid = retrieveById(a.getWinningBidId());
+        } catch (BidNotFoundException ex) {
+            System.err.println("BidEntitycontroller - createNewBid - BidNotFound");
+        }
 
+        // check whether auction is open
         if (a.getEndingTime().before(new Date())) {
             throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!");
         } else if (a.getStartingTime().after(new Date())) {
             throw new AuctionClosedException("The auction has not been opened yet, please wait patiently!");
         }
 
-        BigDecimal currentPrice;
-        BidEntity currentWinningBid = auctionEntityController.getCurrentWinningBidEntity(aid);
-       
-        //debug
-        if (currentWinningBid == null) {
-            currentPrice = new BigDecimal(0);
-        } else {
+        // calculate the currentPrice and minPrice the new bid should be
+        if (!(currentWinningBid == null)) {
             currentPrice = currentWinningBid.getAmount();
         }
-        System.out.println("Current winning bid: " + currentPrice);//debug
+        System.err.println("Current winning bid: " + currentPrice);
 
         BigDecimal minPrice = currentPrice.add(auctionEntityController.getCurrentBidIncremental(currentPrice));
-        System.out.println("current winning bid: " + minPrice);//debug
-        if(bid instanceof ProxyBiddingEntity){
-            if(((ProxyBiddingEntity) bid).getMaxAmount().compareTo(minPrice) < 0){
-                throw new BidLessThanIncrementException("The proxy bidding max price "+((ProxyBiddingEntity) bid).getMaxAmount()+" is less than the increment amount "+minPrice+" !");
-            }
-        }
-        else if(bid instanceof SnippingBidEntity){
-            if(((SnippingBidEntity) bid).getMaxAmount().compareTo(minPrice) < 0){
-                throw new BidLessThanIncrementException("The snipping bidding max price "+((SnippingBidEntity) bid).getMaxAmount()+" is less than the increment amount "+minPrice+" !");
-            }
-        
-        }
-        else {
-            if (bid.getAmount().compareTo(minPrice) < 0) {
-                throw new BidLessThanIncrementException("The bid is less than the increment amount!");
-            }
-        }
-        try {
-            boolean flag = true;
+        System.err.println("Current minimum bid: " + minPrice);//debug
 
-            try {
-                System.out.println("remove previous bid");
-                Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid");
-                query.setParameter("cid", cid);
-                query.setParameter("aid", aid);
-                BidEntity b = (BidEntity) query.getSingleResult();
-                more.subtract(b.getAmount());
-                c.getBidEntities().remove(b);
-                a.getBidEntities().remove(b);
-                flag = false;
-                em.remove(b);
-                ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
-            } catch (NoResultException ex) {
-                System.out.println("No previous bid!");
+        // If the bid is a proxyBiddingEntity
+        // requirement: maxAmount > minPrice
+        if (bid instanceof ProxyBiddingEntity) {
+            if (((ProxyBiddingEntity) bid).getMaxAmount().compareTo(minPrice) < 0) {
+                throw new BidLessThanIncrementException("The proxy bidding max price " + ((ProxyBiddingEntity) bid).getMaxAmount() + " is less than the increment amount " + minPrice + " !");
             }
-
-            if (c.getCreditBalance().compareTo(more) < 0) {
-                throw new NotEnoughCreditException("Not Enough Balance! (Your Balance: " + c.getCreditBalance() + "; Required: " + more + ")");
-            }
-
             c.getBidEntities().add(bid);
-            c.setCreditBalance(c.getCreditBalance().subtract(more));
             a.getBidEntities().add(bid);
-            a.setWinningBidId(new Long(0));
-            if (flag) {
-                c.getAuctionEntities().add(a);
-                a.getCustomerEntities().add(c);
-            }
             bid.setCustomerEntity(c);
             bid.setAuctionEntity(a);
 
@@ -149,28 +107,98 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             em.flush();
             em.refresh(bid);
 
-            ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
-            checkProxyBid(a);
-
+            checkProxyBid(a, bid);
             return bid;
-        } catch (PersistenceException ex) {
-            if (ex.getCause() != null
-                    && ex.getCause().getCause() != null
-                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
-                throw new BidAlreadyExistException("Bid with same identification number already exist!");
-            } else {
-                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+        } 
+        // A normal bid entity
+        // requirement: 1. amount > minPrice
+        //              2. remove previous bid
+        //              3. customer credit balance > bid amount
+        //              4. if customer has not bid for this particular auction before, need to add each other as bidirectiona relationship
+        else {
+            // bid is less than min bid
+            if (bid.getAmount().compareTo(minPrice) < 0) {
+                throw new BidLessThanIncrementException("The bid is less than the increment amount!");
+            }
+
+            try {
+                // to show whether the customer has bid for this auction before or not
+                boolean flag = true;
+
+                // remove previous bids
+                try {
+                    System.out.println("remove previous bid");
+                    Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid AND b.amount != -77");
+                    query.setParameter("cid", cid);
+                    query.setParameter("aid", aid);
+                    BidEntity b = (BidEntity) query.getSingleResult();
+                    
+                    flag = false; // no exception throws -> have previous bid -> customer has bid for this auction before
+
+                    ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
+                    c.setCreditBalance(c.getCreditBalance().add(b.getAmount()));
+                    deleteBid(b.getId());
+                } catch (NoResultException ex) {
+                    System.out.println("Customer " + c.getUsername() + " has no previous bid in auction " + a.getId() + "!");
+                } catch (BidNotFoundException ex) {
+                    System.out.println("Create New Bid- Bid Not Found");
+                }
+
+                if (c.getCreditBalance().compareTo(bid.getAmount()) < 0) {
+                    throw new NotEnoughCreditException("Not Enough Balance! (Your Balance: " + c.getCreditBalance() + "; Required: " + bid.getAmount() + ")");
+                }
+
+                c.getBidEntities().add(bid);
+                c.setCreditBalance(c.getCreditBalance().subtract(bid.getAmount()));
+                a.getBidEntities().add(bid);
+                a.setWinningBidId(bid.getId());
+                if (flag) {
+                    c.getAuctionEntities().add(a);
+                    a.getCustomerEntities().add(c);
+                }
+                bid.setCustomerEntity(c);
+                bid.setAuctionEntity(a);
+
+                em.persist(bid);
+                em.flush();
+                em.refresh(bid);
+
+                ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
+
+                return bid;
+            } catch (PersistenceException ex) {
+                if (ex.getCause() != null
+                        && ex.getCause().getCause() != null
+                        && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+                    throw new BidAlreadyExistException("Bid with same identification number already exist!");
+                } else {
+                    throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+                }
             }
         }
     }
 
-    private void checkProxyBid(AuctionEntity a) throws AuctionClosedException, AuctionNotOpenException, NotEnoughCreditException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        List<BidEntity> list = a.getBidEntities();
-        for (BidEntity b : list) {
-            if (b instanceof ProxyBiddingEntity) {
-                createProxyBid((ProxyBiddingEntity) b, b.getCustomerEntity().getId(), a.getId());
+    private void checkProxyBid(AuctionEntity a, BidEntity currentProxy) throws AuctionClosedException, AuctionNotOpenException, NotEnoughCreditException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.amount = -77 AND b.auctionEntity.id = :aid");
+        query.setParameter("aid", a.getId());
+
+        try {
+            query.getSingleResult();
+        } catch (NonUniqueResultException ex) {
+            List<ProxyBiddingEntity> proxyList = (List<ProxyBiddingEntity>) query.getResultList();
+            BigDecimal amount = new BigDecimal(0);
+
+            // there will be max 2 proxyBiddingEntity exist simultaneously
+            while (proxyList.get(0).getMaxAmount().compareTo(amount) > 0 && proxyList.get(1).getMaxAmount().compareTo(amount)>0){
+                for (ProxyBiddingEntity p : proxyList) {
+                    if (!p.getId().equals(currentProxy.getId())) {
+
+                        
+                    }
+                }
             }
         }
+
     }
 
     @Override
@@ -187,6 +215,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     @Override
     public void deleteBid(Long id) throws BidNotFoundException {
         BidEntity bid = retrieveById(id);
+        bid.getCustomerEntity().getBidEntities().remove(bid);
+        bid.getAuctionEntity().getBidEntities().remove(bid);
+        bid.getAddressEntity().getBidEntities().remove(bid);
 
         em.remove(bid);
     }
@@ -236,77 +267,12 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
     }
 
     @Override
-    public void createSnipingBid(int duration, SnippingBidEntity bid, Long cid, Long aid, BigDecimal maxPrice) throws NotEnoughCreditException, BidLessThanIncrementException, AuctionNotOpenException, AuctionClosedException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
-        if (a.getEndingTime().before(new Date())) {
-            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
-        } else if (a.getStartingTime().after(new Date())) {
-            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
-        }
-
-        bid.setMaxAmount(maxPrice);
-
-        try {
-            createNewBid(bid, cid, aid);
-        } catch (BidAlreadyExistException ex) {
-        }
-
-        TimerService timerService = sessionContext.getTimerService();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(bid.getAuctionEntity().getEndingTime());
-        duration = 0 - duration;
-        cal.add(Calendar.MINUTE, duration);
-        bid.setTimeduration(cal.getTime());
-
-        Timer timer = timerService.createSingleActionTimer(cal.getTime(), new TimerConfig(bid, true));
-    }
-
-    @Timeout
-    private void putSnipingBid(Timer timer) {
-        BigDecimal maxPrice = (BigDecimal) ((Pair) timer.getInfo()).getValue();
-        BidEntity bid = (BidEntity) ((Pair) timer.getInfo()).getKey();
-
-        CustomerEntity c = bid.getCustomerEntity();
-        AuctionEntity a = bid.getAuctionEntity();
-
-        try {
-            BigDecimal currentPrice = auctionEntityController.getCurrentWinningBidEntity(a.getId()).getAmount();
-            BigDecimal minPrice = currentPrice.add(auctionEntityController.getCurrentBidIncremental(currentPrice));
-
-            if (maxPrice.compareTo(minPrice) >= 0) {
-                bid.setAmount(minPrice);
-                try {
-                    createNewBid(bid, c.getId(), a.getId());
-                } catch (AuctionClosedException | NotEnoughCreditException | AuctionNotOpenException | BidLessThanIncrementException | CustomerNotFoundException | AuctionNotFoundException | BidAlreadyExistException | GeneralException ex) {
-                    System.err.println("An error has occured: " + ex.getMessage());
-                }
-            }
-        } catch (AuctionNotFoundException ex) {
-            System.err.println("An errro has occured: " + ex.getMessage());
-        }
-    }
-
-    @Override
     public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
 
-        if (a.getEndingTime().before(new Date())) {
-            throw new AuctionClosedException("The auction has already been closed, no more bid is allowed!Ï");
-        } else if (a.getStartingTime().after(new Date())) {
-            throw new AuctionClosedException("The auction has not been opende yet, please wait patiently!");
-        }
-
         try {
             createNewBid(bid, cid, aid);
         } catch (BidAlreadyExistException ex) {
-        }
-
-        BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
-        BigDecimal minPrice = auctionEntityController.getCurrentBidIncremental(b.getAmount()).add(b.getAmount());
-
-        if (bid.getMaxAmount().compareTo(minPrice) >= 0) {
-            BidEntity newBid = new BidEntity(minPrice);
-            createNewBid(newBid, cid, aid);
         }
     }
 }

@@ -112,6 +112,7 @@
 <xs:element name="contactNumber" type="xs:string" minOccurs="0"/>
 <xs:element name="creditBalance" type="xs:decimal" minOccurs="0"/>
 <xs:element name="creditTransactionEntities" type="tns:creditTransactionEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="creditpackageentities" type="tns:creditPackageEntity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="customerTypeEnum" type="tns:customerTypeEnum" minOccurs="0"/>
 <xs:element name="email" type="xs:string" minOccurs="0"/>
 <xs:element name="firstName" type="xs:string" minOccurs="0"/>
@@ -311,23 +312,10 @@
 
 <xs:complexType name="createSnippingBid">
 <xs:sequence>
-<xs:element name="bid" type="tns:snippingBidEntity" minOccurs="0"/>
-<xs:element name="maxPrice" type="xs:decimal" minOccurs="0"/>
-<xs:element name="timeDuration" type="xs:int"/>
+<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
 <xs:element name="aid" type="xs:long" minOccurs="0"/>
 <xs:element name="cid" type="xs:long" minOccurs="0"/>
 </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="snippingBidEntity">
-<xs:complexContent>
-<xs:extension base="tns:bidEntity">
-<xs:sequence>
-<xs:element name="maxAmount" type="xs:decimal" minOccurs="0"/>
-<xs:element name="timeduration" type="xs:dateTime" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="createSnippingBidResponse">

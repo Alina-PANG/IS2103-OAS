@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="contactNumber" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="creditBalance" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *         &lt;element name="creditTransactionEntities" type="{http://ws.session.ejb/}creditTransactionEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="creditpackageentities" type="{http://ws.session.ejb/}creditPackageEntity" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="customerTypeEnum" type="{http://ws.session.ejb/}customerTypeEnum" minOccurs="0"/&gt;
  *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="firstName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
@@ -48,6 +49,7 @@ import javax.xml.bind.annotation.XmlType;
     "contactNumber",
     "creditBalance",
     "creditTransactionEntities",
+    "creditpackageentities",
     "customerTypeEnum",
     "email",
     "firstName",
@@ -66,6 +68,8 @@ public class CustomerEntity {
     protected BigDecimal creditBalance;
     @XmlElement(nillable = true)
     protected List<CreditTransactionEntity> creditTransactionEntities;
+    @XmlElement(nillable = true)
+    protected List<CreditPackageEntity> creditpackageentities;
     @XmlSchemaType(name = "string")
     protected CustomerTypeEnum customerTypeEnum;
     protected String email;
@@ -208,6 +212,35 @@ public class CustomerEntity {
             creditTransactionEntities = new ArrayList<CreditTransactionEntity>();
         }
         return this.creditTransactionEntities;
+    }
+
+    /**
+     * Gets the value of the creditpackageentities property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the creditpackageentities property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getCreditpackageentities().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link CreditPackageEntity }
+     * 
+     * 
+     */
+    public List<CreditPackageEntity> getCreditpackageentities() {
+        if (creditpackageentities == null) {
+            creditpackageentities = new ArrayList<CreditPackageEntity>();
+        }
+        return this.creditpackageentities;
     }
 
     /**
