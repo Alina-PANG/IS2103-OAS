@@ -300,21 +300,20 @@ public class AuctionModule {
         {
             System.out.println("Below are the auctions that you have won:");
             Boolean nulladdressexists=false;
-            System.out.println("Bid ID---Product name---Bid amount---Delivery Address");
+            System.out.printf("%10s%20s%15s%35s\n","Bid ID|","Product name|","Bid amount|","Delivery Address");
             for(BidEntity bid:winningbidlist)
             {
-                System.out.print(bid.getId()+"---");
-                System.out.print(bid.getAuctionEntity().getProductName()+"---");
-                System.out.print(bid.getAmount()+"---");
-                if(bid.getAddressEntity()!=null)
+                System.out.printf("%10s%20s%15s",bid.getId()+"|",bid.getAuctionEntity().getProductName()+"|"
+                ,bid.getAmount()+"|");
+               if(bid.getAddressEntity()!=null)
                 {
-                    System.out.println(bid.getAddressEntity().getAddressLine()+"---");
-                    System.out.print(bid.getAddressEntity().getPostCode());
+                    System.out.printf("%35s",bid.getAddressEntity().getAddressLine()+"-"+bid.getAddressEntity().getPostCode());
+                    System.out.println("\n");
+                }    
+               else{
+                    System.err.println(" No address linked!");
                     nulladdressexists=true;
-                }
-                    
-                else
-                    System.err.println("[Warning] No address linked to this winning bid yet!");
+               }
             }
             if(nulladdressexists)
             {
@@ -362,11 +361,18 @@ public class AuctionModule {
         Long bidid = scanner.nextLong();
         System.out.println("Your current address list:");
         List<AddressEntity> addresslist = customer.getAddressEntities();
+        if(addresslist.isEmpty()){
+            System.out.println("You do not have an address yet!");
+            System.out.println("Please create an address first!");
+            
+            mainapp = new MainApp(customerEntityControllerRemote, creditPackageEntityControllerRemote, bidEntityControllerRemote, auctionEntityControllerRemote, creditTransactionEntityControllerRemote, addressEntityControllerRemote, timerSessionBean);
+            mainapp.menuMain(customer);
+            
+        }
+        System.out.printf("%5s%35s%10s","Id|","Address Line|","Postal Code|");
         for(AddressEntity address:addresslist)
         {
-            System.out.print(address.getId()+"---");
-            System.out.print(address.getAddressLine()+"---");
-            System.out.println(address.getPostCode());
+            System.out.printf("%5s%35s%10s\n",address.getId()+"|",address.getAddressLine()+"|",address.getPostCode());
         }
         System.out.print("Enter id of the address selected for the won auction->");
         Long addressid = scanner.nextLong();

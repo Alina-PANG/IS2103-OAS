@@ -90,6 +90,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
 
+    @Override
     public BidEntity closeAuction(AuctionEntity ae) {
         if (ae.getBidEntities().size() != 0) {
             try {
@@ -136,6 +137,17 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException {
         AuctionEntity ae = retrieveAuctionById(aid);
         ae.setWinningBidId(bid);
+        em.flush();
+        em.refresh(ae);
+    }
+    
+    @Override
+    public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException{
+        AuctionEntity ae = retrieveAuctionById(aid);
+        ae.setStatus(StatusEnum.DISABLED);
+        em.flush();
+        em.refresh(ae);
+        return ae;
     }
 
     @Override

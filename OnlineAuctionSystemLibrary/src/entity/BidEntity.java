@@ -29,7 +29,7 @@ public class BidEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(precision = 2, scale = 8)
+    @Column(precision = 18, scale = 4)
     private BigDecimal amount;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
