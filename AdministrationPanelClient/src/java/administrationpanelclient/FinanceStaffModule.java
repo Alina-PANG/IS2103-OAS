@@ -45,8 +45,8 @@ public class FinanceStaffModule {
         System.out.println("4. Delete Credit Package");
         System.out.println("5. View All Credit Packages");
         System.out.println("6. Exit");
-        System.out.println("Please input the operation that you want to perform:");
-        System.out.print("> ");
+        System.out.println("Please enter number of the operation that you want to perform:");
+        System.out.print("-> ");
     }
 
     protected void doMenu() {
@@ -82,7 +82,7 @@ public class FinanceStaffModule {
                     case 6:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (response == 6) {
@@ -90,7 +90,7 @@ public class FinanceStaffModule {
                 }
             }
         } catch (InputMismatchException ex) {
-            System.err.println("[Warning] Please input a valid response number.");
+            System.err.println("[Warning] Invalid Type!");
         }
     }
 
@@ -101,11 +101,11 @@ public class FinanceStaffModule {
 
         try {
             System.out.println("******* [Finance Staff] Create New Credit Package *******");
-            System.out.print("Credit Package Name: ");
+            System.out.print("Enter credit package name-> ");
             name = sc.nextLine().trim();
-            System.out.print("Value represented: ");
+            System.out.print("Enter value represented-> ");
             value = sc.nextBigDecimal();
-            System.out.print("Price: ");
+            System.out.print("Enter price->");
             price = sc.nextBigDecimal();
 
             CreditPackageEntity cp = creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(value, price, name, false));
@@ -131,27 +131,27 @@ public class FinanceStaffModule {
             System.out.println("4. Finish");
 
             while (true) {
-                System.out.println("Please input an option that you want to change: ");
+                System.out.println("Please enter number of the option that you want to change: ");
                 response = sc.nextInt();
                 sc.nextLine();
 
                 switch (response) {
                     case 1:
-                        System.out.print("Please input new name: ");
+                        System.out.print("Enter new name->");
                         cp.setName(sc.nextLine().trim());
                         break;
                     case 2:
-                        System.out.print("Please input new value: ");
+                        System.out.print("Enter new value-> ");
                         cp.setValue(sc.nextBigDecimal());
                         break;
                     case 3:
-                        System.out.println("Please input new price: ");
+                        System.out.println("Enter new price-> ");
                         cp.setPrice(sc.nextBigDecimal());
                         break;
                     case 4:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (response == 4) {
@@ -163,7 +163,7 @@ public class FinanceStaffModule {
         } catch (CreditPackageNotFoundException | GeneralException | CreditPackageAlreadyExistException ex) {
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());
         } catch (InputMismatchException ex) {
-            System.err.println("[Warning] Invalid input!");
+            System.err.println("[Warning] Invalid Type!");
         }
     }
 
@@ -214,7 +214,7 @@ public class FinanceStaffModule {
         Scanner sc = new Scanner(System.in);
         String name;
 
-        System.out.print("Input the credit package name: ");
+        System.out.print("Enter the credit package name->");
         name = sc.nextLine().trim();
 
         List<CreditPackageEntity> list = creditPackageEntityController.retrieveCreditPackageByName(name);
@@ -222,7 +222,7 @@ public class FinanceStaffModule {
             throw new CreditPackageNotFoundException("No Credit Package has name like "+name);
         else{
             showList(list);
-            System.out.println("Input the ID of the package that you want to retrieve: ");
+            System.out.println("Enter id of the package that you want to retrieve->");
             return creditPackageEntityController.retrieveCreditPackageById(sc.nextLong());
         }
     }

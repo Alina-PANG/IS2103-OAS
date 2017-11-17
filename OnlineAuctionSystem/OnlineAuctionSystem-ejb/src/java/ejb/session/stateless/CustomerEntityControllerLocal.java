@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.NoResultException;
 import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
 import util.exception.DuplicateException;
@@ -20,7 +21,7 @@ import util.exception.IncorrectPasswordException;
  */
 public interface CustomerEntityControllerLocal {
 
-    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException;
+    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException, NoResultException;
 
     public CustomerEntity createNewCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistException, GeneralException;
 

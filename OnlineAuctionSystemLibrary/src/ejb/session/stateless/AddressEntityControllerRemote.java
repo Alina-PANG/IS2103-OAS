@@ -22,6 +22,10 @@ public interface AddressEntityControllerRemote {
      public List<AddressEntity> viewAllAddress(CustomerEntity customer);
      public boolean deleteAddress(Long id) throws AddressNotFoundException;
 
+    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException;
+
+    public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException;
+
     
     
 }

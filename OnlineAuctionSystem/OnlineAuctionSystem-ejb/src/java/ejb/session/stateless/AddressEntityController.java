@@ -82,5 +82,23 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
             return true;
         }
     }
+    
+    @Override
+    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException{
+        AddressEntity ae= getAddressById(aid);
+        ae.setAddressLine(line);
+        em.flush();
+        em.refresh(ae);
+        return ae;
+    }
+    
+    @Override
+    public AddressEntity updateAddressCode(Long aid,String code) throws AddressNotFoundException{
+        AddressEntity ae= getAddressById(aid);
+        ae.setPostCode(code);
+        em.flush();
+        em.refresh(ae);
+        return ae;
+    }
 
 }

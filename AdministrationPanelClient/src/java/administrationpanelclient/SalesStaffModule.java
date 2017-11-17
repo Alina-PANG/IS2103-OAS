@@ -54,8 +54,8 @@ public class SalesStaffModule {
         System.out.println("5. View All Auction Listings");
         System.out.println("6. View All Auction Listings with Bids but Below Reserve Price");
         System.out.println("7. Exit");
-        System.out.println("Please input the operation that you want to perform:");
-        System.out.print("> ");
+        System.out.println("Please enter number of the operation that you want to perform:");
+        System.out.print("-> ");
     }
 
     protected void doMenu() {
@@ -95,7 +95,7 @@ public class SalesStaffModule {
                     case 7:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (response == 7) {
@@ -118,10 +118,10 @@ public class SalesStaffModule {
 
             System.out.println("******* [Sales Staff] Create New Auction Listing *******");
             do {
-                System.out.print("Start Date (in format hh:mm:ss dd/mm/yyyy): ");
+                System.out.print("Enter start date (in format hh:mm:ss dd/mm/yyyy)->");
                 startDateStr = sc.nextLine().trim();
                 startDate = formatter.parse(startDateStr);
-                System.out.print("End Date (in format hh:mm:ss dd/mm/yyyy): ");
+                System.out.print("Enter end date (in format hh:mm:ss dd/mm/yyyy)->");
                 endDateStr = sc.nextLine().trim();
                 endDate = formatter.parse(endDateStr);
 
@@ -129,12 +129,12 @@ public class SalesStaffModule {
                     System.err.println("[Warning] End Date cannot be later than Start Date!");
                 }
             } while (startDate.compareTo(endDate) > 0);
-            System.out.print("Reserve Price (0 if no reserve price): ");
+            System.out.print("Enter reserve price (0 if no reserve price)->");
             reservePrice = sc.nextBigDecimal();
             sc.nextLine();
-            System.out.print("Product Name: ");
+            System.out.print("Enter product name->");
             productName = sc.nextLine().trim().toLowerCase();
-            System.out.println("Product Description: ");
+            System.out.println("Enter product description->");
             System.out.print("> ");
             productDes = sc.nextLine().trim();
 
@@ -163,17 +163,17 @@ public class SalesStaffModule {
             System.out.println("6. Finish");
 
             while (true) {
-                System.out.print("Please input an option that you want to change: \n>");
+                System.out.print("Please enter number of the option that you want to change->n>");
                 response = sc.nextInt();
                 sc.nextLine();
 
                 switch (response) {
                     case 1:
-                        System.out.print("Please input new starting date (hh:mm:ss dd/mm/yyyy): ");
+                        System.out.print("Enter new starting date (hh:mm:ss dd/mm/yyyy)->");
                         al.setStartingTime(formatter.parse(sc.nextLine().trim()));
                         break;
                     case 2:
-                        System.out.print("Please input new ending date (hh:mm:ss dd/mm/yyyy): ");
+                        System.out.print("Enter new ending date (hh:mm:ss dd/mm/yyyy)->");
                         Date ending = formatter.parse(sc.nextLine().trim());
                         al.setEndingTime(ending);
                         if (ending.compareTo(new Date()) > 0) {
@@ -181,21 +181,21 @@ public class SalesStaffModule {
                         }
                         break;
                     case 3:
-                        System.out.println("Please input new reserve price: ");
+                        System.out.println("Enter new reserve price->");
                         al.setReservePrice(sc.nextBigDecimal());
                         break;
                     case 4:
-                        System.out.println("Please input new product name: ");
+                        System.out.println("Enter new product name->");
                         al.setProductName(sc.nextLine().trim().toLowerCase());
                         break;
                     case 5:
-                        System.out.println("Please input new product description: ");
+                        System.out.println("Enter new product description->");
                         al.setProductDescription(sc.nextLine().trim());
                         break;
                     case 6:
                         break;
                     default:
-                        System.err.println("[Warning] Please input a valid response number.");
+                        System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
                 if (response == 6) {
@@ -261,15 +261,16 @@ public class SalesStaffModule {
         Scanner sc = new Scanner(System.in);
         String name;
 
-        System.out.print("Input the auction product name: ");
+        System.out.print("Enter the auction product name: ");
         name = sc.nextLine().trim();
 
         List<AuctionEntity> list = auctionEntityController.retrieveAuctionByProductName(name);
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             throw new AuctionNotFoundException("No Auction Listing has name like " + name);
         } else {
             showList(list);
-            System.out.print("Input the ID of the package that you want to retrieve: \n> ");
+            System.out.print("Enter the ID of the package that you want to retrieve: \n> ");
+
             return auctionEntityController.retrieveAuctionById(sc.nextLong());
         }
     }
@@ -296,21 +297,27 @@ public class SalesStaffModule {
     }
 
     private void viewAuctionNoWinning() {
-        System.out.println("******* [Auction Listing] View All Auction Listings with Bids but Below Researve Price ******* ");
+        System.out.println("******* [Auction Listing] View All Auction Listings with Bids but Below Reserve Price ******* ");
         Scanner sc = new Scanner(System.in);
         try {
             List<AuctionEntity> alList = auctionEntityController.viewNoWinningAuction();
             showList(alList);
-            System.out.print("Input the id of the Auction Listing that you want to retrieve:");
+            System.out.print("Enter id of the Auction Listing that you want to retrieve:");
             Long aid = sc.nextLong();
             AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
             if(alList.contains(a)){
             List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
             showBid(list);
-            System.out.println("Input the id of the Bid tht you want to assign as the winning bid (any other key for cancel): ");
-            int response = sc.nextInt();
-            if(0 < response && response <= list.size()){
-                auctionEntityController.assignWinningBid(aid, new Long(response));
+            System.out.println("Enter id of the Bid that you want to assign as the winning bid (any other key for cancel): ");
+            Long response = sc.nextLong();
+            Boolean contains=false;
+            for(BidEntity bid:list){
+                if(bid.getId()==response){
+                    contains=true;
+                }
+            }
+            if(contains){///response should be id of bid instead of number
+                auctionEntityController.assignWinningBid(aid, response);
                 System.out.println("[System] Assign successful!");
             }
             else {
@@ -325,9 +332,9 @@ public class SalesStaffModule {
     }
 
     private void showBid(List<BidEntity> list) {
-        System.out.printf("%5s%10s%30s\n", "ID|", "Amount|", "In Auction Name");
+        System.out.printf("%5s%10s%30s\n","ID|", "Amount|", "In Auction Name");
         for (BidEntity b : list) {
-            System.out.printf("%5s%10s%30s\n", b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
+            System.out.printf("%5s%10s%30s\n",b.getId() + "|", b.getAmount()+"|", b.getAuctionEntity().getProductName());
         }
     }
 

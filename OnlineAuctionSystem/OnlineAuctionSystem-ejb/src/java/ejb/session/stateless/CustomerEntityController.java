@@ -35,7 +35,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
 
     
     @Override
-    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException
+    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException, NoResultException
     {
        
             Query query;
@@ -44,8 +44,9 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             
             if(customer!=null)
             return customer;
-            else
-                throw new CustomerNotFoundException("This customer is not found!");
+            else{
+                throw new CustomerNotFoundException("This customer is not found!");  
+            }
     }
     
     @Override
