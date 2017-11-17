@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import javafx.application.Platform;
+import javax.persistence.NoResultException;
 import util.enumeration.CustomerTypeEnum;
 import util.exception.CustomerAlreadyExistException;
 import util.exception.CustomerNotFoundException;
@@ -191,6 +192,9 @@ public class MainApp {
         catch(InputMismatchException ex){
             System.err.println("[Warning] Invalid Type!");
         }
+        catch(NoResultException ex){
+            System.err.println("[Warning] "+ex.getMessage());
+        }
         
     }
     
@@ -249,7 +253,7 @@ public class MainApp {
             
             else if(response==7)
             {
-                break;
+                runApp();
             }
             else
             {
@@ -262,7 +266,7 @@ public class MainApp {
         }
         if(response==7)
         {
-            break;
+            runApp();
         }
        }
         

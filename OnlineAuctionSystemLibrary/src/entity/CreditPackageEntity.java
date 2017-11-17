@@ -15,9 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -39,8 +37,8 @@ public class CreditPackageEntity implements Serializable {
     @ManyToMany
     private List<CustomerEntity> customerEntities;
     private Boolean isDisabled;
-    //  @OneToMany(mappedBy="creditPackageEntity")
-    // private List<CreditTransactionEntity> creditTransactionEntities;
+    @OneToMany(mappedBy="creditPackageEntity")
+    private List<CreditTransactionEntity> creditTransactionEntities;
 
     public CreditPackageEntity() {
         isDisabled = false;

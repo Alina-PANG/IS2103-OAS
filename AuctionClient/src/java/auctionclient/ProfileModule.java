@@ -241,15 +241,10 @@ public class ProfileModule {
             {
             List<CreditTransactionEntity> transactionlist = creditTransactionEntityControllerRemote.viewAllCreditTransactionEntity(customer);
             if(!transactionlist.isEmpty()){
-              System.out.println("ID-Type-Credit Package Name-Unit Of Purchase-Total Value");
+              System.out.printf("%5s%10s%10s\n","ID|","Type|","Total Value");
             for(CreditTransactionEntity transaction:transactionlist)
             {
-                System.out.print(transaction.getId()+"-");
-                System.out.print(transaction.getTransactionTypeEnum()+"-");
-                System.out.println(transaction.getCreditPackageEntity().getName()+"-");
-                System.out.println(transaction.getUnitOfPurchase()+"-");
-                System.out.println(transaction.getTotalValue());     
-                
+                System.out.printf("%5s%10s%10s\n",transaction.getId()+"|",transaction.getTransactionTypeEnum()+"|",transaction.getTotalValue());
             }
             manageCreditPackage();
             }
@@ -365,7 +360,7 @@ public class ProfileModule {
         Integer response = 0;
         
         List<AddressEntity> addresslist = addressEntityControllerRemote.viewAllAddress(customer);
-        
+        if(!addresslist.isEmpty()){
         for(AddressEntity address:addresslist)
         {
            System.out.print(address.getId()+"---");
@@ -400,16 +395,12 @@ public class ProfileModule {
                 manageAddress();
             }
         }
-        System.out.println("Your updated address list:");
-        addresslist = addressEntityControllerRemote.viewAllAddress(customer);
-        for(AddressEntity newaddress:addresslist)
-        {
-            System.out.print(newaddress.getId()+"---");
-            System.out.print(newaddress.getAddressLine()+"---");
-            System.out.println(newaddress.getPostCode());
-            
-        }
         manageAddress();
+        }
+        else{
+            System.out.println("You do not have any address yet!");
+            manageAddress();
+        }
         }
         catch(InputMismatchException ex){
             System.err.println("[Warning] Invalid Type!");

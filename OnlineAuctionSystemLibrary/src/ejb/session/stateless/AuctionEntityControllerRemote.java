@@ -53,4 +53,6 @@ public interface AuctionEntityControllerRemote {
 
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
 
+    public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException;
+
 }

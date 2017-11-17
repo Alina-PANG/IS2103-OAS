@@ -305,30 +305,47 @@ public class SalesStaffModule {
             System.out.print("Enter id of the Auction Listing that you want to retrieve:");
             Long aid = sc.nextLong();
             AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+            
             if(alList.contains(a)){
             List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
             showBid(list);
-            System.out.println("Enter id of the Bid that you want to assign as the winning bid (any other key for cancel): ");
-            Long response = sc.nextLong();
-            Boolean contains=false;
-            for(BidEntity bid:list){
-                if(bid.getId()==response){
-                    contains=true;
+            System.out.println("Do you want to assign winning bid?(Y/N)");
+            sc.nextLine();
+            String response = sc.nextLine().trim();
+            
+            if(response.equals("Y")){
+                System.out.println("Enter id of the Bid that you want to assign as the winning bid: ");
+            
+                Long bidid = sc.nextLong();
+                BidEntity bid= bidEntityController.retrieveById(bidid);
+                if(list.contains(bid)){
+                auctionEntityController.assignWinningBid(aid, bidid);
+                System.out.println("[System] Assign successful!");
                 }
             }
-            if(contains){///response should be id of bid instead of number
-                auctionEntityController.assignWinningBid(aid, response);
-                System.out.println("[System] Assign successful!");
-            }
-            else {
+                
+            while(!response.equals("Y")){
+                System.out.println("->");
+                response = sc.nextLine().trim();
+                if(response.equals("N")){
+                a = auctionEntityController.setDisabled(aid);
                 System.out.println("[System] Action canceled.");
+                break;
+                }
             }
-            }else{
+            }
+            else{
                 System.err.println("[Warning] The input auction list id does not exist!");
+            }   
             }
+/*<<<<<<< HEAD
+    
+            catch (AuctionNotFoundException |GeneralException |BidNotFoundException ex) {
+=======
         } catch (AuctionNotFoundException | GeneralException | BidNotFoundException ex) {
+>>>>>>> master*/
             System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());
-        } 
+            } 
     }
 
     private void showBid(List<BidEntity> list) {

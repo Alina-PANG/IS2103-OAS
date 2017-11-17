@@ -86,6 +86,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
     }
 
+
+    @Override
     public BidEntity closeAuction(AuctionEntity ae) {
         if (ae.getBidEntities().size() != 0) {
             try {
@@ -134,6 +136,19 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         AuctionEntity ae = retrieveAuctionById(aid);
         BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
+/*<<<<<<< HEAD
+        em.flush();
+        em.refresh(ae);
+    }
+    
+    @Override
+    public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException{
+        AuctionEntity ae = retrieveAuctionById(aid);
+        ae.setStatus(StatusEnum.DISABLED);
+        em.flush();
+        em.refresh(ae);
+        return ae;
+=======
 
         List<BidEntity> bidList = ae.getBidEntities();
         for (BidEntity b : bidList) {
@@ -150,6 +165,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 }
             }
         }
+>>>>>>> master*/
     }
 
     @Override

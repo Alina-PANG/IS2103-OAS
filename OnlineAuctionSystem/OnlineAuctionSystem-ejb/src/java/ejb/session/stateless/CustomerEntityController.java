@@ -40,13 +40,13 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
        
             Query query;
             query = em.createQuery("SELECT c FROM CustomerEntity c WHERE c.email = :e").setParameter("e",email);
-            CustomerEntity customer = (CustomerEntity)query.getSingleResult();
-            
-            if(customer!=null)
-            return customer;
-            else{
-                throw new CustomerNotFoundException("This customer is not found!");  
-            }
+
+           try{
+               return (CustomerEntity)query.getSingleResult();
+           }
+           catch(NoResultException ex){
+               throw new NoResultException("This customer is not found!");
+           }
     }
     
     @Override
@@ -116,7 +116,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
 
         // check and throw exception
         if (customer == null) {
-            throw new CustomerNotFoundException("Customer with id = " + id + " does not exist!");
+            throw new CustomerNotFoundException("Customer does not exist!");
         } else {
             return customer;
         }
