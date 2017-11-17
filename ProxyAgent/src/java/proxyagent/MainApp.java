@@ -226,6 +226,7 @@ public class MainApp {
                     }, cal.getTime());
                 }
             }
+            System.out.println("Your snipping bid has been put successfully!");
         } catch (AuctionNotFoundException_Exception ex) {
             System.err.println("An error has occured: " + ex.getMessage());//added
         }
