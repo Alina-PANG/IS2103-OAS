@@ -16,9 +16,12 @@ import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
+import entity.ProxyBiddingEntity;
+import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import util.enumeration.StatusEnum;
 import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
 import util.exception.AuctionNotOpenException;
@@ -59,16 +62,20 @@ public class AuctionModule {
 
     }
 
+    private void showList(List<AuctionEntity> list) {
+        //  startDate, endDate, false, reservePrice, productName, productDes, new Long(-1), null));
+        System.out.printf("%5s%35s%35s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|", "Product Name");
+        for (AuctionEntity al : list) {
+            System.out.printf("%5s%35s%35s%10s%15s%20s\n", al.getId() + "|", al.getStartingTime() + "|", al.getEndingTime() + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
+        }
+    }
+
     public void viewAuctionListing() {
         try {
             Scanner scanner = new Scanner(System.in);
             List<AuctionEntity> availableAuctionList = auctionEntityControllerRemote.viewAvailableAuctionEntity();
             System.out.println("******* [Customer] View Auction Listing *******");
-            System.out.printf("%35s%35s\n", "Auction Item ID", "Auction Item Name");
-
-            for (AuctionEntity auctionentity : availableAuctionList) {
-                System.out.printf("%35s%35s\n", auctionentity.getId(), auctionentity.getProductName());
-            }
+            showList(availableAuctionList);
 
             //ask whether want to view details of a specific auction item
             System.out.println("1. View details of auction item");
@@ -76,10 +83,13 @@ public class AuctionModule {
             System.out.println("Enter number of the operation that you want to perform");
             Integer response = 0;
             while (response < 1 || response > 2) {
-                System.out.println("->");
+                System.out.print("->");
                 response = scanner.nextInt();
                 if (response == 1) {
-                    break;
+                    System.out.print("Enter ID of the auction item to view details\n->");
+                    Long id = scanner.nextLong();
+                    //if want to view details, direct to details of one specific item
+                    viewAuctionEntityDetails(id);
                 } else if (response == 2) {
                     break;
                 } else {
@@ -87,10 +97,7 @@ public class AuctionModule {
                     viewAuctionListing();
                 }
             }
-            System.out.println("Enter ID of the auction item to view details->");
-            Long id = scanner.nextLong();
-            //if want to view details, direct to details of one specific item
-            viewAuctionEntityDetails(id);
+
         } catch (GeneralException ex) {
             System.err.println("[Warning] " + ex.getMessage());
             viewAuctionListing();
@@ -103,9 +110,60 @@ public class AuctionModule {
 
     public void viewAuctionEntityDetails(Long productid) {
         try {
-            AuctionEntity auctionentity = auctionEntityControllerRemote.retrieveAuctionById(productid);
+            AuctionEntity al = auctionEntityControllerRemote.retrieveAuctionById(productid);
 
             System.out.println("******* [Customer] View Auction Item Details *******\n");
+            try {
+                System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
+                System.out.println("0. Status: " + al.getStatus());
+                System.out.println("1. Start Date: " + al.getStartingTime());
+                System.out.println("2. End Date: " + al.getEndingTime());
+                System.out.println("3. Reserve Price: " + al.getReservePrice());
+                System.out.println("4. Product Name: " + al.getProductName());
+                System.out.println("5. Product Description: " + al.getProductDescription());
+                if (al.getStatus() == StatusEnum.ACTIVE) {
+                    System.out.print("6. Current Highest Bid Amount: ");
+
+                } else if (al.getStatus() == StatusEnum.CLOSED) {
+                    System.out.print("6. Winning Bid Amount: ");
+                }
+                try {
+                    BidEntity bid = auctionEntityControllerRemote.getCurrentWinningBidEntity(al.getId());
+
+                    if (bid == null) {
+                        System.out.println("No bid has been placed in this auction yet.");
+                    } else {
+                        System.out.println("" + bid.getAmount());
+                    }
+                } catch (AuctionNotFoundException ex) {
+                }
+
+                if (al.getStatus() != StatusEnum.PENDING && al.getStatus() != StatusEnum.CLOSED) {
+                    System.out.print("Your Bid Amount: ");
+                    try {
+                        BidEntity b = bidEntityControllerRemote.viewMyBidInAuction(customer.getId(), al.getId());
+                        System.out.println("" + b.getAmount());
+                        System.out.print("Your Bid Type: ");
+                        if (b instanceof ProxyBiddingEntity) {
+                            System.out.println("Proxy Bid");
+                        } else if (b.getAmount().equals(new BigDecimal(-101))) {
+                            System.out.println("Snipping Bid");
+                        } else {
+                            System.out.println("Normal Bid");
+                        }
+                    } catch (BidNotFoundException ex) {
+                        System.out.println("No bid has been placed by you in this auction yet.");
+                    }
+
+                    if (al.getStatus() == StatusEnum.DISABLED) {
+                        System.out.println("The amount of your bid has been refund due to the auction is currently disabled.");
+                    }
+                }
+
+            } catch (Exception ex) {
+                System.err.println("[Warning] An error has occured: " + ex.getMessage());
+            }
+            /*
             System.out.println("Product ID:" + auctionentity.getId());
             System.out.println("Product Name:" + auctionentity.getProductName());
             System.out.println("Product Description:" + auctionentity.getProductDescription());
@@ -119,7 +177,7 @@ public class AuctionModule {
                 System.out.println("Current Highest Bid: " + winningbid.getAmount());
                 System.out.println("Current minimal bid incremental (based on current highest price) is " + auctionEntityControllerRemote
                         .getCurrentBidIncremental(winningbid.getAmount()));
-            }
+            }*/
 
             System.out.println("1. Place new bid for this item");
             System.out.println("2. No thanks, I want to browse the auction list again.");
@@ -127,7 +185,7 @@ public class AuctionModule {
             Scanner scanner = new Scanner(System.in);
             Integer response = 0;
             while (response < 1 || response > 2) {
-                System.out.println("->");
+                System.out.print("->");
                 response = scanner.nextInt();
                 if (response == 1) {
                     placeNewBid(productid);
@@ -150,7 +208,7 @@ public class AuctionModule {
         try {
             Scanner scanner = new Scanner(System.in);
             System.out.println("******* [Customer] Place New Bid *******");
-            System.out.println("Enter amount of your new bid(MUST be higher than the current highest bid plus current bid incremental)->");
+            System.out.print("Enter amount of your new bid(MUST be higher than the current highest bid plus current bid incremental)\n->");
             BidEntity bid = new BidEntity(scanner.nextBigDecimal());
             bid = bidEntityControllerRemote.createNewBid(bid, customer.getId(), productid);
             System.out.println("[System] Your new bid has been placed successfully!");
@@ -162,7 +220,7 @@ public class AuctionModule {
 
             Integer response = 0;
             while (response < 1 || response > 2) {
-                System.out.println("->");
+                System.out.print("->");
                 response = scanner.nextInt();
                 if (response == 1) {
                     viewAuctionEntityDetails(productid);
@@ -201,12 +259,12 @@ public class AuctionModule {
                                     .getCurrentWinningBidEntity(bid.getAuctionEntity().getId())
                                     .getAmount());
                 }
-                System.out.println("Do you want to place new bid?(Y/N)->");
+                System.out.print("Do you want to place new bid?(Y/N)\n->");
                 if (scanner.nextLine().trim().equals("Y")) {
                     BidEntity bid = new BidEntity();
-                    System.out.println("Enter id of the auction item that you want to place new bids->");
+                    System.out.print("Enter id of the auction item that you want to place new bids\n->");
                     Long bidid = scanner.nextLong();
-                    System.out.println("Enter new amount->");
+                    System.out.print("Enter new amount\n->");
                     bid.setAmount(scanner.nextBigDecimal());
                     bid = bidEntityControllerRemote.createNewBid(bid, customer.getId(), bidid);
                     System.out.println("[System] Your new bid has been placed successfully!");
@@ -293,7 +351,7 @@ public class AuctionModule {
             Scanner scanner = new Scanner(System.in);
             System.out.println("****** [Customer] Address Selection for Won Auction *******");
 
-            System.out.println("Enter id of the won auction that you want to assign an address->");
+            System.out.print("Enter id of the won auction that you want to assign an address\n->");
             Long bidid = scanner.nextLong();
             System.out.println("Your current address list:");
             List<AddressEntity> addresslist = customerEntityControllerRemote.getAddressByCustomer(customer.getId());
@@ -305,7 +363,7 @@ public class AuctionModule {
                 for (AddressEntity address : addresslist) {
                     System.out.printf("%5s%35s%10s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode());
                 }
-                System.out.print("Enter id of the address selected for the won auction->");
+                System.out.print("Enter id of the address selected for the won auction\n->");
                 Long addressid = scanner.nextLong();
                 BidEntity bid = bidEntityControllerRemote.setAddressForWinningBid(addressid, bidid);
                 System.out.println("[System] Address updated successfully!");

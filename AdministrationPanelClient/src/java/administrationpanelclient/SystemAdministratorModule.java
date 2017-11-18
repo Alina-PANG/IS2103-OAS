@@ -100,15 +100,15 @@ public class SystemAdministratorModule {
             System.out.print("Acess Right (manager/financestaff/salesstaff): ");
             EmployeeAccessRightEnum accessRight = null;
             accessRight = EmployeeAccessRightEnum.valueOf(sc.nextLine().trim().toUpperCase());
-            System.out.print("Enter first name->");
+            System.out.print("Enter first name\n->");
             String firstName = sc.nextLine().trim();
-            System.out.print("Enter last name->");
+            System.out.print("Enter last name\n->");
             String lastName = sc.nextLine().trim();
-            System.out.print("Enter identification number-> ");
+            System.out.print("Enter identification number\n-> ");
             String idNum = sc.nextLine().trim();
-            System.out.print("Enter username->");
+            System.out.print("Enter username\n->");
             String username = sc.nextLine().trim();
-            System.out.print("Enter password-> ");
+            System.out.print("Enter password\n-> ");
             String password = sc.nextLine().trim();
 
             try {
@@ -142,27 +142,27 @@ public class SystemAdministratorModule {
 
                 switch (option) {
                     case 1:
-                        System.out.print("Enter first name-> ");
+                        System.out.print("Enter first name\n-> ");
                         staff.setFirstName(sc.nextLine().trim());
                         break;
                     case 2:
-                        System.out.println("Enter last name->");
+                        System.out.print("Enter last name\n->");
                         staff.setLastName(sc.nextLine().trim());
                         break;
                     case 3:
-                        System.out.print("Enter identification number-> ");
+                        System.out.print("Enter identification number\n-> ");
                         staff.setIdentificationNumber(sc.nextLine().trim());
                         break;
                     case 4:
-                        System.out.print("Enter username-> ");
+                        System.out.print("Enter username\n-> ");
                         staff.setUsername(sc.nextLine().trim());
                         break;
                     case 5:
-                        System.out.print("Enter password-> ");
+                        System.out.print("Enter password\n-> ");
                         staff.setPassword(sc.nextLine().trim());
                         break;
                     case 6:
-                        System.out.print("Enter access Right-> ");
+                        System.out.print("Enter access Right\n-> ");
                         EmployeeAccessRightEnum accessRight = null;
                         do {
                             try {
@@ -194,7 +194,7 @@ public class SystemAdministratorModule {
 
     private StaffEntity findEmployee() throws GeneralException, StaffNotFoundException, InputMismatchException {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Please enter id of the employee->");
+        System.out.print("Please enter id of the employee\n->");
         Long id = sc.nextLong();
         StaffEntity staff = staffEntityController.retrieveStaffById(id);
         return staff;

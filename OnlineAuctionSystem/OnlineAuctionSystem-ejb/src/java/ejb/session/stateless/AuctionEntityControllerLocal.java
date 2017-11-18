@@ -54,4 +54,6 @@ public interface AuctionEntityControllerLocal {
     public BidEntity closeAuction(AuctionEntity ae);
     
     public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException;
+
+    public BidEntity getWinningBidEntity(Long aid) throws AuctionNotFoundException, GeneralException;
 }

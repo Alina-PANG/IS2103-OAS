@@ -63,6 +63,7 @@ public class MainApp {
             Integer response = 0;
 
             while (true) {
+                System.out.println("");
                 System.out.println("******* [Customer] Welcome to Online Auction System *******");
                 System.out.println("1. Login");
                 System.out.println("2. Register");
@@ -102,31 +103,31 @@ public class MainApp {
     public void doRegistration() {
         try {
             Scanner scanner = new Scanner(System.in);
-            CustomerEntity customer = new CustomerEntity();//create a Customer Entity at the beginning so that can set parameters later
+            CustomerEntity c = new CustomerEntity();//create a Customer Entity at the beginning so that can set parameters later
             System.out.println("******* [Customer] Registration *******");
             //set the parameters into customer entity directly
-            System.out.print("Enter your firstname->");
-            customer.setFirstName(scanner.nextLine());
-            System.out.print("Enter your lastname->");
-            customer.setLastName(scanner.nextLine());
-            System.out.print("Enter your username->");
-            customer.setUsername(scanner.nextLine());
-            System.out.print("Enter your email->");
-            customer.setEmail(scanner.nextLine());
-            System.out.print("Enter your contact number->");
-            customer.setContactNumber(scanner.nextLine());
-            System.out.print("Enter your password->");
-            customer.setPassword(scanner.nextLine().trim());
-            System.out.print("Do you want to become a premium customer?(Y/N)->");
+            System.out.print("Enter your firstname\n->");
+            c.setFirstName(scanner.nextLine());
+            System.out.print("Enter your lastname\n->");
+            c.setLastName(scanner.nextLine());
+            System.out.print("Enter your username\n->");
+            c.setUsername(scanner.nextLine());
+            System.out.print("Enter your email\n->");
+            c.setEmail(scanner.nextLine());
+            System.out.print("Enter your contact number\n->");
+            c.setContactNumber(scanner.nextLine());
+            System.out.print("Enter your password\n->");
+            c.setPassword(scanner.nextLine().trim());
+            System.out.print("Do you want to become a premium customer?(Y/N)\n->");
             if (scanner.nextLine().trim() == "Y") {
-                customer.setCustomerTypeEnum(CustomerTypeEnum.PREMIUM);
+                c.setCustomerTypeEnum(CustomerTypeEnum.PREMIUM);
             } else {
-                customer.setCustomerTypeEnum(CustomerTypeEnum.NORMAL);
+                c.setCustomerTypeEnum(CustomerTypeEnum.NORMAL);
             }
 
-            customer.setCreditBalance(BigDecimal.ZERO);
+            c.setCreditBalance(BigDecimal.ZERO);
 
-            customer = customerEntityControllerRemote.createNewCustomerEntity(customer);
+            customer = customerEntityControllerRemote.createNewCustomerEntity(c);
             System.out.println("[System] Customer" + customer.getUsername() + " is registered successfully!");
 
         } catch (CustomerAlreadyExistException ex) {
@@ -166,7 +167,8 @@ public class MainApp {
             Scanner scanner = new Scanner(System.in);
             Integer response = 0;
 
-            System.out.println("****** Welcome " + customer.getUsername() + " to the online auction world! *******");
+            System.out.println("");
+            System.out.println("****** [Customer] Welcome " + customer.getUsername() + " to the online auction world! *******");
             System.out.println("1. View Profile");//include view and update which includes changing password
             System.out.println("2. View my Credit Package");// view my balance, view credit package transaction, also can buy a new package
             System.out.println("3. Update Address");//create address and delete address

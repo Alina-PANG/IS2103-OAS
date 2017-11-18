@@ -4,21 +4,6 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/ProxyWebService/ProxyWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="customerLogin">
-<part name="parameters" element="tns:customerLogin"/>
-</message>
-<message name="customerLoginResponse">
-<part name="parameters" element="tns:customerLoginResponse"/>
-</message>
-<message name="CustomerNotFoundException">
-<part name="fault" element="tns:CustomerNotFoundException"/>
-</message>
-<message name="IncorrectPasswordException">
-<part name="fault" element="tns:IncorrectPasswordException"/>
-</message>
-<message name="CustomerNotPremiumException">
-<part name="fault" element="tns:CustomerNotPremiumException"/>
-</message>
 <message name="createProxyBid">
 <part name="parameters" element="tns:createProxyBid"/>
 </message>
@@ -43,6 +28,9 @@
 <message name="GeneralException">
 <part name="fault" element="tns:GeneralException"/>
 </message>
+<message name="CustomerNotFoundException">
+<part name="fault" element="tns:CustomerNotFoundException"/>
+</message>
 <message name="AuctionNotFoundException">
 <part name="fault" element="tns:AuctionNotFoundException"/>
 </message>
@@ -54,6 +42,18 @@
 </message>
 <message name="BidNotFoundException">
 <part name="fault" element="tns:BidNotFoundException"/>
+</message>
+<message name="customerLogin">
+<part name="parameters" element="tns:customerLogin"/>
+</message>
+<message name="customerLoginResponse">
+<part name="parameters" element="tns:customerLoginResponse"/>
+</message>
+<message name="IncorrectPasswordException">
+<part name="fault" element="tns:IncorrectPasswordException"/>
+</message>
+<message name="CustomerNotPremiumException">
+<part name="fault" element="tns:CustomerNotPremiumException"/>
 </message>
 <message name="registration">
 <part name="parameters" element="tns:registration"/>
@@ -113,13 +113,6 @@
 <part name="parameters" element="tns:viewWinningBidResponse"/>
 </message>
 <portType name="ProxyWebService">
-<operation name="customerLogin">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
-<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
-<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
-</operation>
 <operation name="createProxyBid">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidRequest" message="tns:createProxyBid"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/createProxyBidResponse" message="tns:createProxyBidResponse"/>
@@ -136,6 +129,13 @@
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionRequest" message="tns:viewMyBidInAuction"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionResponse" message="tns:viewMyBidInAuctionResponse"/>
 <fault message="tns:BidNotFoundException" name="BidNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuction/Fault/BidNotFoundException"/>
+</operation>
+<operation name="customerLogin">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
+<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
+<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
 </operation>
 <operation name="registration">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
@@ -191,28 +191,12 @@
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBidRequest" message="tns:viewWinningBid"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBidResponse" message="tns:viewWinningBidResponse"/>
 <fault message="tns:BidNotFoundException" name="BidNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/BidNotFoundException"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/AuctionNotFoundException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/GeneralException"/>
 </operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="customerLogin">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="IncorrectPasswordException">
-<soap:fault name="IncorrectPasswordException" use="literal"/>
-</fault>
-<fault name="CustomerNotPremiumException">
-<soap:fault name="CustomerNotPremiumException" use="literal"/>
-</fault>
-</operation>
 <operation name="createProxyBid">
 <soap:operation soapAction=""/>
 <input>
@@ -256,6 +240,24 @@
 </output>
 <fault name="BidNotFoundException">
 <soap:fault name="BidNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="customerLogin">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="IncorrectPasswordException">
+<soap:fault name="IncorrectPasswordException" use="literal"/>
+</fault>
+<fault name="CustomerNotPremiumException">
+<soap:fault name="CustomerNotPremiumException" use="literal"/>
 </fault>
 </operation>
 <operation name="registration">
@@ -394,6 +396,12 @@
 </output>
 <fault name="BidNotFoundException">
 <soap:fault name="BidNotFoundException" use="literal"/>
+</fault>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
+</fault>
+<fault name="GeneralException">
+<soap:fault name="GeneralException" use="literal"/>
 </fault>
 </operation>
 </binding>

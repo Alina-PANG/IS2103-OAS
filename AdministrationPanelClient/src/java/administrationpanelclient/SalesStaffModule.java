@@ -118,10 +118,10 @@ public class SalesStaffModule {
 
             System.out.println("******* [Sales Staff] Create New Auction Listing *******");
             do {
-                System.out.print("Enter start date (in format hh:mm:ss dd/mm/yyyy)->");
+                System.out.print("Enter start date (in format hh:mm:ss dd/mm/yyyy)\n->");
                 startDateStr = sc.nextLine().trim();
                 startDate = formatter.parse(startDateStr);
-                System.out.print("Enter end date (in format hh:mm:ss dd/mm/yyyy)->");
+                System.out.print("Enter end date (in format hh:mm:ss dd/mm/yyyy)\n->");
                 endDateStr = sc.nextLine().trim();
                 endDate = formatter.parse(endDateStr);
 
@@ -129,12 +129,12 @@ public class SalesStaffModule {
                     System.err.println("[Warning] End Date cannot be later than Start Date!");
                 }
             } while (startDate.compareTo(endDate) > 0);
-            System.out.print("Enter reserve price (0 if no reserve price)->");
+            System.out.print("Enter reserve price (0 if no reserve price)\n->");
             reservePrice = sc.nextBigDecimal();
             sc.nextLine();
-            System.out.print("Enter product name->");
+            System.out.print("Enter product name\n->");
             productName = sc.nextLine().trim().toLowerCase();
-            System.out.println("Enter product description->");
+            System.out.print("Enter product description\n->");
             System.out.print("> ");
             productDes = sc.nextLine().trim();
 
@@ -163,17 +163,17 @@ public class SalesStaffModule {
             System.out.println("6. Finish");
 
             while (true) {
-                System.out.print("Please enter number of the option that you want to change->");
+                System.out.print("Please enter number of the option that you want to change\n->");
                 response = sc.nextInt();
                 sc.nextLine();
 
                 switch (response) {
                     case 1:
-                        System.out.print("Enter new starting date (hh:mm:ss dd/mm/yyyy)->");
+                        System.out.print("Enter new starting date (hh:mm:ss dd/mm/yyyy)\n->");
                         al.setStartingTime(formatter.parse(sc.nextLine().trim()));
                         break;
                     case 2:
-                        System.out.print("Enter new ending date (hh:mm:ss dd/mm/yyyy)->");
+                        System.out.print("Enter new ending date (hh:mm:ss dd/mm/yyyy)\n->");
                         Date ending = formatter.parse(sc.nextLine().trim());
                         al.setEndingTime(ending);
                         if (ending.compareTo(new Date()) > 0) {
@@ -181,15 +181,15 @@ public class SalesStaffModule {
                         }
                         break;
                     case 3:
-                        System.out.println("Enter new reserve price->");
+                        System.out.print("Enter new reserve price\n->");
                         al.setReservePrice(sc.nextBigDecimal());
                         break;
                     case 4:
-                        System.out.println("Enter new product name->");
+                        System.out.print("Enter new product name\n->");
                         al.setProductName(sc.nextLine().trim().toLowerCase());
                         break;
                     case 5:
-                        System.out.println("Enter new product description->");
+                        System.out.print("Enter new product description\n->");
                         al.setProductDescription(sc.nextLine().trim());
                         break;
                     case 6:
@@ -329,7 +329,7 @@ public class SalesStaffModule {
                 System.out.println("[System] Action canceled.");
             }
             while(!(response.equals("N")||response.equals("Y"))){
-                System.out.println("->");
+                System.out.print("->");
                 response = sc.nextLine().trim();
                 if(response.equals("N")){
                 a = auctionEntityController.setDisabled(aid);

@@ -112,14 +112,15 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 System.out.println(ex.getMessage());
             }
 
-            c.getBidEntities().add(bid);
-            a.getBidEntities().add(bid);
             bid.setCustomerEntity(c);
             bid.setAuctionEntity(a);
 
             em.persist(bid);
             em.flush();
             em.refresh(bid);
+            
+            c.getBidEntities().add(bid);
+            a.getBidEntities().add(bid);
 
             executeProxyBid(a, bid, minPrice);
             return bid;

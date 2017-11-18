@@ -204,8 +204,8 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "viewWinningBid")
-    public BidEntity viewWinningBid(@WebParam(name = "bid") Long bid) throws BidNotFoundException {
-        BidEntity b = bidEntityController.retrieveById(bid);
+    public BidEntity viewWinningBid(@WebParam(name = "aid") Long aid) throws BidNotFoundException, AuctionNotFoundException, GeneralException {
+        BidEntity b = auctionEntityController.getWinningBidEntity(aid);
 
         CustomerEntity c = b.getCustomerEntity();
         AuctionEntity a = b.getAuctionEntity();

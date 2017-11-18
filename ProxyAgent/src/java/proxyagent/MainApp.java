@@ -104,7 +104,7 @@ public class MainApp {
         System.out.println("5. Configure Proxy Bidding for Auction Listing");
         System.out.println("6. Configure Sniping for Auction Listing");
         System.out.println("7. Logout");
-        System.out.println("Please enter number of the operation that you want to perform->");
+        System.out.print("Please enter number of the operation that you want to perform\n->");
     }
 
     private void postLogin() {
@@ -164,9 +164,9 @@ public class MainApp {
 
         System.out.println("******* [Premium Customer] Configure Proxy Bidding for Auction Listing *******");
         viewAllAuction();
-        System.out.print("Enter auction id that you want to put proxy bid->");
+        System.out.print("Enter auction id that you want to put proxy bid\n->");
         aid = sc.nextLong();
-        System.out.print("Enter the max price that you want to pay->");
+        System.out.print("Enter the max price that you want to pay\n->");
         maxPrice = sc.nextBigDecimal();
 
         ProxyBiddingEntity bid = new ProxyBiddingEntity();
@@ -187,9 +187,9 @@ public class MainApp {
         AuctionEntity a;
 
         System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
-        System.out.print("Enter the auction id that you want to put for snipping bid-> ");
+        System.out.print("Enter the auction id that you want to put for snipping bid\n-> ");
         aid = sc.nextLong();
-        System.out.print("Enter the max price that you want to pay->");
+        System.out.print("Enter the max price that you want to pay\n->");
         maxPrice = sc.nextBigDecimal();
 
         System.out.print("Please input the time duration before the listing expired to place your bid (in minutes): \n> ");
@@ -259,14 +259,14 @@ public class MainApp {
     private void viewAuctionListingDetail() {
         Scanner sc = new Scanner(System.in);
         System.out.println("******* [Premium Customer] View Auction Listing Detail *******");
-        System.out.println("Enter the relevant auction / product name for searching->");
+        System.out.print("Enter the relevant auction / product name for searching\n->");
         
         String input = sc.nextLine().trim();
 
         try {
             List<ws.client.AuctionEntity> list = viewAuctionListByName(input);//???
             showList(list);
-            System.out.println("Enter id of the Auction List->");
+            System.out.print("Enter id of the Auction List\n->");
             ws.client.AuctionEntity al = viewAuctionListDetails(sc.nextLong());//???
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("0. Status: " + al.getStatus());
@@ -291,8 +291,8 @@ public class MainApp {
                 try {
                     BidEntity b = viewWinningBid(al.getId());
                     System.out.println("" + b.getAmount());
-                } catch (BidNotFoundException_Exception ex) {
-                    System.out.println("No winning bid yet, either pending for system process or no one has bid it.\n");
+                } catch (BidNotFoundException_Exception|AuctionNotFoundException_Exception|GeneralException_Exception ex) {
+                    System.err.println("An error has occured: "+ex.getMessage());
                 }
             }
 
@@ -310,7 +310,7 @@ public class MainApp {
                         System.out.println("Normal Bid");
                     }
                 } catch (BidNotFoundException_Exception ex) {
-                    System.out.println("No bid has been placed by you in this auction yet.");
+                    System.err.println("No bid has been placed by you in this auction yet.");
                 }
 
                 if (al.getStatus() == StatusEnum.DISABLED) {
@@ -358,9 +358,9 @@ public class MainApp {
 
         try {
             System.out.println("******* [OAS System Web Service] Login *******");
-            System.out.print("Enter your username-> ");
+            System.out.print("Enter your username\n-> ");
             String username = sc.nextLine().trim();
-            System.out.print("Enter your password-> ");
+            System.out.print("Enter your password\n-> ");
             String password = sc.nextLine().trim();
 
             if (input == 1) {
@@ -377,7 +377,7 @@ public class MainApp {
         }
     }
 
-    private void showList(List<ws.client.AuctionEntity> list) {
+    private void showList(List<AuctionEntity> list) {
         //  startDate, endDate, false, reservePrice, productName, productDes, new Long(-1), null));
         System.out.printf("%5s%35s%35s%10s%15s%20s\n", "ID|", "Start Date|", "End Date|", "Status|", "Reserve Price|", "Product Name");
         for (ws.client.AuctionEntity al : list) {
@@ -445,16 +445,18 @@ public class MainApp {
         return port.viewCurrentHighestBid(aid);
     }
 
-    private static BidEntity viewWinningBid(java.lang.Long bid) throws BidNotFoundException_Exception {
-        ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
-        ws.client.ProxyWebService port = service.getProxyWebServicePort();
-        return port.viewWinningBid(bid);
-    }
+
 
     private static void createSnippingBid(ws.client.BidEntity bid, java.lang.Long aid, java.lang.Long cid) throws BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionNotFoundException_Exception, AuctionClosedException_Exception, BidAlreadyExistException_Exception, AuctionNotOpenException_Exception, NotEnoughCreditException_Exception, GeneralException_Exception {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         port.createSnippingBid(bid, aid, cid);
+    }
+
+    private static BidEntity viewWinningBid(java.lang.Long aid) throws BidNotFoundException_Exception, AuctionNotFoundException_Exception, GeneralException_Exception {
+        ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
+        ws.client.ProxyWebService port = service.getProxyWebServicePort();
+        return port.viewWinningBid(aid);
     }
 
 }

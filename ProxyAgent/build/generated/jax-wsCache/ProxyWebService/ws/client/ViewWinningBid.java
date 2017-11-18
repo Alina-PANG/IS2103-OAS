@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="bid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="aid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -27,34 +27,34 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "viewWinningBid", propOrder = {
-    "bid"
+    "aid"
 })
 public class ViewWinningBid {
 
-    protected Long bid;
+    protected Long aid;
 
     /**
-     * Gets the value of the bid property.
+     * Gets the value of the aid property.
      * 
      * @return
      *     possible object is
      *     {@link Long }
      *     
      */
-    public Long getBid() {
-        return bid;
+    public Long getAid() {
+        return aid;
     }
 
     /**
-     * Sets the value of the bid property.
+     * Sets the value of the aid property.
      * 
      * @param value
      *     allowed object is
      *     {@link Long }
      *     
      */
-    public void setBid(Long value) {
-        this.bid = value;
+    public void setAid(Long value) {
+        this.aid = value;
     }
 
 }

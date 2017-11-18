@@ -101,11 +101,11 @@ public class FinanceStaffModule {
 
         try {
             System.out.println("******* [Finance Staff] Create New Credit Package *******");
-            System.out.print("Enter credit package name-> ");
+            System.out.print("Enter credit package name\n-> ");
             name = sc.nextLine().trim();
-            System.out.print("Enter value represented-> ");
+            System.out.print("Enter value represented\n-> ");
             value = sc.nextBigDecimal();
-            System.out.print("Enter price->");
+            System.out.print("Enter price\n->");
             price = sc.nextBigDecimal();
 
             CreditPackageEntity cp = creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(value, price, name, false));
@@ -137,15 +137,15 @@ public class FinanceStaffModule {
 
                 switch (response) {
                     case 1:
-                        System.out.print("Enter new name->");
+                        System.out.print("Enter new name\n->");
                         cp.setName(sc.nextLine().trim());
                         break;
                     case 2:
-                        System.out.print("Enter new value-> ");
+                        System.out.print("Enter new value\n-> ");
                         cp.setValue(sc.nextBigDecimal());
                         break;
                     case 3:
-                        System.out.println("Enter new price-> ");
+                        System.out.print("Enter new price\n-> ");
                         cp.setPrice(sc.nextBigDecimal());
                         break;
                     case 4:
@@ -214,7 +214,7 @@ public class FinanceStaffModule {
         Scanner sc = new Scanner(System.in);
         String name;
 
-        System.out.print("Enter the credit package name->");
+        System.out.print("Enter the credit package name\n->");
         name = sc.nextLine().trim();
 
         List<CreditPackageEntity> list = creditPackageEntityController.retrieveCreditPackageByName(name);
@@ -222,7 +222,7 @@ public class FinanceStaffModule {
             throw new CreditPackageNotFoundException("No Credit Package has name like "+name);
         else{
             showList(list);
-            System.out.println("Enter id of the package that you want to retrieve->");
+            System.out.print("Enter id of the package that you want to retrieve\n->");
             return creditPackageEntityController.retrieveCreditPackageById(sc.nextLong());
         }
     }

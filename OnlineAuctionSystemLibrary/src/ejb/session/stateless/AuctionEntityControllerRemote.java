@@ -17,13 +17,12 @@ import util.exception.BidNotFoundException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 
-
-
 /**
  *
  * @author alina
  */
 public interface AuctionEntityControllerRemote {
+
     public boolean deleteAuction(Long id) throws AuctionNotFoundException, GeneralException;
 
     public AuctionEntity updateAuction(AuctionEntity newAuction) throws AuctionNotFoundException, GeneralException, AuctionAlreadyExistException;
@@ -47,7 +46,8 @@ public interface AuctionEntityControllerRemote {
     public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
 
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice);
-    
+
+    public BidEntity getWinningBidEntity(Long aid) throws AuctionNotFoundException, GeneralException;
 
     public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException;
 
