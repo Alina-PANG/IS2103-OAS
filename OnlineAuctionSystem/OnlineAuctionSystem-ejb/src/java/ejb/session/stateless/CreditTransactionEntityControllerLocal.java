@@ -22,7 +22,7 @@ public interface CreditTransactionEntityControllerLocal {
 
     public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer);
     
-    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type);
+    public void createNewTransaction(Long cid, Long id, Integer num, TransactionTypeEnum type) throws GeneralException, CustomerNotFoundException;
 
     public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException, CustomerNotFoundException ;
     

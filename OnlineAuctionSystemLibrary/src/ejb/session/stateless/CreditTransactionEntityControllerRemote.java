@@ -13,14 +13,15 @@ import util.enumeration.TransactionTypeEnum;
 import util.exception.CustomerNotFoundException;
 import util.exception.GeneralException;
 
-
 /**
  *
  * @author alina
  */
 public interface CreditTransactionEntityControllerRemote {
-     public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer);
 
-    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type);
-    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException, CustomerNotFoundException ;
+    public List<CreditTransactionEntity> viewAllCreditTransactionEntity(CustomerEntity customer);
+
+    public void createNewTransaction(Long cid, Long id, Integer num, TransactionTypeEnum type) throws GeneralException, CustomerNotFoundException;
+
+    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException, CustomerNotFoundException;
 }

@@ -42,8 +42,10 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
 
     //comment for future modification
     @Override
-    public void createNewTransaction(CustomerEntity customer, Long id, Integer num, TransactionTypeEnum type) {
+    public void createNewTransaction(Long cid, Long id, Integer num, TransactionTypeEnum type) throws GeneralException, CustomerNotFoundException {
         try {
+            CustomerEntity customer = customerEntityController.retrieveCustomerById(cid);
+
             CreditTransactionEntity credittransaction = new CreditTransactionEntity();
             credittransaction.setCustomerEntity(customer);
             credittransaction.setTransactionTypeEnum(type);//
@@ -54,18 +56,29 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
             em.persist(credittransaction);
             em.flush();
             em.refresh(credittransaction);
-
+            
+            customer.getCreditTransactionEntities().add(credittransaction);
         } catch (CreditPackageNotFoundException ex) {
             System.out.println(ex.getMessage() + " !");
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null
+                    && ex.getCause().getCause() != null
+                    && ex.getCause().getCause().getClass().getSimpleName().equals("MySQLIntegrityConstraintViolationException")) {
+            } else {
+                throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
 
     @Override
-    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException,  CustomerNotFoundException {
+    public void createNewTransaction(Long cid, TransactionTypeEnum type, BigDecimal amount) throws GeneralException, CustomerNotFoundException {
         try {
             CreditTransactionEntity ct = new CreditTransactionEntity(amount, type);
             CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
             ct.setCustomerEntity(c);
+
             em.persist(ct);
             em.flush();
             em.refresh(ct);
@@ -77,6 +90,8 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
 

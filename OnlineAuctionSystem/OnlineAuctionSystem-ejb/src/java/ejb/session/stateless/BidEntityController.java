@@ -11,7 +11,6 @@ import entity.BidEntity;
 import entity.CustomerEntity;
 import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -99,18 +98,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             if (((ProxyBiddingEntity) bid).getMaxAmount().compareTo(minPrice) < 0) {
                 throw new BidLessThanIncrementException("The proxy bidding max price " + ((ProxyBiddingEntity) bid).getMaxAmount() + " is less than the increment amount " + minPrice + " !");
             }
-            
-            List<BidEntity> cbids = c.getBidEntities();
-            List<BidEntity> abids = a.getBidEntities();
-            for (BidEntity b : cbids) {
-                System.out.println("cbids: " + b.getId());
-            }
-            for (BidEntity b : abids) {
-                System.out.println("cbids: " + b.getId());
-            }
-            
-            System.out.println("Delete previous proxy bid");
+
             try {
+                System.out.println("remove previous proxy bid");
                 Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid AND b.amount = -77");
                 query.setParameter("cid", cid);
                 query.setParameter("aid", aid);
@@ -121,7 +111,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             } catch (BidNotFoundException ex) {
                 System.out.println(ex.getMessage());
             }
-            
+
             c.getBidEntities().add(bid);
             a.getBidEntities().add(bid);
             bid.setCustomerEntity(c);
@@ -197,6 +187,8 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 } else {
                     throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
                 }
+            } catch (Exception ex2) {
+                throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
             }
         }
     }
@@ -208,6 +200,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
         try {
             query.getSingleResult();
+            createNewBid(new BidEntity(minPrice), currentProxy.getCustomerEntity().getId(), a.getId());
         } catch (NonUniqueResultException ex) {
             List<ProxyBiddingEntity> proxyList = (List<ProxyBiddingEntity>) query.getResultList();
             BigDecimal amount = new BigDecimal(0);
@@ -238,6 +231,8 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             } catch (BidNotFoundException ex1) {
                 System.out.println("executeProxyBid - deleteBid - BidNotFound: " + ex1.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 
     }

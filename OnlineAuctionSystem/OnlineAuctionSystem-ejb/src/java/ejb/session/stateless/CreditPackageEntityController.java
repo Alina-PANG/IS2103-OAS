@@ -28,7 +28,7 @@ import util.exception.GeneralException;
 @Local(CreditPackageEntityControllerLocal.class)
 @Remote(CreditPackageEntityControllerRemote.class)
 public class CreditPackageEntityController implements CreditPackageEntityControllerRemote, CreditPackageEntityControllerLocal {
-    
+
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
@@ -45,9 +45,9 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             em.persist(cp);
             em.flush();
             em.refresh(cp);
-            
+
             return cp;
-            
+
         } catch (PersistenceException ex) {
             if (ex.getCause() != null
                     && ex.getCause().getCause() != null
@@ -56,6 +56,8 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
 
@@ -68,31 +70,31 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
     @Override
     public CreditPackageEntity retrieveCreditPackageById(Long id) throws CreditPackageNotFoundException {
         CreditPackageEntity cp = em.find(CreditPackageEntity.class, id);
-        
+
         if (cp == null) {
             throw new CreditPackageNotFoundException("Credit Package with id = " + id + " does not exist!");
         } else {
             return cp;
         }
     }
-    
+
     @Override
     public List<CreditPackageEntity> retrieveCreditPackageByName(String name) throws CreditPackageNotFoundException {
         Query query = em.createQuery("SELECT cp FROM CreditPackageEntity cp WHERE LOWER(cp.name) LIKE LOWER(:name)");
 
-        query.setParameter("name", '%'+name+'%');
-        
+        query.setParameter("name", '%' + name + '%');
+
         try {
             return (List<CreditPackageEntity>) query.getResultList();
         } catch (NoResultException ex) {
             throw new CreditPackageNotFoundException("There is no credit package with name " + name + " exists!");
-        }        
+        }
     }
-    
+
     @Override
     public CreditPackageEntity updateCreditPackage(CreditPackageEntity newCp) throws CreditPackageNotFoundException, GeneralException, CreditPackageAlreadyExistException {
         CreditPackageEntity cp = retrieveCreditPackageById(newCp.getId());
-        
+
         cp.setName(newCp.getName());
         cp.setPrice(newCp.getPrice());
         cp.setValue(newCp.getValue());
@@ -100,7 +102,7 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
         try {
             em.flush();
             em.refresh(cp);
-            
+
             return cp;
         } catch (PersistenceException ex) {
             if (ex.getCause() != null
@@ -110,38 +112,39 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
-    
+
     @Override
     public List<CreditPackageEntity> viewAllCreditPackage() throws GeneralException {
         try {
             Query query = em.createQuery("SELECT cp FROM CreditPackageEntity cp");
-            
+
             return (List<CreditPackageEntity>) query.getResultList();
         } catch (NoResultException ex) {
             throw new GeneralException("No credit package exists!");
         }
     }
-    
+
     @Override
     // if disabled, return false; if removed successfully, return true
     public boolean deleteCreditPackage(Long id) throws CreditPackageNotFoundException {
         CreditPackageEntity cp = retrieveCreditPackageById(id);
-        
-        if(cp.getCustomerEntities() != null && cp.getCustomerEntities().size() != 0){
+
+        if (cp.getCustomerEntities() != null && cp.getCustomerEntities().size() != 0) {
             cp.setIsDisabled(true);
             return false;
-        }else{
+        } else {
             em.remove(cp);
             return true;
         }
     }
-    
+
     @Override
-    public void addCustomerToCreditPackage(Long creditpackageid, CustomerEntity customer) throws CreditPackageNotFoundException
-    {
-       CreditPackageEntity creditpackage = retrieveCreditPackageById(creditpackageid);
-       creditpackage.getCustomerEntities().add(customer);
+    public void addCustomerToCreditPackage(Long creditpackageid, CustomerEntity customer) throws CreditPackageNotFoundException {
+        CreditPackageEntity creditpackage = retrieveCreditPackageById(creditpackageid);
+        creditpackage.getCustomerEntities().add(customer);
     }
 }

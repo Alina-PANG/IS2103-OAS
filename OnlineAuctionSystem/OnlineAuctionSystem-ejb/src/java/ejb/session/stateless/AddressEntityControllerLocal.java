@@ -10,6 +10,7 @@ import entity.CustomerEntity;
 import java.util.List;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AddressNotFoundException;
+import util.exception.GeneralException;
 
 
 /**
@@ -18,7 +19,7 @@ import util.exception.AddressNotFoundException;
  */
 public interface AddressEntityControllerLocal {
 
-    public AddressEntity createAddress(AddressEntity address) throws AddressAlreadyExistsException;
+    public AddressEntity createAddress(AddressEntity address) throws GeneralException;
 
     public AddressEntity getAddressById(Long addressid);
 
@@ -26,9 +27,9 @@ public interface AddressEntityControllerLocal {
 
     public boolean deleteAddress(Long id) throws AddressNotFoundException;
 
-    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException;
+    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException, GeneralException;
 
-    public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException;
+    public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException, GeneralException;
 
     
 }

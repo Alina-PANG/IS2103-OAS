@@ -83,6 +83,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
 
@@ -170,7 +172,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public AuctionEntity
             retrieveAuctionById(Long id) throws AuctionNotFoundException {
         // retrieve the ae
-        AuctionEntity ae = em.find(AuctionEntity.class,id);
+        AuctionEntity ae = em.find(AuctionEntity.class, id);
 
         // check and throw exception
         if (ae == null) {
@@ -239,6 +241,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
         return oldAuction;
     }

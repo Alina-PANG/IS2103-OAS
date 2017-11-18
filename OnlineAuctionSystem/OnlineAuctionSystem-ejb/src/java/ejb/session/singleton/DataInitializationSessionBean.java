@@ -129,7 +129,7 @@ public class DataInitializationSessionBean {
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(60)), c2.getId(), ae1.getId());
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(30)), c.getId(), ae2.getId());
 
-        } catch (AuctionClosedException | AuctionNotOpenException |NotEnoughCreditException| AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | AddressAlreadyExistsException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
+        } catch (AuctionClosedException | AuctionNotOpenException |NotEnoughCreditException| AuctionNotFoundException | CustomerNotFoundException | BidLessThanIncrementException | CustomerAlreadyExistException | GeneralException | CreditPackageAlreadyExistException | ParseException | AuctionAlreadyExistException | BidAlreadyExistException ex) {
             System.out.println("Error in Singleton 2: "+ex.getMessage());
         }
     }

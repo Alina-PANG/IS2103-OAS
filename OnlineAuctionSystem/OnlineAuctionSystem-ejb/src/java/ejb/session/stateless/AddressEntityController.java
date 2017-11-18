@@ -13,9 +13,12 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AddressNotFoundException;
+import util.exception.AuctionAlreadyExistException;
+import util.exception.GeneralException;
 
 /**
  *
@@ -31,74 +34,88 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
 
     public AddressEntityController() {
     }
-    
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public AddressEntity createAddress(AddressEntity address) throws AddressAlreadyExistsException
-    {
-        em.persist(address);
-        em.flush();
-        em.refresh(address);
-        
-        return address;
+    public AddressEntity createAddress(AddressEntity address) throws GeneralException {
+        try {
+            em.persist(address);
+            em.flush();
+            em.refresh(address);
+
+            return address;
+        } catch (PersistenceException ex) {
+            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+        }
     }
-    
-    
+
     @Override
-    public List<AddressEntity> viewAllAddress(CustomerEntity customer)
-    {
+    public List<AddressEntity> viewAllAddress(CustomerEntity customer) {
         //same as view all transaction entity where customer entity is customer that passed in
-        Query query = em.createQuery("SELECT a FROM AddressEntity a WHERE a.customerEntity.email LIKE :cust").setParameter("cust",customer.getEmail());
-        
+        Query query = em.createQuery("SELECT a FROM AddressEntity a WHERE a.customerEntity.email LIKE :cust").setParameter("cust", customer.getEmail());
+
         return query.getResultList();
     }
-    
-    //public void updateAddress
 
-    
+    //public void updateAddress
     @Override
-    public AddressEntity getAddressById(Long addressid)
-    {
-        AddressEntity address = em.find(AddressEntity.class,addressid);
+    public AddressEntity getAddressById(Long addressid) {
+        AddressEntity address = em.find(AddressEntity.class, addressid);
         return address;
-                
+
     }
-    
+
     public boolean deleteAddress(Long id) throws AddressNotFoundException {
         AddressEntity address = getAddressById(id);
-        if(address==null)
-        {
+        if (address == null) {
             throw new AddressNotFoundException("This address does not exist!");
         }
-        
-        if(address.getBidEntities() != null && address.getBidEntities().size() != 0){
+
+        if (address.getBidEntities() != null && address.getBidEntities().size() != 0) {
             address.setIsDisabled(true);
-            
+
             return false;
-        }else{
+        } else {
             em.remove(address);
             return true;
         }
     }
-    
+
     @Override
-    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException{
-        AddressEntity ae= getAddressById(aid);
+    public AddressEntity updateAddressLine(Long aid, String line) throws AddressNotFoundException, GeneralException {
+        AddressEntity ae = getAddressById(aid);
         ae.setAddressLine(line);
+        try{
         em.flush();
         em.refresh(ae);
         return ae;
+        } catch (PersistenceException ex) {
+            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+        }
+
     }
-    
+
     @Override
-    public AddressEntity updateAddressCode(Long aid,String code) throws AddressNotFoundException{
-        AddressEntity ae= getAddressById(aid);
+    public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException, GeneralException {
+        AddressEntity ae = getAddressById(aid);
         ae.setPostCode(code);
+        try{
         em.flush();
         em.refresh(ae);
         return ae;
+        } catch (PersistenceException ex) {
+            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+        }
     }
 
 }

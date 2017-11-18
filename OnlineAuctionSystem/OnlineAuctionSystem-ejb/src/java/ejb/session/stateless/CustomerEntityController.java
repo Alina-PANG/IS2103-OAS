@@ -35,55 +35,62 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
     @PersistenceContext(unitName = "OnlineAuctionSystem-ejbPU")
     private EntityManager em;
 
-    
     @Override
-    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException, NoResultException
-    {
-       
-            Query query;
-            query = em.createQuery("SELECT c FROM CustomerEntity c WHERE c.email = :e").setParameter("e",email);
+    public CustomerEntity retrieveCustomerByEmail(String email) throws CustomerNotFoundException, NoResultException {
 
-           try{
-               return (CustomerEntity)query.getSingleResult();
-           }
-           catch(NoResultException ex){
-               throw new NoResultException("This customer is not found!");
-           }
-          
-           
+        Query query;
+        query = em.createQuery("SELECT c FROM CustomerEntity c WHERE c.email = :e").setParameter("e", email);
+
+        try {
+            return (CustomerEntity) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw new NoResultException("This customer is not found!");
+        }
+
     }
-    
+
     @Override
-    public CustomerEntity updateCreditBalance(java.lang.Long customerid, BigDecimal newamount) throws CustomerNotFoundException, GeneralException{
+    public CustomerEntity updateCreditBalance(java.lang.Long customerid, BigDecimal newamount) throws CustomerNotFoundException, GeneralException {
         CustomerEntity customer = retrieveCustomerById(customerid);
         customer.setCreditBalance(newamount);
         //em.persist(customer);
-        em.flush();
-        em.refresh(customer);
-        return customer;
+        try {
+            em.flush();
+            em.refresh(customer);
+            return customer;
+        } catch (PersistenceException ex) {
+            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+        }
     }
-    
-    
+
     @Override
     public CustomerEntity changePassword(String currentPw, String newPw, Long id) throws IncorrectPasswordException, CustomerNotFoundException, GeneralException {
         CustomerEntity customer = retrieveCustomerById(id);
 
-        if (customer.getPassword().equals(currentPw)) {
-            customer.setPassword(newPw);
-            em.flush();
-            em.refresh(customer);
+        try {
+            if (customer.getPassword().equals(currentPw)) {
+                customer.setPassword(newPw);
+                em.flush();
+                em.refresh(customer);
 
-            return customer;
-        } else {
-            throw new IncorrectPasswordException("You must enter correct old password to change your new password!");
-            
+                return customer;
+            } else {
+                throw new IncorrectPasswordException("You must enter correct old password to change your new password!");
+
+            }
+        } catch (PersistenceException ex) {
+            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
-    
-    
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    
     @Override
     public CustomerEntity createNewCustomerEntity(CustomerEntity customer) throws CustomerAlreadyExistException, GeneralException {
         try {
@@ -100,6 +107,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }
 
@@ -138,6 +147,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new CustomerNotFoundException("Customer with identification number = " + number + " is not found!");
         }
     }
+
     @Override
     public CustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException {
         // retrieve customer
@@ -150,7 +160,6 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new CustomerNotFoundException("Customer with username = " + username + " is not found!");
         }
     }
-
 
     // manager can only update the firstname, lastname, accessRight, identificationNumber. others are cretical information, and must be hidden from the manager.
     @Override
@@ -171,6 +180,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 
         return oldCustomer;
@@ -192,20 +203,15 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
         }
     }
-    
-    public List<AddressEntity> getAddressByCustomer(Long cid) throws NoResultException{
-        Query query = em.createQuery("SELECT al FROM AddressEntity al WHERE al.customerEntity.id=:cus").setParameter("cus","cid");
-        
-        try{
-            return (List<AddressEntity>)query.getResultList();
-        }
-        catch(NoResultException ex){
+
+    public List<AddressEntity> getAddressByCustomer(Long cid) throws NoResultException {
+        Query query = em.createQuery("SELECT al FROM AddressEntity al WHERE al.customerEntity.id=:cus").setParameter("cus", "cid");
+
+        try {
+            return (List<AddressEntity>) query.getResultList();
+        } catch (NoResultException ex) {
             throw new NoResultException("You do not have any address!");
         }
     }
 
 }
-    
-        
-
-

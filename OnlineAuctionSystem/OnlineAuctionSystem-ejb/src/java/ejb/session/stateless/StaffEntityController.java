@@ -50,6 +50,8 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 
     }
@@ -77,7 +79,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with identification number = " + number + " is not found!");
-        } 
+        }
     }
 
     @Override
@@ -90,7 +92,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             return (StaffEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new StaffNotFoundException("Staff with username = " + username + " is not found!");
-        } 
+        }
     }
 
     @Override
@@ -141,6 +143,8 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 
         return oldStaff;
