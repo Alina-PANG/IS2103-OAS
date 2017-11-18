@@ -86,7 +86,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
     }
 
-
     @Override
     public BidEntity closeAuction(AuctionEntity ae) {
         if (ae.getBidEntities().size() != 0) {
@@ -132,7 +131,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return list.get(0);
     }*/
     @Override
-    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException{
+    public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException {
         AuctionEntity ae = retrieveAuctionById(aid);
         BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
@@ -140,9 +139,9 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         em.flush();
         em.refresh(ae);
     }
-    
+
     @Override
-    public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException{
+    public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException {
         AuctionEntity ae = retrieveAuctionById(aid);
         ae.setStatus(StatusEnum.DISABLED);
         em.flush();
@@ -150,7 +149,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return ae;
     }
 
-     /*   List<BidEntity> bidList = ae.getBidEntities();
+    /*   List<BidEntity> bidList = ae.getBidEntities();
         for (BidEntity b : bidList) {
             if (!b.getId().equals(bid)) {
                 try {
@@ -167,13 +166,11 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         }
 
     }*/
-
     @Override
     public AuctionEntity
             retrieveAuctionById(Long id) throws AuctionNotFoundException {
         // retrieve the ae
-        AuctionEntity ae = em.find(AuctionEntity.class,
-                 id);
+        AuctionEntity ae = em.find(AuctionEntity.class,id);
 
         // check and throw exception
         if (ae == null) {
@@ -292,7 +289,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
         Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.status = :status AND al.winningBidId=:id AND b.id = al.winningBidId AND al.reservePrice > b.amount");
-        query.setParameter("status", StatusEnum.CLOSED).setParameter("id",null);
+        query.setParameter("status", StatusEnum.CLOSED).setParameter("id", null);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {
@@ -352,20 +349,18 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     @Override
-    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException {
-
-        List<BidEntity> bidlist = viewBidEntity(productid);
-        if (!bidlist.isEmpty()) {
-            BidEntity highestbid = new BidEntity(new BigDecimal("0.00"));
-            for (BidEntity bid : bidlist) {
-                if (bid.getAmount().compareTo(highestbid.getAmount()) > 0) {
-                    highestbid = bid;
-                }
-            }
-            return highestbid;
-        } else {
+    public BidEntity getCurrentWinningBidEntity(Long aid) throws AuctionNotFoundException {
+        AuctionEntity a = retrieveAuctionById(aid);
+        if (a.getWinningBidId().equals(new Long(-10))) {
             return null;
+        } else {
+            try {
+                return bidEntityController.retrieveById(a.getWinningBidId());
+            } catch (BidNotFoundException ex) {
+                System.err.println("AuctionEntityController - getCurrentWinningBidEntity: " + ex.getMessage());
+            }
         }
+        return null;
     }
 
     @Override

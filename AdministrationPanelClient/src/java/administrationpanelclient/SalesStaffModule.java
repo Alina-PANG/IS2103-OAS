@@ -163,7 +163,7 @@ public class SalesStaffModule {
             System.out.println("6. Finish");
 
             while (true) {
-                System.out.print("Please enter number of the option that you want to change->n>");
+                System.out.print("Please enter number of the option that you want to change->");
                 response = sc.nextInt();
                 sc.nextLine();
 

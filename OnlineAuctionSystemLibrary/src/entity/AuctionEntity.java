@@ -58,6 +58,10 @@ public class AuctionEntity implements Serializable {
     private List<CustomerEntity> customerEntities;
 
     public AuctionEntity() {
+        this.bidEntities = new ArrayList<BidEntity>();
+        this.customerEntities = new ArrayList<CustomerEntity>();
+        this.winningBidId = new Long(-10);
+        this.status = StatusEnum.PENDING;
     }
 
     public AuctionEntity(Date startingTime, Date endingTime, BigDecimal reservePrice, String productName, String productDescription) {

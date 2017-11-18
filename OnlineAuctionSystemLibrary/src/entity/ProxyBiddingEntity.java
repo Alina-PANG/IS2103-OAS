@@ -8,18 +8,18 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 /**
  *
  * @author alina
  */
 @Entity
+@DiscriminatorValue("PROXY")
 public class ProxyBiddingEntity extends BidEntity implements Serializable {
 
     @Column(precision = 18, scale = 4)

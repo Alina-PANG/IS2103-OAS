@@ -61,11 +61,12 @@ public class MainApp {
 
     public void runApp() {
         Scanner sc = new Scanner(System.in);
-        int response = 0;
+        int response;
 
         while (true) {
             System.out.println("");
             menu1();
+            response = 0;
             try {
                 response = sc.nextInt();
                 switch (response) {
@@ -88,6 +89,7 @@ public class MainApp {
                 }
             } catch (InputMismatchException ex) {
                 System.err.println("[Warning] Invalid Type!");
+                sc.nextLine();
             }
         }
     }
@@ -348,7 +350,7 @@ public class MainApp {
         System.out.println("1. Registration");
         System.out.println("2. Login");
         System.out.println("3. Exit");
-        System.out.println("Please input number of the operation that you want to perform->");
+        System.out.print("Please input number of the operation that you want to perform\n->");
     }
 
     private void readUsernameAndPassword(int input) {

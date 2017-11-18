@@ -63,6 +63,10 @@ public class CustomerEntity implements Serializable {
 
     public CustomerEntity() {
         this.creditBalance = new BigDecimal(0);
+        this.creditTransactionEntities = new ArrayList<CreditTransactionEntity>();
+        this.addressEntities = new ArrayList<AddressEntity>();
+        this.auctionEntities = new ArrayList<AuctionEntity>();
+        this.bidEntities = new ArrayList<BidEntity>();
     }
 
     public CustomerEntity(String firstName, String lastName, String username, String password, String contactNumber, String email, CustomerTypeEnum customerTypeEnum) {
@@ -267,8 +271,6 @@ public class CustomerEntity implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
 
     public void addCreditBalance(BigDecimal add) {
         this.creditBalance.add(add);
