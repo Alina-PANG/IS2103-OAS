@@ -322,30 +322,40 @@ public class SalesStaffModule {
                 auctionEntityController.assignWinningBid(aid, bidid);
                 System.out.println("[System] Assign successful!");
                 }
+            
             }
-                
-            while(!response.equals("Y")){
+            else if(response.equals("N")){
+                a = auctionEntityController.setDisabled(aid);
+                System.out.println("[System] Action canceled.");
+            }
+            while(!(response.equals("N")||response.equals("Y"))){
                 System.out.println("->");
                 response = sc.nextLine().trim();
                 if(response.equals("N")){
                 a = auctionEntityController.setDisabled(aid);
                 System.out.println("[System] Action canceled.");
-                break;
                 }
+                else if(response.equals("Y")){
+                System.out.println("Enter id of the Bid that you want to assign as the winning bid: ");
+            
+                Long bidid = sc.nextLong();
+                BidEntity bid= bidEntityController.retrieveById(bidid);
+                if(list.contains(bid)){
+                auctionEntityController.assignWinningBid(aid, bidid);
+                System.out.println("[System] Assign successful!");
+                }
+                }
+
             }
+            
             }
             else{
                 System.err.println("[Warning] The input auction list id does not exist!");
             }   
             }
-/*<<<<<<< HEAD
-    
             catch (AuctionNotFoundException |GeneralException |BidNotFoundException ex) {
-=======
-        } catch (AuctionNotFoundException | GeneralException | BidNotFoundException ex) {
->>>>>>> master*/
-            System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());
-            } 
+                    System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage()); 
+            }
     }
 
     private void showBid(List<BidEntity> list) {

@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.AddressEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.List;
@@ -42,7 +43,7 @@ public interface CustomerEntityControllerLocal {
     public List<CustomerEntity> viewAllCustomer() throws GeneralException;
 
     public CustomerEntity updateCreditBalance(Long customerid, BigDecimal newamount) throws CustomerNotFoundException, GeneralException;
-    
+     public List<AddressEntity> getAddressByCustomer(Long cid) throws NoResultException;
     
 
 }

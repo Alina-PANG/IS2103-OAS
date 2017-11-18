@@ -136,7 +136,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         AuctionEntity ae = retrieveAuctionById(aid);
         BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
-/*<<<<<<< HEAD
+
         em.flush();
         em.refresh(ae);
     }
@@ -148,9 +148,9 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         em.flush();
         em.refresh(ae);
         return ae;
-=======
+    }
 
-        List<BidEntity> bidList = ae.getBidEntities();
+     /*   List<BidEntity> bidList = ae.getBidEntities();
         for (BidEntity b : bidList) {
             if (!b.getId().equals(bid)) {
                 try {
@@ -165,8 +165,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
                 }
             }
         }
->>>>>>> master*/
-    }
+
+    }*/
 
     @Override
     public AuctionEntity
@@ -291,8 +291,8 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.status = :status AND b.id = al.winningBidId AND al.reservePrice > b.amount");
-        query.setParameter("status", StatusEnum.CLOSED);
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.status = :status AND al.winningBidId=:id AND b.id = al.winningBidId AND al.reservePrice > b.amount");
+        query.setParameter("status", StatusEnum.CLOSED).setParameter("id",null);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (NoResultException ex) {

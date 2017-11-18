@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.AddressEntity;
 import entity.CustomerEntity;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.AddressNotFoundException;
 import util.exception.CustomerAlreadyExistException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
@@ -47,6 +49,8 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
            catch(NoResultException ex){
                throw new NoResultException("This customer is not found!");
            }
+          
+           
     }
     
     @Override
@@ -188,4 +192,20 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
         }
     }
+    
+    public List<AddressEntity> getAddressByCustomer(Long cid) throws NoResultException{
+        Query query = em.createQuery("SELECT al FROM AddressEntity al WHERE al.customerEntity.id=:cus").setParameter("cus","cid");
+        
+        try{
+            return (List<AddressEntity>)query.getResultList();
+        }
+        catch(NoResultException ex){
+            throw new NoResultException("You do not have any address!");
+        }
+    }
+
 }
+    
+        
+
+

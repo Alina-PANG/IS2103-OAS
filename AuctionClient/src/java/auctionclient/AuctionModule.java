@@ -238,7 +238,7 @@ public class AuctionModule {
                     bid.getAmount()+"|",
                     auctionEntityControllerRemote
                     .getCurrentWinningBidEntity(bid.getAuctionEntity().getId())
-                    .getAmount()+"|");
+                    .getAmount());
         }
         System.out.println("Do you want to place new bid?(Y/N)->");
         if(scanner.nextLine().trim().equals("Y"))
@@ -308,12 +308,13 @@ public class AuctionModule {
                if(bid.getAddressEntity()!=null)
                 {
                     System.out.printf("%35s",bid.getAddressEntity().getAddressLine()+"-"+bid.getAddressEntity().getPostCode());
-                    System.out.println("\n");
+                    System.out.print("\n");
                 }    
-               else{
+                else
+                {
                     System.err.println(" No address linked!");
                     nulladdressexists=true;
-               }
+                }
             }
             if(nulladdressexists)
             {
@@ -360,7 +361,7 @@ public class AuctionModule {
         System.out.println("Enter id of the won auction that you want to assign an address->");
         Long bidid = scanner.nextLong();
         System.out.println("Your current address list:");
-        List<AddressEntity> addresslist = customer.getAddressEntities();
+        List<AddressEntity> addresslist = customerEntityControllerRemote.getAddressByCustomer(customer.getId());
         if(addresslist.isEmpty()){
             System.out.println("You do not have an address yet!");
             System.out.println("Please create an address first!");

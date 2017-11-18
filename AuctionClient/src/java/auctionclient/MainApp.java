@@ -266,7 +266,7 @@ public class MainApp {
         }
         if(response==7)
         {
-            runApp();
+            break;
         }
        }
         
