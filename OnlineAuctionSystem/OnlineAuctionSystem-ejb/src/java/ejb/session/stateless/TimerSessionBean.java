@@ -43,17 +43,18 @@ public class TimerSessionBean implements TimerSessionBeanRemote, TimerSessionBea
         List<AuctionEntity> list = auctionEntityController.viewAllAuction();
 
         for (AuctionEntity ae : list) {
-            if(ae.getStartingTime().after(new Date())){
-                ae.setStatus(StatusEnum.PENDING);
-                System.out.println("Auction " + ae.getId() + " is pending.");
-            }
-            else if (ae.getStartingTime().before(new Date()) && ae.getEndingTime().after(new Date()) && ae.getStatus() == StatusEnum.PENDING) {
-                ae.setStatus(StatusEnum.ACTIVE);
-                System.out.println("Auction " + ae.getId() + " has been opened.");
-            } else if (ae.getEndingTime().before(new Date()) && ae.getStatus() == StatusEnum.ACTIVE){
-                auctionEntityController.closeAuction(ae);
-                ae.setStatus(StatusEnum.CLOSED);
-                System.out.println("Auction " + ae.getId() + " has been closed.");
+            if (!(ae.getStatus() == StatusEnum.DISABLED)) {
+                if (ae.getStartingTime().after(new Date())) {
+                    ae.setStatus(StatusEnum.PENDING);
+                    System.out.println("Auction " + ae.getId() + " is pending.");
+                } else if (ae.getStartingTime().before(new Date()) && ae.getEndingTime().after(new Date()) && ae.getStatus() == StatusEnum.PENDING) {
+                    ae.setStatus(StatusEnum.ACTIVE);
+                    System.out.println("Auction " + ae.getId() + " has been opened.");
+                } else if (ae.getEndingTime().before(new Date()) && ae.getStatus() == StatusEnum.ACTIVE) {
+                    auctionEntityController.closeAuction(ae);
+                    ae.setStatus(StatusEnum.CLOSED);
+                    System.out.println("Auction " + ae.getId() + " has been closed.");
+                }
             }
         }
     }

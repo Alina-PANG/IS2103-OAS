@@ -37,7 +37,7 @@ public interface AuctionEntityControllerRemote {
 
     public List<AuctionEntity> viewNoWinningAuction() throws GeneralException;
 
-    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException;
+    public List<BidEntity> viewBidEntity(Long aid) throws AuctionNotFoundException, BidNotFoundException;
 
     public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException;
 
@@ -56,8 +56,6 @@ public interface AuctionEntityControllerRemote {
     public BigDecimal getMyBidAmount(Long aid, Long cid);
 
     public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException;
-
-    
 
     public BigDecimal getMinPrice(Long aid) throws AuctionNotFoundException;
 }

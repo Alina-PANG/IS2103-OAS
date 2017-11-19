@@ -115,7 +115,10 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             c.getBidEntities().add(bid);
             a.getBidEntities().add(bid);
 
-            createBidForProxy(new BidEntity(minPrice), cid, aid);
+            BidEntity winning = auctionEntityController.getWinningBidEntity(a.getId());
+            if (!winning.getCustomerEntity().getId().equals(cid)) {
+                createBidForProxy(new BidEntity(minPrice), cid, aid);
+            }
 
             executeProxyBid(a, bid, minPrice);
             return bid;
@@ -239,6 +242,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         try {
             CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
             AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
+            boolean flag = true;
 
             // check whether auction is open
             if (a.getEndingTime().before(new Date())) {
@@ -257,8 +261,14 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 ctController.createNewTransaction(cid, TransactionTypeEnum.REFUND, b.getAmount());
                 c.setCreditBalance(c.getCreditBalance().add(b.getAmount()));
                 deleteBid(b.getId());
+                flag = false;
             } catch (NoResultException ex) {
                 System.out.println("Customer " + c.getUsername() + " has no previous bid in auction " + a.getId() + "!");
+            }
+
+            if (flag) {
+                c.getAuctionEntities().add(a);
+                a.getCustomerEntities().add(c);
             }
 
             bid.setCustomerEntity(c);
@@ -308,6 +318,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         BidEntity bid = retrieveById(bidid);
         AddressEntity address = addressEntityControllerLocal.getAddressById(addressid);
         bid.setAddressEntity(address);
+        address.getBidEntities().add(bid);
         return bid;
     }
 

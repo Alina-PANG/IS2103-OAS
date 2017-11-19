@@ -56,9 +56,9 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
-     * @throws CustomerNotPremiumException_Exception
-     * @throws CustomerNotFoundException_Exception
      * @throws IncorrectPasswordException_Exception
+     * @throws CustomerNotFoundException_Exception
+     * @throws CustomerNotPremiumException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -101,9 +101,9 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
-     * @throws CustomerAlreadyPremiumException_Exception
-     * @throws CustomerNotFoundException_Exception
      * @throws IncorrectPasswordException_Exception
+     * @throws CustomerNotFoundException_Exception
+     * @throws CustomerAlreadyPremiumException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -167,8 +167,8 @@ public interface ProxyWebService {
      * @param id
      * @return
      *     returns java.math.BigDecimal
-     * @throws GeneralException_Exception
      * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -226,14 +226,14 @@ public interface ProxyWebService {
      * @param bid
      * @param aid
      * @param cid
-     * @throws NotEnoughCreditException_Exception
-     * @throws BidLessThanIncrementException_Exception
-     * @throws AuctionNotOpenException_Exception
-     * @throws GeneralException_Exception
-     * @throws CustomerNotFoundException_Exception
-     * @throws AuctionClosedException_Exception
      * @throws BidAlreadyExistException_Exception
+     * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
      * @throws AuctionNotFoundException_Exception
+     * @throws AuctionNotOpenException_Exception
+     * @throws AuctionClosedException_Exception
+     * @throws BidLessThanIncrementException_Exception
+     * @throws NotEnoughCreditException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createSnippingBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateSnippingBid")
@@ -263,14 +263,14 @@ public interface ProxyWebService {
      * @param bid
      * @param aid
      * @param cid
-     * @throws NotEnoughCreditException_Exception
-     * @throws BidLessThanIncrementException_Exception
-     * @throws AuctionNotOpenException_Exception
-     * @throws GeneralException_Exception
-     * @throws CustomerNotFoundException_Exception
-     * @throws AuctionClosedException_Exception
      * @throws BidAlreadyExistException_Exception
+     * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
      * @throws AuctionNotFoundException_Exception
+     * @throws AuctionNotOpenException_Exception
+     * @throws BidLessThanIncrementException_Exception
+     * @throws AuctionClosedException_Exception
+     * @throws NotEnoughCreditException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createProxyBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateProxyBid")
@@ -320,9 +320,9 @@ public interface ProxyWebService {
      * @param aid
      * @return
      *     returns ws.client.BidEntity
-     * @throws BidNotFoundException_Exception
      * @throws GeneralException_Exception
      * @throws AuctionNotFoundException_Exception
+     * @throws BidNotFoundException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")

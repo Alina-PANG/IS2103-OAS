@@ -46,6 +46,7 @@ public class SalesStaffModule {
     }
 
     private void menu() {
+        System.out.println("");
         System.out.println("******* [Sales Staff] Homepage *******");
         System.out.println("1. Create New Auction Listing");
         System.out.println("2. Update Auction Listing");
@@ -64,7 +65,6 @@ public class SalesStaffModule {
 
         try {
             while (true) {
-                System.out.println("");
                 menu();
                 response = sc.nextInt();
                 switch (response) {
@@ -73,24 +73,19 @@ public class SalesStaffModule {
                         break;
 
                     case 2:
-                        System.out.println("");
                         updateAuction();
                         break;
                     case 3:
-                        System.out.println("");
                         System.out.println("******* [Sales Staff] View Auction Listing Details *******");
                         viewAuctionDetails();
                         break;
                     case 4:
-                        System.out.println("");
                         deleteAuction();
                         break;
                     case 5:
-                        System.out.println("");
                         viewAllAuction();
                         break;
                     case 6:
-                        System.out.println("");
                         viewAuctionNoWinning();
                     case 7:
                         break;
@@ -116,6 +111,7 @@ public class SalesStaffModule {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
+            System.out.println("");
             System.out.println("******* [Sales Staff] Create New Auction Listing *******");
             do {
                 System.out.print("Enter start date (in format hh:mm:ss dd/mm/yyyy)\n->");
@@ -223,6 +219,7 @@ public class SalesStaffModule {
     }
 
     private void deleteAuction() {
+        System.out.println("");
         System.out.println("******* [Sales Staff] Delete Auction Listing*******");
 
         try {
@@ -239,6 +236,7 @@ public class SalesStaffModule {
     }
 
     private void viewAllAuction() {
+        System.out.println("");
         System.out.println("******* [Sales Staff] View All Auction Listing *******");
 
         try {
@@ -312,12 +310,12 @@ public class SalesStaffModule {
             if (alList.contains(a)) {
                 List<BidEntity> list = auctionEntityController.viewBidEntity(aid);
                 showBid(list);
-                System.out.println("Do you want to assign winning bid?(Y/N)");
+                System.out.print("Do you want to assign winning bid?(Y or press any key to cancel)\n->");
                 sc.nextLine();
                 String response = sc.nextLine().trim();
 
-                if (response.equals("Y")) {
-                    System.out.println("Enter id of the Bid that you want to assign as the winning bid: ");
+                if (response.toUpperCase().equals("Y")) {
+                    System.out.print("Enter id of the Bid that you want to assign as the winning bid: \n->");
 
                     Long bidid = sc.nextLong();
                     BidEntity bid = bidEntityController.retrieveById(bidid);
@@ -325,42 +323,21 @@ public class SalesStaffModule {
                         auctionEntityController.assignWinningBid(aid, bidid);
                         System.out.println("[System] Assign successful!");
                     }
-
-                } else if (response.equals("N")) {
-                    a = auctionEntityController.setDisabled(aid);
-                    System.out.println("[System] Action canceled.");
-                }
-                while (!(response.equals("N") || response.equals("Y"))) {
-                    System.out.print("->");
-                    response = sc.nextLine().trim();
-                    if (response.equals("N")) {
-                        a = auctionEntityController.setDisabled(aid);
-                        System.out.println("[System] Action canceled.");
-                    } else if (response.equals("Y")) {
-                        System.out.println("Enter id of the Bid that you want to assign as the winning bid: ");
-
-                        Long bidid = sc.nextLong();
-                        BidEntity bid = bidEntityController.retrieveById(bidid);
-                        if (list.contains(bid)) {
-                            auctionEntityController.assignWinningBid(aid, bidid);
-                            System.out.println("[System] Assign successful!");
-                        }
-                    }
-
-                }
-
+                } 
             } else {
                 System.err.println("[Warning] The input auction list id does not exist!");
             }
         } catch (AuctionNotFoundException | GeneralException | BidNotFoundException ex) {
-            System.err.println("[Warning] An error has incurred while retrieving auction: " + ex.getMessage());
+            System.err.println("[Warning] An error has ocurred: " + ex.getMessage());
         }
     }
 
     private void showBid(List<BidEntity> list) {
-        System.out.printf("%5s%10s%30s\n", "ID|", "Amount|", "In Auction Name");
+        System.out.println("");
+        System.out.println("******* [Auction Listing] Bid Entities *******");
+        System.out.printf("%5s%20s%20s\n", "ID|", "Amount|", "In Auction Name");
         for (BidEntity b : list) {
-            System.out.printf("%5s%10s%30s\n", b.getId() + "|", b.getAmount() + "|", b.getAuctionEntity().getProductName());
+            System.out.printf("%5s%20s%20s\n", b.getId() + "|", b.getAmount() + "|", b.getAuctionEntity().getProductName());
         }
     }
 
