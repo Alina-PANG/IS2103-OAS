@@ -176,26 +176,13 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "viewCurrentHighestBid")
-    public BigDecimal viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException,GeneralException {
+    public BigDecimal viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException {
         return auctionEntityController.getWinningBidAmount(aid);
     }
 
     @WebMethod(operationName = "viewMyBidInAuction")
     public BidEntity viewMyBidInAuction(@WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws BidNotFoundException {
         BidEntity b = bidEntityController.viewMyBidInAuction(aid, cid);
-        CustomerEntity c = b.getCustomerEntity();
-        AuctionEntity a = b.getAuctionEntity();
-        c.setBidEntities(null);
-        a.setBidEntities(null);
-        b.setAddressEntity(null);
-
-        return b;
-    }
-
-    @WebMethod(operationName = "viewWinningBid")
-    public BidEntity viewWinningBid(@WebParam(name = "aid") Long aid) throws BidNotFoundException, AuctionNotFoundException, GeneralException {
-        BidEntity b = auctionEntityController.getWinningBidEntity(aid);
-
         CustomerEntity c = b.getCustomerEntity();
         AuctionEntity a = b.getAuctionEntity();
         c.setBidEntities(null);

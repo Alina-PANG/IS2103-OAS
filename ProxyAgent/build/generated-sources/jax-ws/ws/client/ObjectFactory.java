@@ -423,14 +423,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProxyBiddingEntity }
-     * 
-     */
-    public ProxyBiddingEntity createProxyBiddingEntity() {
-        return new ProxyBiddingEntity();
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AuctionClosedException }{@code >}}
      * 
      */

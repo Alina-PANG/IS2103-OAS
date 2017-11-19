@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="bid" type="{http://ws.session.ejb/}proxyBiddingEntity" minOccurs="0"/&gt;
+ *         &lt;element name="bid" type="{http://ws.session.ejb/}bidEntity" minOccurs="0"/&gt;
  *         &lt;element name="aid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *         &lt;element name="cid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class CreateProxyBid {
 
-    protected ProxyBiddingEntity bid;
+    protected BidEntity bid;
     protected Long aid;
     protected Long cid;
 
@@ -44,10 +44,10 @@ public class CreateProxyBid {
      * 
      * @return
      *     possible object is
-     *     {@link ProxyBiddingEntity }
+     *     {@link BidEntity }
      *     
      */
-    public ProxyBiddingEntity getBid() {
+    public BidEntity getBid() {
         return bid;
     }
 
@@ -56,10 +56,10 @@ public class CreateProxyBid {
      * 
      * @param value
      *     allowed object is
-     *     {@link ProxyBiddingEntity }
+     *     {@link BidEntity }
      *     
      */
-    public void setBid(ProxyBiddingEntity value) {
+    public void setBid(BidEntity value) {
         this.bid = value;
     }
 

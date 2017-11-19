@@ -67,7 +67,8 @@ public class AuctionModule {
         for (AuctionEntity al : list) {
             try {
                 System.out.printf("%5s%20s%20s%10s%15s%20s\n", al.getId() + "|", auctionEntityControllerRemote.getWinningBidAmount(al.getId()) + "|", auctionEntityControllerRemote.getMyBidAmount(al.getId(), customer.getId()) + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
-            } catch (AuctionNotFoundException|GeneralException ex) {
+            } catch (AuctionNotFoundException ex) {
+                System.out.println("An error has occrued: " + ex.getMessage());
             }
         }
     }
@@ -102,11 +103,9 @@ public class AuctionModule {
             }
 
         } catch (GeneralException ex) {
-            System.err.println("[Warning] " + ex.getMessage());
-            viewAuctionListing();
+            System.err.println("[Warning] An error has occured:" + ex.getMessage());
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
-            viewAuctionListing();
         }
 
     }
@@ -124,36 +123,29 @@ public class AuctionModule {
                 System.out.println("3. Reserve Price: " + al.getReservePrice());
                 System.out.println("4. Product Name: " + al.getProductName());
                 System.out.println("5. Product Description: " + al.getProductDescription());
-                if (al.getStatus() == StatusEnum.ACTIVE) {
-                    System.out.print("6. Current Highest Bid Amount: ");
-
-                } else if (al.getStatus() == StatusEnum.CLOSED) {
-                    System.out.print("6. Winning Bid Amount: ");
-                }
-                try {
-                    BidEntity bid = auctionEntityControllerRemote.getWinningBidEntity(al.getId());
-
-                    if (bid == null) {
-                        System.out.println("No bid has been placed in this auction yet.");
-                    } else {
-                        System.out.println("" + bid.getAmount());
+                if (!(al.getStatus() == StatusEnum.PENDING)) {
+                    try {
+                        BigDecimal amount = auctionEntityControllerRemote.getWinningBidAmount(al.getId());
+                        System.out.print("6. Current Highest Bid Amount: ");
+                        System.out.println("" + amount);
+                    } catch (AuctionNotFoundException ex) {
+                        System.out.println("An error has occured: " + ex.getMessage());
                     }
-                } catch (AuctionNotFoundException|GeneralException ex) {
                 }
 
-                if (al.getStatus() != StatusEnum.PENDING && al.getStatus() != StatusEnum.CLOSED) {
-                    System.out.print("Your Bid Amount: ");
+                if (al.getStatus() == StatusEnum.ACTIVE) {
+                    System.out.print("7. Your Bid Amount: ");
                     try {
                         BidEntity b = bidEntityControllerRemote.viewMyBidInAuction(customer.getId(), al.getId());
                         System.out.println("" + b.getAmount());
-                        System.out.print("Your Bid Type: ");
+                        System.out.print("8. Your Bid Type: ");
                         if (b.getAmount().equals(new BigDecimal(-77))) {
                             System.out.println("Proxy Bid");
                         } else {
                             System.out.println("Normal Bid");
                         }
                     } catch (BidNotFoundException ex) {
-                        System.out.println("No bid has been placed by you in this auction yet.");
+                        System.out.println(ex.getMessage());
                     }
 
                     if (al.getStatus() == StatusEnum.DISABLED) {
@@ -211,7 +203,7 @@ public class AuctionModule {
             Scanner scanner = new Scanner(System.in);
             System.out.println("");
             System.out.println("******* [Customer] Place New Bid *******");
-            System.out.print("Enter amount of your new bid(MUST be higher than the current highest bid plus current bid incremental)\n->");
+            System.out.print("Enter amount of your new bid (MUST be higher than " + auctionEntityControllerRemote.getMinPrice(productid) + "):\n->");
             BidEntity bid = new BidEntity(scanner.nextBigDecimal());
             bid = bidEntityControllerRemote.createNewBid(bid, customer.getId(), productid);
             System.out.println("[System] Your new bid has been placed successfully!");
@@ -237,10 +229,8 @@ public class AuctionModule {
             }
         } catch (AuctionNotFoundException | BidAlreadyExistException | GeneralException | AuctionClosedException | AuctionNotOpenException | BidLessThanIncrementException | CustomerNotFoundException | NotEnoughCreditException ex) {
             System.err.println("[Warning] " + ex.getMessage());
-            viewAuctionListing();
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
-            viewAuctionListing();
         }
     }
 

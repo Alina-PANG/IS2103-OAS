@@ -147,6 +147,7 @@
 <xs:element name="auctionEntity" type="tns:auctionEntity" minOccurs="0"/>
 <xs:element name="customerEntity" type="tns:customerEntity" minOccurs="0"/>
 <xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="maxAmount" type="xs:decimal" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -227,20 +228,10 @@
 
 <xs:complexType name="createProxyBid">
 <xs:sequence>
-<xs:element name="bid" type="tns:proxyBiddingEntity" minOccurs="0"/>
+<xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
 <xs:element name="aid" type="xs:long" minOccurs="0"/>
 <xs:element name="cid" type="xs:long" minOccurs="0"/>
 </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="proxyBiddingEntity">
-<xs:complexContent>
-<xs:extension base="tns:bidEntity">
-<xs:sequence>
-<xs:element name="maxAmount" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="createProxyBidResponse">

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-import util.exception.AuctionNotFoundException;
 import ws.client.AuctionClosedException_Exception;
 import ws.client.AuctionEntity;
 import ws.client.AuctionNotFoundException_Exception;
@@ -34,7 +33,6 @@ import ws.client.CustomerNotPremiumException_Exception;
 import ws.client.GeneralException_Exception;
 import ws.client.IncorrectPasswordException_Exception;
 import ws.client.NotEnoughCreditException_Exception;
-import ws.client.ProxyBiddingEntity;
 import ws.client.StatusEnum;
 
 /**
@@ -65,7 +63,6 @@ public class MainApp {
         int response;
 
         while (true) {
-            System.out.println("");
             menu1();
             response = 0;
             try {
@@ -73,11 +70,9 @@ public class MainApp {
                 switch (response) {
                     case 1:
                         readUsernameAndPassword(1);
-
                         break;
                     case 2:
                         readUsernameAndPassword(2);
-
                         break;
                     case 3:
                         break;
@@ -85,12 +80,13 @@ public class MainApp {
                         System.err.println("[Warning] Invalid input! Please try again!");
                         break;
                 }
-                if (response == 3) {
-                    break;
-                }
+
             } catch (InputMismatchException ex) {
                 System.err.println("[Warning] Invalid Type!");
                 sc.nextLine();
+            }
+            if (response == 3) {
+                break;
             }
         }
     }
@@ -98,8 +94,8 @@ public class MainApp {
     private void menu2() {
         System.out.println("");
         System.out.println("******* [OAS System Web Service] Premium Customer Operations ******");
-        System.out.println("1. Browse all auction listings");
-        System.out.println("2. View won auction listings");
+        System.out.println("1. Browse All Auction Listings");
+        System.out.println("2. View Won Auction Listings");
         System.out.println("3. View Auction Listing Details");
         System.out.println("4. View Credit Balance");
         System.out.println("5. Configure Proxy Bidding for Auction Listing");
@@ -166,13 +162,13 @@ public class MainApp {
         System.out.print("Enter the max price that you want to pay\n->");
         maxPrice = sc.nextBigDecimal();
 
-        ProxyBiddingEntity bid = new ProxyBiddingEntity();
+        BidEntity bid = new BidEntity();
         bid.setMaxAmount(maxPrice);
         bid.setAmount(new BigDecimal(-77));
         try {
             createProxyBid(bid, aid, currentCustomerEntity.getId());
             System.out.println("[System] Proxy bid has been created successfully!");
-        } catch (NotEnoughCreditException_Exception | AuctionNotOpenException_Exception | GeneralException_Exception | BidAlreadyExistException_Exception | AuctionNotFoundException_Exception | BidLessThanIncrementException_Exception | CustomerNotFoundException_Exception | AuctionClosedException_Exception ex) {
+        } catch (Exception ex){
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
         }
     }
@@ -184,17 +180,17 @@ public class MainApp {
         int duration;
         AuctionEntity a;
 
-        System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
-        System.out.print("Enter the auction id that you want to put for snipping bid\n-> ");
-        aid = sc.nextLong();
-        System.out.print("Enter the max price that you want to pay\n->");
-        maxPrice = sc.nextBigDecimal();
-
-        System.out.print("Please input the time duration before the listing expired to place your bid (in minutes): \n> ");
-        duration = sc.nextInt();
-
         try {
+            System.out.println("");
+            System.out.println("******* [Premium Customer] Configure Sniping for Auction Listing *******");
+            System.out.print("Enter the auction id that you want to put for snipping bid\n-> ");
+            aid = sc.nextLong();
             a = viewAuctionListDetails(aid);
+            System.out.print("Enter the max price that you want to pay\n->");
+            maxPrice = sc.nextBigDecimal();
+            System.out.print("Please input the time duration before the listing expired to place your bid (in minutes): \n> ");
+            duration = sc.nextInt();
+
             Date endTime = a.getEndingTime().toGregorianCalendar().getTime();
             Date startTime = a.getStartingTime().toGregorianCalendar().getTime();
 
@@ -275,22 +271,15 @@ public class MainApp {
             System.out.println("3. Reserve Price: " + al.getReservePrice());
             System.out.println("4. Product Name: " + al.getProductName());
             System.out.println("5. Product Description: " + al.getProductDescription());
-            if (al.getStatus() == StatusEnum.ACTIVE) {
+            if (!(al.getStatus() == StatusEnum.PENDING)) {
                 try {
                     BigDecimal amount = viewCurrentHighestBid(al.getId());
                     System.out.print("6. Current Highest Bid Amount: ");
                     System.out.println("" + amount);
                 } catch (AuctionNotFoundException_Exception ex) {
+                    System.out.println("An error has occured: "+ex.getMessage());
                 }
-            } else if (al.getStatus() == StatusEnum.CLOSED) {
-                System.out.print("6. Winning Bid Amount: ");
-                try {
-                    BidEntity b = viewWinningBid(al.getId());
-                    System.out.println("" + b.getAmount());
-                } catch (BidNotFoundException_Exception | AuctionNotFoundException_Exception | GeneralException_Exception ex) {
-                    System.err.println("An error has occured: " + ex.getMessage());
-                }
-            }
+            } 
 
             if (al.getStatus() != StatusEnum.PENDING && al.getStatus() != StatusEnum.CLOSED) {
                 System.out.print("7. Your Bid Amount: ");
@@ -298,7 +287,7 @@ public class MainApp {
                     BidEntity b = viewMyBidInAuction(currentCustomerEntity.getId(), al.getId());
                     System.out.println("" + b.getAmount());
                     System.out.print("Your Bid Type: ");
-                    if (b instanceof ProxyBiddingEntity) {
+                    if (b.getAmount().equals(new BigDecimal(-77))) {
                         System.out.println("Proxy Bid");
                     } else {
                         System.out.println("Normal Bid");
@@ -362,6 +351,7 @@ public class MainApp {
 
             if (input == 1) {
                 currentCustomerEntity = registration(username, password);
+                System.out.println("[System] You have successfully registered as a premium client!");
             } else if (input == 2) {
                 currentCustomerEntity = customerLogin(username, password);
             }
@@ -427,7 +417,7 @@ public class MainApp {
         return port.viewAuctionListDetails(id);
     }
 
-    private static void createProxyBid(ws.client.ProxyBiddingEntity bid, java.lang.Long aid, java.lang.Long cid) throws NotEnoughCreditException_Exception, AuctionNotOpenException_Exception, GeneralException_Exception, BidAlreadyExistException_Exception, AuctionNotFoundException_Exception, BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionClosedException_Exception {
+    private static void createProxyBid(ws.client.BidEntity bid, java.lang.Long aid, java.lang.Long cid) throws NotEnoughCreditException_Exception, AuctionNotOpenException_Exception, GeneralException_Exception, BidAlreadyExistException_Exception, AuctionNotFoundException_Exception, BidLessThanIncrementException_Exception, CustomerNotFoundException_Exception, AuctionClosedException_Exception {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         port.createProxyBid(bid, aid, cid);
@@ -443,12 +433,6 @@ public class MainApp {
         ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
         ws.client.ProxyWebService port = service.getProxyWebServicePort();
         port.createSnippingBid(bid, aid, cid);
-    }
-
-    private static BidEntity viewWinningBid(java.lang.Long aid) throws BidNotFoundException_Exception, AuctionNotFoundException_Exception, GeneralException_Exception {
-        ws.client.ProxyWebService_Service service = new ws.client.ProxyWebService_Service();
-        ws.client.ProxyWebService port = service.getProxyWebServicePort();
-        return port.viewWinningBid(aid);
     }
 
     private static BigDecimal viewCurrentHighestBid(java.lang.Long aid) throws AuctionNotFoundException_Exception {

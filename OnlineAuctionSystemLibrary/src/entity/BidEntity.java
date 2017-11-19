@@ -25,9 +25,6 @@ import javax.persistence.Table;
  * @author alina
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="BID_TYPE")
-@DiscriminatorValue("NORMAL")
 public class BidEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

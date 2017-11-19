@@ -4,7 +4,6 @@ package ws.client;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="auctionEntity" type="{http://ws.session.ejb/}auctionEntity" minOccurs="0"/&gt;
  *         &lt;element name="customerEntity" type="{http://ws.session.ejb/}customerEntity" minOccurs="0"/&gt;
  *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="maxAmount" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -37,10 +37,8 @@ import javax.xml.bind.annotation.XmlType;
     "amount",
     "auctionEntity",
     "customerEntity",
-    "id"
-})
-@XmlSeeAlso({
-    ProxyBiddingEntity.class
+    "id",
+    "maxAmount"
 })
 public class BidEntity {
 
@@ -49,6 +47,7 @@ public class BidEntity {
     protected AuctionEntity auctionEntity;
     protected CustomerEntity customerEntity;
     protected Long id;
+    protected BigDecimal maxAmount;
 
     /**
      * Gets the value of the addressEntity property.
@@ -168,6 +167,30 @@ public class BidEntity {
      */
     public void setId(Long value) {
         this.id = value;
+    }
+
+    /**
+     * Gets the value of the maxAmount property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public BigDecimal getMaxAmount() {
+        return maxAmount;
+    }
+
+    /**
+     * Sets the value of the maxAmount property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public void setMaxAmount(BigDecimal value) {
+        this.maxAmount = value;
     }
 
 }

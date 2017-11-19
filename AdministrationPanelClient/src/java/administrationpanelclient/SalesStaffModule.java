@@ -280,7 +280,7 @@ public class SalesStaffModule {
             System.out.println("");
             System.out.println("******* [Auction Listing] id = " + al.getId() + " Content ******* ");
             System.out.println("[Immutable] Status: " + al.getStatus());
-            System.out.print("[Immutable] Current Highest Bid: ");
+            System.out.print("[Immutable] Current Winning Bid: ");
 
             if (!al.getWinningBidId().equals(new Long(-10))) {
                 System.out.println("" + auctionEntityController.getWinningBidEntity(al.getId()).getAmount());
@@ -292,17 +292,6 @@ public class SalesStaffModule {
             System.out.println("3. Reserve Price: " + al.getReservePrice());
             System.out.println("4. Product Name: " + al.getProductName());
             System.out.println("5. Product Description: " + al.getProductDescription());
-            if (al.getStatus() == StatusEnum.ACTIVE) {
-                System.out.print("6. Current Highest Bid Amount: ");
-            } else if (al.getStatus() == StatusEnum.CLOSED) {
-                System.out.print("6. Winning Bid Amount: ");
-            }
-            try{
-            BidEntity bid = auctionEntityController.getWinningBidEntity(al.getId());
-            System.out.println("" + bid.getAmount());
-            } catch(AuctionNotFoundException | GeneralException ex){
-                System.out.println("No winning bid yet, either below reserve price or no bid has .");
-            }
 
         } catch (AuctionNotFoundException | GeneralException ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());

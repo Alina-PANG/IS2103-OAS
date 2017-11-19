@@ -259,8 +259,7 @@ public class ProfileModule {
                     break;
                 } else if (response == 5) {
                     break;
-                }                 
-                else {
+                } else {
                     System.err.println("[Warning] Invalid input! Please try again");
                 }
             } catch (InputMismatchException ex) {
@@ -279,30 +278,29 @@ public class ProfileModule {
         } else {
             System.out.printf("%5s%35s\n", "Id|", "Address Line");
             for (AddressEntity address : addresslist) {
-                System.out.printf("%5s%35s\n", address.getId() + "|", address.getAddressLine() );
+                System.out.printf("%5s%35s\n", address.getId() + "|", address.getAddressLine());
             }
         }
-        
+
         viewAddressDetail();
     }
-    
-    private void viewAddressDetail(){
+
+    private void viewAddressDetail() {
         System.out.print("Input the id of the address that you want to view detail\n->");
-        System.out.println("");
-        System.out.println("******* [Customer] View Address Detail *******");
         Scanner sc = new Scanner(System.in);
         Long response;
-        try{
+        try {
             response = sc.nextLong();
+            System.out.println("");
+            System.out.println("******* [Customer] View Address Detail *******");
             AddressEntity address = addressEntityControllerRemote.getAddressById(response);
-            if(address == null){
-                System.err.println("[Warning] No address with id "+response+" exists!");
-            }
-            else{
+            if (address == null) {
+                System.err.println("[Warning] No address with id " + response + " exists!");
+            } else {
                 System.out.printf("%5s%35s15s%10s\n", "Id|", "Address Line|", "Postal Code|", "Status");
-                System.out.printf("%5s%35s%15s%10s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode()+"|", ((address.isIsDisabled())?"DISABLED":"ACTIVE"));
+                System.out.printf("%5s%35s%15s%10s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode() + "|", ((address.isIsDisabled()) ? "DISABLED" : "ACTIVE"));
             }
-        } catch(InputMismatchException ex){
+        } catch (InputMismatchException ex) {
         }
     }
 

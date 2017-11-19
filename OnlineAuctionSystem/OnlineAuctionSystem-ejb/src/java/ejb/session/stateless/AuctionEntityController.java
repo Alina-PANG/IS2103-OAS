@@ -124,7 +124,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         AuctionEntity ae = retrieveAuctionById(aid);
         BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
-        ae.setReservePrice(bidEntity.getAmount());
+        ae.setReservePrice(bidEntity.getAmount().subtract(new BigDecimal(0.001)));
 
         em.flush();
         em.refresh(ae);
@@ -304,9 +304,12 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
 
     @Override
     public List<AuctionEntity> viewAvailableAuctionEntity() throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.status =:status").setParameter("status", StatusEnum.ACTIVE);
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al WHERE al.status = :status");
+        query.setParameter("status", StatusEnum.ACTIVE);
+
         try {
-            return (List<AuctionEntity>) query.getResultList();
+            List<AuctionEntity> list = (List<AuctionEntity>) query.getResultList();
+            return list;
         } catch (NoResultException ex) {
             throw new GeneralException("No auction listing exists!");
         }
@@ -327,7 +330,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     public BidEntity getWinningBidEntity(Long aid) throws AuctionNotFoundException, GeneralException {
         AuctionEntity a = retrieveAuctionById(aid);
 
-        Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.amount >= b.auctionEntity.reservePrice AND b.auctionEntity.winningBidId = b.id");
+        Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.auctionEntity.winningBidId = b.id");
         query.setParameter("aid", aid);
 
         try {
@@ -370,13 +373,27 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     @Override
-    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException, GeneralException {
-        BidEntity bid = getWinningBidEntity(aid);
-        if (bid == null) {
-            return new BigDecimal(0);
-        } else {
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException {
+        try {
+            BidEntity bid = getWinningBidEntity(aid);
             return bid.getAmount();
+        } catch (GeneralException ex) {
+            return new BigDecimal(0);
         }
+
+    }
+
+    @Override
+    public BigDecimal getMinPrice(Long aid) throws AuctionNotFoundException {
+        AuctionEntity a = retrieveAuctionById(aid);
+        try {
+            BidEntity b = bidEntityController.retrieveById(a.getWinningBidId());
+            BigDecimal amount = b.getAmount();
+            return amount.add(getCurrentBidIncremental(amount));
+        } catch (BidNotFoundException ex) {
+            System.out.println("AuctionEntityController - getMinPrice - BidNotFoundException");
+        }
+        return new BigDecimal(0.25);
     }
 
     public BigDecimal getMyBidAmount(Long aid, Long cid) {
