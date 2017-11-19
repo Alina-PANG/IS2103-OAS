@@ -124,6 +124,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         AuctionEntity ae = retrieveAuctionById(aid);
         BidEntity bidEntity = bidEntityController.retrieveById(bid);
         ae.setWinningBidId(bid);
+        ae.setReservePrice(bidEntity.getAmount());
 
         em.flush();
         em.refresh(ae);
@@ -278,8 +279,9 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
      */
     @Override
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException {
-        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.winningBidId = b.id AND b.customerEntity.id = :cid AND al.reservePrice >= b.amount");
+        Query query = em.createQuery("SELECT al FROM AuctionEntity al, BidEntity b WHERE al.winningBidId = b.id AND b.customerEntity.id = :cid AND al.reservePrice <= b.amount AND al.status = :status");
         query.setParameter("cid", cid);
+        query.setParameter("status", StatusEnum.CLOSED);
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (Exception ex) {
@@ -319,21 +321,6 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         } else {
             throw new AuctionNotFoundException("This auction is not valid or it is not active!");
         }
-    }
-
-    @Override
-    public BidEntity getCurrentWinningBidEntity(Long aid) throws AuctionNotFoundException {
-        AuctionEntity a = retrieveAuctionById(aid);
-        if (a.getWinningBidId().equals(new Long(-10))) {
-            return null;
-        } else {
-            try {
-                return bidEntityController.retrieveById(a.getWinningBidId());
-            } catch (BidNotFoundException ex) {
-                System.err.println("AuctionEntityController - getCurrentWinningBidEntity: " + ex.getMessage());
-            }
-        }
-        return null;
     }
 
     @Override
@@ -383,12 +370,25 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     }
 
     @Override
-    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException {
-        BidEntity bid = getCurrentWinningBidEntity(aid);
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException, GeneralException {
+        BidEntity bid = getWinningBidEntity(aid);
         if (bid == null) {
             return new BigDecimal(0);
         } else {
             return bid.getAmount();
+        }
+    }
+
+    public BigDecimal getMyBidAmount(Long aid, Long cid) {
+        Query query = em.createQuery("SELECT bid FROM BidEntity bid WHERE bid.amount != -77 AND bid.customerEntity.id = :cid AND bid.auctionEntity.id = :aid");
+        query.setParameter("cid", cid);
+        query.setParameter("aid", aid);
+
+        try {
+            BidEntity bid = (BidEntity) query.getSingleResult();
+            return bid.getAmount();
+        } catch (NoResultException ex) {
+            return new BigDecimal(0);
         }
     }
 }

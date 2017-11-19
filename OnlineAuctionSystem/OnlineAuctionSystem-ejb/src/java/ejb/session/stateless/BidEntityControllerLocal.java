@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.BidEntity;
 import entity.CustomerEntity;
-import entity.ProxyBiddingEntity;
 import java.util.List;
 import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
@@ -34,12 +33,6 @@ public interface BidEntityControllerLocal {
     public List<BidEntity> viewMyBidsInProcess(CustomerEntity customer) throws GeneralException;
 
     public BidEntity createNewBid(BidEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidLessThanIncrementException, CustomerNotFoundException, AuctionNotFoundException, BidAlreadyExistException, GeneralException;
-
-   
-
-    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException;
-
-   
 
     public BidEntity viewMyBidInAuction(Long aid, Long cid) throws BidNotFoundException;
 

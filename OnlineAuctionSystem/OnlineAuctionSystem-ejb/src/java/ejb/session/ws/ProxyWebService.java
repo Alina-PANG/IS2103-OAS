@@ -11,7 +11,6 @@ import ejb.session.stateless.CustomerEntityControllerLocal;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
-import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -172,23 +171,13 @@ public class ProxyWebService {
     }
 
     @WebMethod(operationName = "createProxyBid")
-    public void createProxyBid(@WebParam(name = "bid") ProxyBiddingEntity bid, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        bidEntityController.createProxyBid(bid, cid, aid);
+    public void createProxyBid(@WebParam(name = "bid") BidEntity bid, @WebParam(name = "aid") Long aid, @WebParam(name = "cid") Long cid) throws AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, NotEnoughCreditException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
+        bidEntityController.createNewBid(bid, cid, aid);
     }
 
     @WebMethod(operationName = "viewCurrentHighestBid")
-    public BidEntity viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException {
-        BidEntity b = auctionEntityController.getCurrentWinningBidEntity(aid);
-        if (b != null) {
-            CustomerEntity c = b.getCustomerEntity();
-            AuctionEntity a = b.getAuctionEntity();
-            c.setBidEntities(null);
-            a.setBidEntities(null);
-            b.setAddressEntity(null);
-        }
-
-        return b;
-
+    public BigDecimal viewCurrentHighestBid(@WebParam(name = "aid") Long aid) throws AuctionNotFoundException,GeneralException {
+        return auctionEntityController.getWinningBidAmount(aid);
     }
 
     @WebMethod(operationName = "viewMyBidInAuction")
@@ -214,5 +203,10 @@ public class ProxyWebService {
         b.setAddressEntity(null);
 
         return b;
+    }
+    
+    @WebMethod(operationName = "getMyBidAmount")
+    public BigDecimal getMyBidAmount(Long aid, Long cid){
+        return auctionEntityController.getMyBidAmount(aid, cid);
     }
 }

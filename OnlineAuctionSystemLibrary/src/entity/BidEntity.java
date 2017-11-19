@@ -25,7 +25,7 @@ import javax.persistence.Table;
  * @author alina
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="BID_TYPE")
 @DiscriminatorValue("NORMAL")
 public class BidEntity implements Serializable {
@@ -36,6 +36,8 @@ public class BidEntity implements Serializable {
     private Long id;
     @Column(precision = 18, scale = 4)
     private BigDecimal amount;
+    @Column(precision = 18, scale = 4)
+    private BigDecimal maxAmount;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private AuctionEntity auctionEntity;
@@ -44,12 +46,14 @@ public class BidEntity implements Serializable {
     private CustomerEntity customerEntity;
     @ManyToOne
     private AddressEntity addressEntity;
+    
 
     public BidEntity() {
     }
 
     public BidEntity(BigDecimal amount) {
         this.amount = amount;
+        this.maxAmount = new BigDecimal(0);
     }
 
     public BidEntity(BigDecimal amount, AuctionEntity auctionEntity, CustomerEntity customerEntity, AddressEntity addressEntity) {
@@ -57,6 +61,15 @@ public class BidEntity implements Serializable {
         this.auctionEntity = auctionEntity;
         this.customerEntity = customerEntity;
         this.addressEntity = addressEntity;
+        this.maxAmount = new BigDecimal(0);
+    }
+
+    public BigDecimal getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(BigDecimal maxAmount) {
+        this.maxAmount = maxAmount;
     }
 
 

@@ -9,7 +9,6 @@ import entity.AddressEntity;
 import entity.AuctionEntity;
 import entity.BidEntity;
 import entity.CustomerEntity;
-import entity.ProxyBiddingEntity;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -94,9 +93,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
         // If the bid is a proxyBiddingEntity
         // requirement: maxAmount > minPrice
-        if (bid instanceof ProxyBiddingEntity) {
-            if (((ProxyBiddingEntity) bid).getMaxAmount().compareTo(minPrice) < 0) {
-                throw new BidLessThanIncrementException("The proxy bidding max price " + ((ProxyBiddingEntity) bid).getMaxAmount() + " is less than the increment amount " + minPrice + " !");
+        if (bid.getAmount().equals(new BigDecimal(-77))) {
+            if (bid.getMaxAmount().compareTo(minPrice) < 0) {
+                throw new BidLessThanIncrementException("The proxy bidding max price " + bid.getMaxAmount() + " is less than the increment amount " + minPrice + " !");
             }
 
             try {
@@ -104,7 +103,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.customerEntity.id = :cid AND b.auctionEntity.id = :aid AND b.amount = -77");
                 query.setParameter("cid", cid);
                 query.setParameter("aid", aid);
-                ProxyBiddingEntity p = (ProxyBiddingEntity) query.getSingleResult();
+                BidEntity p = (BidEntity) query.getSingleResult();
                 deleteBid(p.getId());
             } catch (NoResultException ex) {
                 System.out.println("No previous proxy bid");
@@ -206,13 +205,13 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             query.getSingleResult();
             createNewBid(new BidEntity(minPrice), currentProxy.getCustomerEntity().getId(), a.getId());
         } catch (NonUniqueResultException ex) {
-            List<ProxyBiddingEntity> proxyList = (List<ProxyBiddingEntity>) query.getResultList();
+    List<BidEntity> proxyList = (List<BidEntity>) query.getResultList();
             BigDecimal amount = new BigDecimal(0);
 
             // there will be max 2 proxyBiddingEntity exist simultaneously
             boolean flag = true;
             while (proxyList.get(0).getMaxAmount().compareTo(amount) >= 0 && proxyList.get(1).getMaxAmount().compareTo(amount) >= 0) {
-                for (ProxyBiddingEntity p : proxyList) {
+                for (BidEntity p : proxyList) {
                     if (flag && p.getId().equals(currentProxy.getId())) {
                         temp = createNewBid(new BidEntity(minPrice), currentProxy.getCustomerEntity().getId(), a.getId());
                         flag = false;
@@ -301,16 +300,6 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             return (BidEntity) query.getSingleResult();
         } catch (NoResultException ex) {
             throw new BidNotFoundException("You currently have not placed any bid in auction " + aid + " !");
-        }
-    }
-
-    @Override
-    public void createProxyBid(ProxyBiddingEntity bid, Long cid, Long aid) throws NotEnoughCreditException, AuctionClosedException, AuctionNotOpenException, BidAlreadyExistException, BidLessThanIncrementException, GeneralException, CustomerNotFoundException, AuctionNotFoundException {
-        AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
-
-        try {
-            createNewBid(bid, cid, aid);
-        } catch (BidAlreadyExistException ex) {
         }
     }
 }

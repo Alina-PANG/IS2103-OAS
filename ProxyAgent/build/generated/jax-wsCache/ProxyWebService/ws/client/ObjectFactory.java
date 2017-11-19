@@ -42,6 +42,8 @@ public class ObjectFactory {
     private final static QName _CreateSnippingBidResponse_QNAME = new QName("http://ws.session.ejb/", "createSnippingBidResponse");
     private final static QName _CustomerLogin_QNAME = new QName("http://ws.session.ejb/", "customerLogin");
     private final static QName _CustomerLoginResponse_QNAME = new QName("http://ws.session.ejb/", "customerLoginResponse");
+    private final static QName _GetMyBidAmount_QNAME = new QName("http://ws.session.ejb/", "getMyBidAmount");
+    private final static QName _GetMyBidAmountResponse_QNAME = new QName("http://ws.session.ejb/", "getMyBidAmountResponse");
     private final static QName _Registration_QNAME = new QName("http://ws.session.ejb/", "registration");
     private final static QName _RegistrationResponse_QNAME = new QName("http://ws.session.ejb/", "registrationResponse");
     private final static QName _ViewAllAuctionListings_QNAME = new QName("http://ws.session.ejb/", "viewAllAuctionListings");
@@ -213,6 +215,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetMyBidAmount }
+     * 
+     */
+    public GetMyBidAmount createGetMyBidAmount() {
+        return new GetMyBidAmount();
+    }
+
+    /**
+     * Create an instance of {@link GetMyBidAmountResponse }
+     * 
+     */
+    public GetMyBidAmountResponse createGetMyBidAmountResponse() {
+        return new GetMyBidAmountResponse();
+    }
+
+    /**
      * Create an instance of {@link Registration }
      * 
      */
@@ -357,22 +375,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link BidEntity }
-     * 
-     */
-    public BidEntity createBidEntity() {
-        return new BidEntity();
-    }
-
-    /**
-     * Create an instance of {@link AddressEntity }
-     * 
-     */
-    public AddressEntity createAddressEntity() {
-        return new AddressEntity();
-    }
-
-    /**
      * Create an instance of {@link CustomerEntity }
      * 
      */
@@ -386,6 +388,22 @@ public class ObjectFactory {
      */
     public AuctionEntity createAuctionEntity() {
         return new AuctionEntity();
+    }
+
+    /**
+     * Create an instance of {@link BidEntity }
+     * 
+     */
+    public BidEntity createBidEntity() {
+        return new BidEntity();
+    }
+
+    /**
+     * Create an instance of {@link AddressEntity }
+     * 
+     */
+    public AddressEntity createAddressEntity() {
+        return new AddressEntity();
     }
 
     /**
@@ -572,6 +590,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "customerLoginResponse")
     public JAXBElement<CustomerLoginResponse> createCustomerLoginResponse(CustomerLoginResponse value) {
         return new JAXBElement<CustomerLoginResponse>(_CustomerLoginResponse_QNAME, CustomerLoginResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetMyBidAmount }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "getMyBidAmount")
+    public JAXBElement<GetMyBidAmount> createGetMyBidAmount(GetMyBidAmount value) {
+        return new JAXBElement<GetMyBidAmount>(_GetMyBidAmount_QNAME, GetMyBidAmount.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetMyBidAmountResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "getMyBidAmountResponse")
+    public JAXBElement<GetMyBidAmountResponse> createGetMyBidAmountResponse(GetMyBidAmountResponse value) {
+        return new JAXBElement<GetMyBidAmountResponse>(_GetMyBidAmountResponse_QNAME, GetMyBidAmountResponse.class, null, value);
     }
 
     /**

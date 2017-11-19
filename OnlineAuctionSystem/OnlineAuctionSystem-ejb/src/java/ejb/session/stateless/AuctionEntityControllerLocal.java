@@ -43,8 +43,6 @@ public interface AuctionEntityControllerLocal {
 
     public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException;
 
-    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
-
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice);
 
     public void assignWinningBid(Long aid, Long bid) throws AuctionNotFoundException, BidNotFoundException;
@@ -52,10 +50,12 @@ public interface AuctionEntityControllerLocal {
     public List<AuctionEntity> viewWonAuction(Long cid) throws GeneralException;
 
     public BidEntity closeAuction(AuctionEntity ae);
-    
+
     public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException;
 
     public BidEntity getWinningBidEntity(Long aid) throws AuctionNotFoundException, GeneralException;
 
-    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException;
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException, GeneralException ;
+
+    public BigDecimal getMyBidAmount(Long aid, Long cid);
 }

@@ -1,6 +1,7 @@
 
 package ws.client;
 
+import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -17,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="return" type="{http://ws.session.ejb/}bidEntity" minOccurs="0"/&gt;
+ *         &lt;element name="return" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -33,17 +34,17 @@ import javax.xml.bind.annotation.XmlType;
 public class ViewCurrentHighestBidResponse {
 
     @XmlElement(name = "return")
-    protected BidEntity _return;
+    protected BigDecimal _return;
 
     /**
      * Gets the value of the return property.
      * 
      * @return
      *     possible object is
-     *     {@link BidEntity }
+     *     {@link BigDecimal }
      *     
      */
-    public BidEntity getReturn() {
+    public BigDecimal getReturn() {
         return _return;
     }
 
@@ -52,10 +53,10 @@ public class ViewCurrentHighestBidResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link BidEntity }
+     *     {@link BigDecimal }
      *     
      */
-    public void setReturn(BidEntity value) {
+    public void setReturn(BigDecimal value) {
         this._return = value;
     }
 

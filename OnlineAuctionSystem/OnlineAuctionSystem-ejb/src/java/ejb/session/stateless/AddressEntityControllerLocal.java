@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.AddressEntity;
 import entity.CustomerEntity;
+import java.math.BigDecimal;
 import java.util.List;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AddressNotFoundException;
@@ -31,5 +32,4 @@ public interface AddressEntityControllerLocal {
 
     public AddressEntity updateAddressCode(Long aid, String code) throws AddressNotFoundException, GeneralException;
 
-    
 }

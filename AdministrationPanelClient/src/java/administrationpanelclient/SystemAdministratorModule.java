@@ -210,7 +210,8 @@ public class SystemAdministratorModule {
     }
 
     private void viewEmployeeDetails(StaffEntity staff) {
-        System.out.println("[Staff] id=" + staff.getId() + " content: ");
+        System.out.println("");
+        System.out.println("******* [Staff] id=" + staff.getId() + " Content *******");
         System.out.println("1. First Name: " + staff.getFirstName());
         System.out.println("2. Last Name: " + staff.getLastName());
         System.out.println("3. Identification Number: " + staff.getIdentificationNumber());
@@ -235,7 +236,7 @@ public class SystemAdministratorModule {
             System.out.printf("%4s%15s%15s%30s%15s\n", "ID|", "FIRSTNAME|", "LASTNAME|", "IDENTIFICATION_NUMBER|", "ACCESSRIGHT");
 
             for (StaffEntity staff : list) {
-                System.out.printf("%4s%15s%15s%30s%10s\n", staff.getId() + "|", staff.getFirstName() + "|", staff.getLastName() + "|", staff.getIdentificationNumber() + "|", staff.getAccessRight());
+                System.out.printf("%4s%15s%15s%30s%15s\n", staff.getId() + "|", staff.getFirstName() + "|", staff.getLastName() + "|", staff.getIdentificationNumber() + "|", staff.getAccessRight());
             }
         } catch (GeneralException ex) {
             System.err.println("[Warning] An error has occured while viewing employee details: " + ex.getMessage());

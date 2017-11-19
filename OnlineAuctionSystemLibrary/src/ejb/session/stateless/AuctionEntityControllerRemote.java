@@ -43,7 +43,6 @@ public interface AuctionEntityControllerRemote {
 
     public AuctionEntity retrieveAvailabeAuctionById(Long productid) throws AuctionNotFoundException;
 
-    public BidEntity getCurrentWinningBidEntity(Long productid) throws AuctionNotFoundException;
 
     public BigDecimal getCurrentBidIncremental(BigDecimal currentprice);
 
@@ -55,5 +54,7 @@ public interface AuctionEntityControllerRemote {
 
     public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException;
 
-    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException;
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException, GeneralException;
+
+    public BigDecimal getMyBidAmount(Long aid, Long cid);
 }

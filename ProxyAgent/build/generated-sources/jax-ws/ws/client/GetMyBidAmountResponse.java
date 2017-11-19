@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for viewCurrentHighestBidResponse complex type.
+ * <p>Java class for getMyBidAmountResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="viewCurrentHighestBidResponse"&gt;
+ * &lt;complexType name="getMyBidAmountResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "viewCurrentHighestBidResponse", propOrder = {
+@XmlType(name = "getMyBidAmountResponse", propOrder = {
     "_return"
 })
-public class ViewCurrentHighestBidResponse {
+public class GetMyBidAmountResponse {
 
     @XmlElement(name = "return")
     protected BigDecimal _return;

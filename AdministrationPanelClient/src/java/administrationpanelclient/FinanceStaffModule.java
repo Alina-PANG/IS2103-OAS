@@ -101,11 +101,11 @@ public class FinanceStaffModule {
 
         try {
             System.out.println("******* [Finance Staff] Create New Credit Package *******");
-            System.out.print("Enter credit package name\n-> ");
+            System.out.print("Enter credit package name:\n-> ");
             name = sc.nextLine().trim();
-            System.out.print("Enter value represented\n-> ");
+            System.out.print("Enter value represented:\n-> ");
             value = sc.nextBigDecimal();
-            System.out.print("Enter price\n->");
+            System.out.print("Enter price:\n->");
             price = sc.nextBigDecimal();
 
             CreditPackageEntity cp = creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(value, price, name, false));
@@ -126,12 +126,11 @@ public class FinanceStaffModule {
 
         try {
             CreditPackageEntity cp = findCreditPackage();
-
             viewCreditPackageDetails(cp);
             System.out.println("4. Finish");
 
             while (true) {
-                System.out.println("Please enter number of the option that you want to change: ");
+                System.out.print("Please enter number of the option that you want to change: \n-> ");
                 response = sc.nextInt();
                 sc.nextLine();
 
@@ -204,9 +203,10 @@ public class FinanceStaffModule {
     }
 
     private void showList(List<CreditPackageEntity> list) {
+        System.out.println("******* [Finance Staff] View All Credit Packages *******");
         System.out.printf("%5s%20s%10s%10s\n", "ID|", "Name|", "Price|", "Value");
         for (CreditPackageEntity cp : list) {
-            System.out.printf("%5s%15s%10s%10s\n", cp.getId() + "|", cp.getName() + "|", cp.getPrice() + "|", cp.getValue());
+            System.out.printf("%5s%20s%10s%10s\n", cp.getId() + "|", cp.getName() + "|", cp.getPrice() + "|", cp.getValue());
         }
     }
 
@@ -228,7 +228,8 @@ public class FinanceStaffModule {
     }
 
     private void viewCreditPackageDetails(CreditPackageEntity cp) {
-        System.out.println("[Credit Package] id="+cp.getId()+" Content: ");
+        System.out.println("");
+        System.out.println("******* [Credit Package] id="+cp.getId()+" Content *******");
         System.out.println("1. Name: " + cp.getName());
         System.out.println("2. Value: " + cp.getValue());
         System.out.println("3. Price: " + cp.getPrice());

@@ -32,14 +32,14 @@ public interface ProxyWebService {
      * @param bid
      * @param aid
      * @param cid
-     * @throws BidLessThanIncrementException_Exception
      * @throws AuctionNotOpenException_Exception
-     * @throws AuctionClosedException_Exception
+     * @throws BidLessThanIncrementException_Exception
      * @throws BidAlreadyExistException_Exception
-     * @throws AuctionNotFoundException_Exception
+     * @throws NotEnoughCreditException_Exception
+     * @throws AuctionClosedException_Exception
      * @throws GeneralException_Exception
      * @throws CustomerNotFoundException_Exception
-     * @throws NotEnoughCreditException_Exception
+     * @throws AuctionNotFoundException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createProxyBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateProxyBid")
@@ -93,36 +93,9 @@ public interface ProxyWebService {
      * @param username
      * @return
      *     returns ws.client.CustomerEntity
-     * @throws CustomerNotPremiumException_Exception
-     * @throws CustomerNotFoundException_Exception
-     * @throws IncorrectPasswordException_Exception
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "customerLogin", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CustomerLogin")
-    @ResponseWrapper(localName = "customerLoginResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CustomerLoginResponse")
-    @Action(input = "http://ws.session.ejb/ProxyWebService/customerLoginRequest", output = "http://ws.session.ejb/ProxyWebService/customerLoginResponse", fault = {
-        @FaultAction(className = CustomerNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"),
-        @FaultAction(className = IncorrectPasswordException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"),
-        @FaultAction(className = CustomerNotPremiumException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException")
-    })
-    public CustomerEntity customerLogin(
-        @WebParam(name = "username", targetNamespace = "")
-        String username,
-        @WebParam(name = "password", targetNamespace = "")
-        String password)
-        throws CustomerNotFoundException_Exception, CustomerNotPremiumException_Exception, IncorrectPasswordException_Exception
-    ;
-
-    /**
-     * 
-     * @param password
-     * @param username
-     * @return
-     *     returns ws.client.CustomerEntity
-     * @throws CustomerNotFoundException_Exception
      * @throws IncorrectPasswordException_Exception
      * @throws CustomerAlreadyPremiumException_Exception
+     * @throws CustomerNotFoundException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -139,6 +112,33 @@ public interface ProxyWebService {
         @WebParam(name = "password", targetNamespace = "")
         String password)
         throws CustomerAlreadyPremiumException_Exception, CustomerNotFoundException_Exception, IncorrectPasswordException_Exception
+    ;
+
+    /**
+     * 
+     * @param password
+     * @param username
+     * @return
+     *     returns ws.client.CustomerEntity
+     * @throws IncorrectPasswordException_Exception
+     * @throws CustomerNotPremiumException_Exception
+     * @throws CustomerNotFoundException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "customerLogin", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CustomerLogin")
+    @ResponseWrapper(localName = "customerLoginResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CustomerLoginResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/customerLoginRequest", output = "http://ws.session.ejb/ProxyWebService/customerLoginResponse", fault = {
+        @FaultAction(className = CustomerNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"),
+        @FaultAction(className = IncorrectPasswordException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"),
+        @FaultAction(className = CustomerNotPremiumException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException")
+    })
+    public CustomerEntity customerLogin(
+        @WebParam(name = "username", targetNamespace = "")
+        String username,
+        @WebParam(name = "password", targetNamespace = "")
+        String password)
+        throws CustomerNotFoundException_Exception, CustomerNotPremiumException_Exception, IncorrectPasswordException_Exception
     ;
 
     /**
@@ -186,8 +186,8 @@ public interface ProxyWebService {
      * @param id
      * @return
      *     returns java.math.BigDecimal
-     * @throws GeneralException_Exception
      * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -245,14 +245,14 @@ public interface ProxyWebService {
      * @param bid
      * @param aid
      * @param cid
-     * @throws BidLessThanIncrementException_Exception
      * @throws AuctionNotOpenException_Exception
-     * @throws AuctionClosedException_Exception
-     * @throws AuctionNotFoundException_Exception
+     * @throws BidLessThanIncrementException_Exception
      * @throws BidAlreadyExistException_Exception
-     * @throws GeneralException_Exception
-     * @throws CustomerNotFoundException_Exception
      * @throws NotEnoughCreditException_Exception
+     * @throws AuctionClosedException_Exception
+     * @throws CustomerNotFoundException_Exception
+     * @throws GeneralException_Exception
+     * @throws AuctionNotFoundException_Exception
      */
     @WebMethod
     @RequestWrapper(localName = "createSnippingBid", targetNamespace = "http://ws.session.ejb/", className = "ws.client.CreateSnippingBid")
@@ -281,7 +281,7 @@ public interface ProxyWebService {
      * 
      * @param aid
      * @return
-     *     returns ws.client.BidEntity
+     *     returns java.math.BigDecimal
      * @throws AuctionNotFoundException_Exception
      */
     @WebMethod
@@ -291,7 +291,7 @@ public interface ProxyWebService {
     @Action(input = "http://ws.session.ejb/ProxyWebService/viewCurrentHighestBidRequest", output = "http://ws.session.ejb/ProxyWebService/viewCurrentHighestBidResponse", fault = {
         @FaultAction(className = AuctionNotFoundException_Exception.class, value = "http://ws.session.ejb/ProxyWebService/viewCurrentHighestBid/Fault/AuctionNotFoundException")
     })
-    public BidEntity viewCurrentHighestBid(
+    public BigDecimal viewCurrentHighestBid(
         @WebParam(name = "aid", targetNamespace = "")
         Long aid)
         throws AuctionNotFoundException_Exception
@@ -303,8 +303,8 @@ public interface ProxyWebService {
      * @return
      *     returns ws.client.BidEntity
      * @throws BidNotFoundException_Exception
-     * @throws AuctionNotFoundException_Exception
      * @throws GeneralException_Exception
+     * @throws AuctionNotFoundException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -320,5 +320,23 @@ public interface ProxyWebService {
         Long aid)
         throws AuctionNotFoundException_Exception, BidNotFoundException_Exception, GeneralException_Exception
     ;
+
+    /**
+     * 
+     * @param arg1
+     * @param arg0
+     * @return
+     *     returns java.math.BigDecimal
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getMyBidAmount", targetNamespace = "http://ws.session.ejb/", className = "ws.client.GetMyBidAmount")
+    @ResponseWrapper(localName = "getMyBidAmountResponse", targetNamespace = "http://ws.session.ejb/", className = "ws.client.GetMyBidAmountResponse")
+    @Action(input = "http://ws.session.ejb/ProxyWebService/getMyBidAmountRequest", output = "http://ws.session.ejb/ProxyWebService/getMyBidAmountResponse")
+    public BigDecimal getMyBidAmount(
+        @WebParam(name = "arg0", targetNamespace = "")
+        Long arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        Long arg1);
 
 }
