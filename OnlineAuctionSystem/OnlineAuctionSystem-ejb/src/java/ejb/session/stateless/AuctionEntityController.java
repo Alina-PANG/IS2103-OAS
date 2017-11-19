@@ -339,13 +339,13 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
     @Override
     public BidEntity getWinningBidEntity(Long aid) throws AuctionNotFoundException, GeneralException {
         AuctionEntity a = retrieveAuctionById(aid);
-        
+
         Query query = em.createQuery("SELECT b FROM BidEntity b WHERE b.auctionEntity.id = :aid AND b.amount >= b.auctionEntity.reservePrice AND b.auctionEntity.winningBidId = b.id");
         query.setParameter("aid", aid);
-        
-        try{
-            return (BidEntity)query.getSingleResult();
-        }catch(NoResultException ex){
+
+        try {
+            return (BidEntity) query.getSingleResult();
+        } catch (NoResultException ex) {
             throw new GeneralException("There is no winning bid entity yet.");
         }
     }
@@ -382,4 +382,13 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         return incremental;
     }
 
+    @Override
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException {
+        BidEntity bid = getCurrentWinningBidEntity(aid);
+        if (bid == null) {
+            return new BigDecimal(0);
+        } else {
+            return bid.getAmount();
+        }
+    }
 }

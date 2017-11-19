@@ -55,4 +55,5 @@ public interface AuctionEntityControllerRemote {
 
     public AuctionEntity setDisabled(Long aid) throws AuctionNotFoundException;
 
+    public BigDecimal getWinningBidAmount(Long aid) throws AuctionNotFoundException;
 }

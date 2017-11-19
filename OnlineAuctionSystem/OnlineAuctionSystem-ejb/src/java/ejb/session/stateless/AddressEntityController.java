@@ -46,10 +46,10 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
 
             return address;
         } catch (PersistenceException ex) {
-            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            throw new GeneralException("This address has been created before!");
 
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException(ex2.getMessage());
         }
     }
 

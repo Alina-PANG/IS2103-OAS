@@ -31,7 +31,7 @@ public class AddressEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 64, unique = true, nullable = false)
+    @Column(length = 64, nullable = false)
     private String addressLine;
     @Column(length = 6,nullable=false)
     private String postCode;

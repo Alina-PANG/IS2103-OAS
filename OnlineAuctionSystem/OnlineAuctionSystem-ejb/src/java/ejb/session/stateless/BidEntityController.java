@@ -118,7 +118,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             em.persist(bid);
             em.flush();
             em.refresh(bid);
-            
+
             c.getBidEntities().add(bid);
             a.getBidEntities().add(bid);
 
@@ -162,10 +162,6 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                     throw new NotEnoughCreditException("Not Enough Balance! (Your Balance: " + c.getCreditBalance() + "; Required: " + bid.getAmount() + ")");
                 }
 
-                c.getBidEntities().add(bid);
-                c.setCreditBalance(c.getCreditBalance().subtract(bid.getAmount()));
-                a.getBidEntities().add(bid);
-                a.setWinningBidId(bid.getId());
                 if (flag) {
                     c.getAuctionEntities().add(a);
                     a.getCustomerEntities().add(c);
@@ -176,6 +172,12 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 em.persist(bid);
                 em.flush();
                 em.refresh(bid);
+
+                a.setWinningBidId(bid.getId());
+
+                c.getBidEntities().add(bid);
+                c.setCreditBalance(c.getCreditBalance().subtract(bid.getAmount()));
+                a.getBidEntities().add(bid);
 
                 ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
 
@@ -188,9 +190,10 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 } else {
                     throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
                 }
-            } catch (Exception ex2) {
-                throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
             }
+            /*catch (Exception ex2) {
+                throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            }*/
         }
     }
 
@@ -254,22 +257,11 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         BidEntity bid = retrieveById(id);
         bid.getCustomerEntity().getBidEntities().remove(bid);
         bid.getAuctionEntity().getBidEntities().remove(bid);
-        bid.getAddressEntity().getBidEntities().remove(bid);
-
-        em.remove(bid);
-    }
-
-    @Override
-    public List<BidEntity> viewAllWinningBid(CustomerEntity customer) throws GeneralException {
-        Query query = em.createQuery("SELECT b FROM BidEntity b, AuctionEntity a, CustomerEntity c WHERE a MEMBER OF c.auctionEntities AND b MEMBER OF a.bidEntities AND b MEMBER OF c.bidEntities AND b.id = a.winningBidId AND c.id = :id");
-        query.setParameter("id", customer.getId());
-
-        try {
-            return (List<BidEntity>) query.getResultList();
-        } catch (Exception ex) {
-            throw new GeneralException("[System] " + ex.getMessage());
+        if (!(bid.getAddressEntity() == null)) {
+            bid.getAddressEntity().getBidEntities().remove(bid);
         }
 
+        em.remove(bid);
     }
 
     @Override
@@ -287,7 +279,16 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         query.setParameter("custId", customer.getId());
         query.setParameter("status", StatusEnum.ACTIVE);
 
-        return query.getResultList();
+        List<BidEntity> list = query.getResultList();
+        for (BidEntity bid : list) {
+            bid.getAuctionEntity();
+        }
+
+        if (list == null || list.size() == 0) {
+            throw new GeneralException("You have not placed any bid!");
+        }
+
+        return list;
     }
 
     @Override

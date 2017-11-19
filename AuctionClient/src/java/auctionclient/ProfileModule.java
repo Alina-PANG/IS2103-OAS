@@ -13,6 +13,7 @@ import ejb.session.stateless.CreditTransactionEntityControllerRemote;
 import ejb.session.stateless.CustomerEntityControllerRemote;
 import ejb.session.stateless.TimerSessionBeanRemote;
 import entity.AddressEntity;
+import entity.BidEntity;
 import entity.CreditPackageEntity;
 import entity.CreditTransactionEntity;
 import entity.CustomerEntity;
@@ -64,6 +65,7 @@ public class ProfileModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
+        System.out.println("");
         System.out.println("******* [Customer] Profile Details *******");
         System.out.println("Name: " + customer.getFirstName() + " " + customer.getLastName());
         System.out.println("Email: " + customer.getEmail());
@@ -96,6 +98,7 @@ public class ProfileModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
+        System.out.println("");
         System.out.println("******* [Customer] Profile Update *******");
         System.out.println("1. Update contact number");
         System.out.println("2. Change Password");
@@ -153,7 +156,8 @@ public class ProfileModule {
 
             Scanner scanner = new Scanner(System.in);
             Integer response = 0;
-            System.out.println("******* [Customer] Credit Managing *******\n");
+            System.out.println("");
+            System.out.println("******* [Customer] Credit Managing *******");
             System.out.println("1. View Credit Balance");
             System.out.println("2. Purchase New Credit Package");
             System.out.println("3. View Credit Transaction History");
@@ -166,13 +170,14 @@ public class ProfileModule {
                     System.out.println("Your current credit balance is " + customer.getCreditBalance());
                     manageCreditPackage();
                 } else if (response == 2) {
-                    System.out.println("***Here are different types of credit packages offering now! ***");
-                    System.out.printf("%5s%30s%15s%15s", "ID|", "Package name|", "Package Value|", "Package Price");
+                    System.out.println("");
+                    System.out.println("******** [Customer] View All Available Credit Pakcages *******");
+                    System.out.printf("%5s%30s%15s%15s\n", "ID|", "Package name|", "Package Value|", "Package Price");
                     //list packages
                     //retrieve all package details and loop to list info
                     List<CreditPackageEntity> creditpackagelist = creditPackageEntityControllerRemote.viewAllCreditPackage();
                     for (CreditPackageEntity creditpackage : creditpackagelist) {
-                        System.out.printf("%5s%30s%15s%15s", creditpackage.getId(), creditpackage.getName(), creditpackage.getValue(), creditpackage.getPrice());
+                        System.out.printf("%5s%30s%15s%15s\n", creditpackage.getId(), creditpackage.getName(), creditpackage.getValue(), creditpackage.getPrice());
 
                     }
                     System.out.print("Enter id of the package that you want to purchase\n->");
@@ -198,6 +203,8 @@ public class ProfileModule {
                     manageCreditPackage();
 
                 } else if (response == 3) {
+                    System.out.println("");
+                    System.out.println("******* [Customer] View My Transaction History *******");
                     List<CreditTransactionEntity> transactionlist = creditTransactionEntityControllerRemote.viewAllCreditTransactionEntity(customer);
                     if (!transactionlist.isEmpty()) {
                         System.out.printf("%5s%10s%15s\n", "ID|", "Type|", "Total Value");
@@ -228,15 +235,17 @@ public class ProfileModule {
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-
-        System.out.println("******* [Customer] Address Managing *******");
-        System.out.println("1. Create address");
-        System.out.println("2. Update address");
-        System.out.println("3. Delete address");
-        System.out.println("4. Back");
-        System.out.println("Enter number of the operation that you want to perform");
-        while (response < 1 || response > 4) {
+        while (true) {
             try {
+                System.out.println("");
+                System.out.println("******* [Customer] Address Managing *******");
+                System.out.println("1. Create address");
+                System.out.println("2. Update address");
+                System.out.println("3. Delete address");
+                System.out.println("4. View All Addresses");
+                System.out.println("5. Back");
+                System.out.println("Enter number of the operation that you want to perform");
+
                 System.out.print("->");
                 response = scanner.nextInt();
                 if (response == 1) {
@@ -246,14 +255,54 @@ public class ProfileModule {
                 } else if (response == 3) {
                     doDeleteAddress();
                 } else if (response == 4) {
+                    doViewAddress();
                     break;
-
-                } else {
+                } else if (response == 5) {
+                    break;
+                }                 
+                else {
                     System.err.println("[Warning] Invalid input! Please try again");
                 }
             } catch (InputMismatchException ex) {
                 System.err.println("[Warning] Invalid Type!");
             }
+        }
+    }
+
+    private void doViewAddress() {
+        System.out.println("");
+        System.out.println("******* [Customer] View All Address *******");
+        List<AddressEntity> addresslist = customerEntityControllerRemote.getAddressByCustomer(customer.getId());
+        if (addresslist.isEmpty()) {
+            System.out.println("You do not have an address yet!");
+            System.out.println("Please create an address first!");
+        } else {
+            System.out.printf("%5s%35s\n", "Id|", "Address Line");
+            for (AddressEntity address : addresslist) {
+                System.out.printf("%5s%35s\n", address.getId() + "|", address.getAddressLine() );
+            }
+        }
+        
+        viewAddressDetail();
+    }
+    
+    private void viewAddressDetail(){
+        System.out.print("Input the id of the address that you want to view detail\n->");
+        System.out.println("");
+        System.out.println("******* [Customer] View Address Detail *******");
+        Scanner sc = new Scanner(System.in);
+        Long response;
+        try{
+            response = sc.nextLong();
+            AddressEntity address = addressEntityControllerRemote.getAddressById(response);
+            if(address == null){
+                System.err.println("[Warning] No address with id "+response+" exists!");
+            }
+            else{
+                System.out.printf("%5s%35s15s%10s\n", "Id|", "Address Line|", "Postal Code|", "Status");
+                System.out.printf("%5s%35s%15s%10s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode()+"|", ((address.isIsDisabled())?"DISABLED":"ACTIVE"));
+            }
+        } catch(InputMismatchException ex){
         }
     }
 
@@ -263,6 +312,7 @@ public class ProfileModule {
             Scanner scanner = new Scanner(System.in);
 
             AddressEntity address = new AddressEntity();
+            System.out.println("");
             System.out.println("******* [Customer] New Address Creation *******");
             System.out.print("Enter address line\n->");
             address.setAddressLine(scanner.nextLine().trim());
@@ -274,7 +324,7 @@ public class ProfileModule {
             address = addressEntityControllerRemote.createAddress(address);
             System.out.println("[System] Address created successfully!");
         } catch (GeneralException ex) {
-            System.err.println("[Warning] This address has been created before!");
+            System.err.println("[Warning] An error has occured: " + ex.getMessage());
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
         }
@@ -288,11 +338,13 @@ public class ProfileModule {
 
             List<AddressEntity> addresslist = addressEntityControllerRemote.viewAllAddress(customer);
             if (!addresslist.isEmpty()) {
+                System.out.println("");
                 System.out.println("******* [Customer] List of Address *******");
-                System.out.printf("%5s%30s%10s", "ID|", "Address Line|", "PostCode");
+                System.out.printf("%5s%30s%10s\n", "ID|", "Address Line|", "PostCode");
                 for (AddressEntity address : addresslist) {
-                    System.out.printf("%5s%30s%10s", address.getId(), address.getAddressLine(), address.getPostCode());
+                    System.out.printf("%5s%30s%10s\n", address.getId(), address.getAddressLine(), address.getPostCode());
                 }
+                System.out.println("");
                 System.out.println("******* [Customer] Address Update *******");
                 System.out.print("Enter id of the address to update\n->");
                 Long aid = scanner.nextLong();
@@ -305,7 +357,7 @@ public class ProfileModule {
                     response = scanner.nextInt();
                     if (response == 1) {
                         scanner.nextLine();
-                        System.out.println("Enter new address line\n->");
+                        System.out.print("Enter new address line\n->");
                         address = addressEntityControllerRemote.updateAddressLine(aid, scanner.nextLine().trim());
                         System.out.print("[System] New address line updated successfully!");
                         break;
@@ -335,11 +387,13 @@ public class ProfileModule {
 
             List<AddressEntity> addresslist = addressEntityControllerRemote.viewAllAddress(customer);
             if (addresslist != null) {
+                System.out.println("");
                 System.out.println("******* [Customer] List of Address *******");
-                System.out.printf("%5s%30s%10s", "ID|", "Address Line|" + "PostCode");
+                System.out.printf("%5s%30s%10s\n", "ID|", "Address Line|", "PostCode");
                 for (AddressEntity address : addresslist) {
-                    System.out.printf("%5s%30s%10s", address.getId(), address.getAddressLine(), address.getPostCode());
+                    System.out.printf("%5s%30s%10s\n", address.getId(), address.getAddressLine(), address.getPostCode());
                 }
+                System.out.println("");
                 System.out.println("******* [Customer] Address Deletion *******");
                 System.out.print("Enter id of the address to delete\n->");
                 Long addressid = scanner.nextLong();
@@ -354,7 +408,7 @@ public class ProfileModule {
             }
 
         } catch (AddressNotFoundException ex) {
-            System.err.println("[Warning] " + ex.getMessage());
+            System.err.println("[Warning] An error has occured: " + ex.getMessage());
 
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");

@@ -67,7 +67,7 @@ public class MainApp {
                 System.out.println("******* [Customer] Welcome to Online Auction System *******");
                 System.out.println("1. Login");
                 System.out.println("2. Register");
-                System.out.println("3. Exit\n");
+                System.out.println("3. Exit");
                 System.out.println("Enter number of the operation that you want to perform");
                 response = 0;
 
@@ -77,11 +77,8 @@ public class MainApp {
 
                     if (response == 1) {
                         doLogin();
-                        menuMain();
                     } else if (response == 2) {
-
                         doRegistration();//menumain is called by this method
-                        menuMain();
                     } else if (response == 3) {
                         break;
                     } else {
@@ -104,6 +101,7 @@ public class MainApp {
         try {
             Scanner scanner = new Scanner(System.in);
             CustomerEntity c = new CustomerEntity();//create a Customer Entity at the beginning so that can set parameters later
+            System.out.println("");
             System.out.println("******* [Customer] Registration *******");
             //set the parameters into customer entity directly
             System.out.print("Enter your firstname\n->");
@@ -129,7 +127,7 @@ public class MainApp {
 
             customer = customerEntityControllerRemote.createNewCustomerEntity(c);
             System.out.println("[System] Customer" + customer.getUsername() + " is registered successfully!");
-
+            menuMain();
         } catch (CustomerAlreadyExistException ex) {
             System.err.println("[Warning] This customer already exists!");
         } catch (GeneralException ex) {
@@ -137,6 +135,7 @@ public class MainApp {
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
         }
+
     }
 
     public void doLogin() {
@@ -145,6 +144,7 @@ public class MainApp {
 
         String username;
         String password;
+        System.out.println("");
         System.out.println("******* [Customer] Login *******");
         System.out.print("Enter username\n->");
         username = scanner.nextLine().trim();
@@ -154,11 +154,13 @@ public class MainApp {
         try {
             customer = customerEntityControllerRemote.customerLogin(username, password);
             System.out.println("You have successfully logged in as " + username + "!");
+            menuMain();
         } catch (CustomerNotFoundException | IncorrectPasswordException ex) {
             System.err.println("[Warning] An error has occured while logining in: " + ex.getMessage() + "!\n");
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
         }
+
     }
 
     private void menuMain()//pass in customer entity who just logged in
@@ -169,11 +171,11 @@ public class MainApp {
 
             System.out.println("");
             System.out.println("****** [Customer] Welcome " + customer.getUsername() + " to the online auction world! *******");
-            System.out.println("1. View Profile");//include view and update which includes changing password
-            System.out.println("2. View my Credit Package");// view my balance, view credit package transaction, also can buy a new package
-            System.out.println("3. Update Address");//create address and delete address
+            System.out.println("1. Manage Profile");//include view and update which includes changing password
+            System.out.println("2. Manage my Credit Package");// view my balance, view credit package transaction, also can buy a new package
+            System.out.println("3. Manage Address");//create address and delete address
             System.out.println("4. View All Auction Listing");//display all available auction items and place bids
-            System.out.println("5. View my Bid");//view all the auction that i have bidded and can update the bid and refresh the bid list
+            System.out.println("5. Manage my Bid");//view all the auction that i have bidded and can update the bid and refresh the bid list
             System.out.println("6. Browse Won Acution Listing");//all the auction that i have won and can select address for successful bid
             System.out.println("7. Logout");
             System.out.println("Enter number of the operation that you want to perform");

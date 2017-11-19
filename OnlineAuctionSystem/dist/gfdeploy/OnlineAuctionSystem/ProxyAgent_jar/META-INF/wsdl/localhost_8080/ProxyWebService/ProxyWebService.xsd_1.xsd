@@ -199,7 +199,7 @@
 
 <xs:complexType name="viewWinningBid">
 <xs:sequence>
-<xs:element name="bid" type="xs:long" minOccurs="0"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -210,6 +210,12 @@
 </xs:complexType>
 
 <xs:complexType name="BidNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="GeneralException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
@@ -262,12 +268,6 @@
 </xs:complexType>
 
 <xs:complexType name="BidLessThanIncrementException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="GeneralException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>

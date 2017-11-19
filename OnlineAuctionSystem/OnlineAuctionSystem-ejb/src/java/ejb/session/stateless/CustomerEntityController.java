@@ -205,7 +205,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
     }
 
     public List<AddressEntity> getAddressByCustomer(Long cid) throws NoResultException {
-        Query query = em.createQuery("SELECT al FROM AddressEntity al WHERE al.customerEntity.id=:cus").setParameter("cus", "cid");
+        Query query = em.createQuery("SELECT al FROM AddressEntity al WHERE al.customerEntity.id=:cus").setParameter("cus", cid);
 
         try {
             return (List<AddressEntity>) query.getResultList();
