@@ -6,3 +6,15 @@
 /ProxyAgent/nbproject/private/
 /OnlineAuctionSystemLibrary/nbproject/private/
 .DS_Store
+/AdministrationPanelClient/build/
+/AdministrationPanelClient/dist/
+/AuctionClient/build/
+/AuctionClient/dist/
+/OnlineAuctionSystem/build/
+/OnlineAuctionSystem/dist/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/build/
+/OnlineAuctionSystem/OnlineAuctionSystem-ejb/dist/
+/OnlineAuctionSystemLibrary/build/
+/OnlineAuctionSystemLibrary/dist/
+/ProxyAgent/build/
+/ProxyAgent/dist/

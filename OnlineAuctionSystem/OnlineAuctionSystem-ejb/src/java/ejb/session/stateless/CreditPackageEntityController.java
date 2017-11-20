@@ -60,7 +60,7 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
         }catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -118,7 +118,7 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
         } catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -150,6 +150,9 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
     @Override
     public void addCustomerToCreditPackage(Long creditpackageid, CustomerEntity customer) throws CreditPackageNotFoundException {
         CreditPackageEntity creditpackage = retrieveCreditPackageById(creditpackageid);
+        if(creditpackage.getIsDisabled())
+            throw new CreditPackageNotFoundException("There is no available credit package with id "+creditpackageid+" !");
         creditpackage.getCustomerEntities().add(customer);
+        
     }
 }

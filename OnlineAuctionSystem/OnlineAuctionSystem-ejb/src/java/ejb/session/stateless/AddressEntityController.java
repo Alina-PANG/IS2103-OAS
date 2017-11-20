@@ -52,7 +52,7 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }catch (Exception ex2) {
-            throw new GeneralException(ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -102,7 +102,7 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
 
     }
@@ -121,7 +121,7 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 

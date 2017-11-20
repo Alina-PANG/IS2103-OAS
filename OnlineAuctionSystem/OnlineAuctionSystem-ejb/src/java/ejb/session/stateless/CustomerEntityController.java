@@ -59,10 +59,10 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             em.refresh(customer);
             return customer;
         } catch (PersistenceException ex) {
-            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            throw new GeneralException("An unexpected persistence error has occurred!");
 
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -82,10 +82,10 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
 
             }
         } catch (PersistenceException ex) {
-            throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            throw new GeneralException("An unexpected persistence error has occurred");
 
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -111,7 +111,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }
         catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -184,7 +184,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
 
         return oldCustomer;
@@ -203,7 +203,7 @@ public class CustomerEntityController implements CustomerEntityControllerRemote,
         try {
             return (List<CustomerEntity>) query.getResultList();
         } catch (Exception ex) {
-            throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
+            throw new GeneralException("An unexpected exception happens!");
         }
     }
 

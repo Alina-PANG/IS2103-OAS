@@ -80,15 +80,7 @@ public class ProxyWebService {
         System.out.println("******* [OAS Web Service] Remote Login");
 
         CustomerEntity c = customerEntityController.customerLogin(username, password);
-        //     c.getAddressEntities().forEach((each) -> {
-        //        each.setCustomerEntity(null);
-        //     });
-        //c.getAuctionEntities().forEach((each) -> {
-        //    each.setCustomerEntities(null);
-        //});
-        //     c.getBidEntities().forEach((each) -> {
-        //         each.setCustomerEntity(null);
-        //      });
+
         c.setAddressEntities(null);
         c.setBidEntities(null);
         c.setAuctionEntities(null);
@@ -99,26 +91,6 @@ public class ProxyWebService {
         return c;
     }
 
-    /*
-    private void detachEntities(List<BidEntity> bids, List<AuctionEntity> auctions, List<AddressEntity> addresses) {
-        for (BidEntity b : bids) {
-            em.detach(b);
-            b.setAddressEntity(null);
-            b.setCustomerEntity(null);
-            b.setAuctionEntity(null);
-        }
-        for (AuctionEntity a : auctions) {
-            em.detach(a);
-            a.setBidEntities(null);
-            a.setCustomerEntities(null);
-        }
-        for (AddressEntity a : addresses) {
-            em.detach(a);
-            a.setCustomerEntity(null);
-            a.setBidEntities(null);
-        }
-    }
-     */
     @WebMethod(operationName = "viewAuctionListDetails")
     public AuctionEntity viewAuctionListDetails(@WebParam(name = "id") Long id) throws AuctionNotFoundException {
         AuctionEntity a = auctionEntityController.retrieveAuctionById(id);

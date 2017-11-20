@@ -69,6 +69,17 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         CustomerEntity c = customerEntityController.retrieveCustomerById(cid);
         AuctionEntity a = auctionEntityController.retrieveAuctionById(aid);
         BidEntity currentWinningBid = null;
+
+        // if dummy customer -> starting bid assigned by employee
+        if (cid.equals(new Long(1))) {
+            bid.setAuctionEntity(a);
+            bid.setCustomerEntity(c);
+            em.persist(bid);
+            em.flush();
+            em.refresh(bid);
+            a.setWinningBidId(bid.getId());
+            return bid;
+        }
         try {
             currentWinningBid = retrieveById(a.getWinningBidId());
         } catch (BidNotFoundException ex) {
@@ -185,6 +196,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
 
                 c.getBidEntities().add(bid);
                 c.setCreditBalance(c.getCreditBalance().subtract(bid.getAmount()));
+
                 a.getBidEntities().add(bid);
 
                 ctController.createNewTransaction(cid, TransactionTypeEnum.BIDDING, bid.getAmount());
@@ -196,10 +208,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             } catch (ConstraintViolationException ex3) {
                 throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+            } catch (Exception ex2) {
+                throw new GeneralException("An unexpected error has occured!");
             }
-            /*catch (Exception ex2) {
-                throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
-            }*/
         }
     }
 
@@ -252,10 +263,9 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             }
         } catch (NoResultException ex2) {
             System.out.println("No Proxy Bids");
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured!");
         }
-        /*catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
-        }*/
 
     }
 

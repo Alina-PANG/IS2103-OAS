@@ -177,27 +177,30 @@ public class ProfileModule {
                     //retrieve all package details and loop to list info
                     List<CreditPackageEntity> creditpackagelist = creditPackageEntityControllerRemote.viewAllCreditPackage();
                     for (CreditPackageEntity creditpackage : creditpackagelist) {
+                        if (creditpackage.getIsDisabled()) {
+                            continue;
+                        }
                         System.out.printf("%5s%30s%15s%15s\n", creditpackage.getId(), creditpackage.getName(), creditpackage.getValue(), creditpackage.getPrice());
 
                     }
                     System.out.print("Enter id of the package that you want to purchase\n->");
                     Long id = scanner.nextLong();
-
+                    creditPackageEntityControllerRemote.addCustomerToCreditPackage(id, customer);
+                    
                     System.out.print("How many of this credit package that you would like to purchase?\n->");
                     Integer num = scanner.nextInt();
-
-                    //create CreditTransactionEntity
-                    creditTransactionEntityControllerRemote.createNewTransaction(customer.getId(), id, num, TransactionTypeEnum.TOPUP);
 
                     //add new customer entity in credit package entity list<customerentity>
                     //creditPackageEntityControllerRemote.addCustomerToCreditPackage(id, customer);
                     //update customer's credit balance
-                    BigDecimal addvalue = new BigDecimal(BigInteger.ONE);
-                    addvalue = creditPackageEntityControllerRemote.retrieveCreditPackageById(id).getValue().multiply(BigDecimal.valueOf(num));
+                    BigDecimal addvalue = creditPackageEntityControllerRemote.retrieveCreditPackageById(id).getValue().multiply(BigDecimal.valueOf(num));
                     BigDecimal currentvalue = customer.getCreditBalance();
                     System.out.println("Incremental of credit balance:" + currentvalue.add(addvalue));//debug
+
                     customer = customerEntityControllerRemote.updateCreditBalance(customer.getId(), currentvalue.add(addvalue));
-                    // addCustomerToCreditPackage(id, customer);
+
+                    //create CreditTransactionEntity
+                    creditTransactionEntityControllerRemote.createNewTransaction(customer.getId(), id, num, TransactionTypeEnum.TOPUP);
 
                     System.out.println("[System] Your purchase is successful!");
                     System.out.println("Your current credit balance is " + customer.getCreditBalance() + " .");
@@ -224,7 +227,7 @@ public class ProfileModule {
                 }
             }
         } catch (GeneralException | CreditPackageNotFoundException | CustomerNotFoundException ex) {
-            System.err.println("[Waring] " + ex.getMessage() + " !");
+            System.err.println("[Waring] An error has occured: " + ex.getMessage());
             manageCreditPackage();
         } catch (InputMismatchException ex) {
             System.err.println("[Warning] Invalid Type!");
@@ -277,9 +280,9 @@ public class ProfileModule {
             System.out.println("You do not have an address yet!");
             System.out.println("Please create an address first!");
         } else {
-            System.out.printf("%5s%35s\n", "Id|", "Address Line");
+            System.out.printf("%5s%35s%20s\n", "Id|", "Address Line|", "Postal Code");
             for (AddressEntity address : addresslist) {
-                System.out.printf("%5s%35s\n", address.getId() + "|", address.getAddressLine());
+                System.out.printf("%5s%35s%20s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode());
             }
         }
 
@@ -298,7 +301,7 @@ public class ProfileModule {
             if (address == null) {
                 System.err.println("[Warning] No address with id " + response + " exists!");
             } else {
-                System.out.printf("%5s%35s15s%10s\n", "Id|", "Address Line|", "Postal Code|", "Status");
+                System.out.printf("%5s%35s%15s%10s\n", "Id|", "Address Line|", "Postal Code|", "Status");
                 System.out.printf("%5s%35s%15s%10s\n", address.getId() + "|", address.getAddressLine() + "|", address.getPostCode() + "|", ((address.isIsDisabled()) ? "DISABLED" : "ACTIVE"));
             }
         } catch (InputMismatchException ex) {

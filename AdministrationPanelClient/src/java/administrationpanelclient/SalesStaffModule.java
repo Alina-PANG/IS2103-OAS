@@ -19,9 +19,12 @@ import java.util.List;
 import java.util.Scanner;
 import util.enumeration.StatusEnum;
 import util.exception.AuctionAlreadyExistException;
+import util.exception.AuctionClosedException;
 import util.exception.AuctionNotFoundException;
+import util.exception.AuctionNotOpenException;
 import util.exception.BidNotFoundException;
 import util.exception.GeneralException;
+import util.exception.NotEnoughCreditException;
 
 /**
  *
@@ -128,12 +131,16 @@ public class SalesStaffModule {
             System.out.print("Enter reserve price (0 if no reserve price)\n->");
             reservePrice = sc.nextBigDecimal();
             sc.nextLine();
+            System.out.print("Enter starting bid\n->");
+            BigDecimal startingBid = sc.nextBigDecimal();
+            sc.nextLine();
             System.out.print("Enter product name\n->");
             productName = sc.nextLine().trim().toLowerCase();
             System.out.print("Enter product description\n->");
             productDes = sc.nextLine().trim();
 
             AuctionEntity al = auctionEntityController.createNewAuction(new AuctionEntity(startDate, endDate, reservePrice, productName, productDes));
+            bidEntityController.createNewBid(new BidEntity(startingBid), new Long(1), al.getId());
             System.out.println("[System] Auction Listing with id = " + al.getId() + " has been created successfully!");
         } catch (AuctionAlreadyExistException | GeneralException ex) {
             System.err.println("[Warning] An error has occured while creating credit package: " + ex.getMessage());
@@ -141,6 +148,8 @@ public class SalesStaffModule {
             System.err.println("[Warning] Invalid input type!");
         } catch (ParseException ex) {
             System.err.println("[Warning] Invalid Datetime type!");
+        }catch(Exception ex){
+            System.err.println("[Warning] An unexpected error occurs!");
         }
     }
 

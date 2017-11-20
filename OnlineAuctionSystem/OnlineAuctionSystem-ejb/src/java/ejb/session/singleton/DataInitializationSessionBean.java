@@ -109,7 +109,9 @@ public class DataInitializationSessionBean {
 
     private void initializeCustomer() {
         try {
-            CustomerEntity c = customerEntityController.createNewCustomerEntity(new CustomerEntity("Jinzheng", "Xu", "jinzheng", "000000", "87111111", "jinzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
+            CustomerEntity c = customerEntityController.createNewCustomerEntity(new CustomerEntity("Dummy", "Customer", "dummy", "000000", "87112111", "jzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
+            c.setCreditBalance(new BigDecimal(10000));
+            CustomerEntity c1 = customerEntityController.createNewCustomerEntity(new CustomerEntity("Jinzheng", "Xu", "jinzheng", "000000", "87111111", "jinzhengxu@u.nus.edu", CustomerTypeEnum.NORMAL));
             CustomerEntity c2 = customerEntityController.createNewCustomerEntity(new CustomerEntity("Yingshi", "Huang", "yingshi", "000000", "87122222", "jinsssgxu@u.nus.edu", CustomerTypeEnum.NORMAL));
             c.setCreditBalance(new BigDecimal(2000));
             c2.setCreditBalance(new BigDecimal(3000));
@@ -120,8 +122,8 @@ public class DataInitializationSessionBean {
             creditPackageEntityController.createNewCreditPackage(new CreditPackageEntity(new BigDecimal(100), new BigDecimal(85), "85 for 100", false));
 
             SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 20/11/2017"), formatter.parse("16:36:22 12/12/2017"), new BigDecimal(777), "Totoro", "Cute Totoro!"));
-            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 20/11/2017"), formatter.parse("23:59:59 20/12/2018"), new BigDecimal(50), "Cup", "Drink Water"));
+            AuctionEntity ae1 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("16:34:59 20/12/2017"), formatter.parse("16:36:22 30/12/2017"), new BigDecimal(777), "Totoro", "Cute Totoro!"));
+            AuctionEntity ae2 = auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 20/12/2017"), formatter.parse("23:59:59 30/12/2018"), new BigDecimal(50), "Cup", "Drink Water"));
             auctionEntityController.createNewAuction(new AuctionEntity(formatter.parse("23:59:59 28/11/2018"), formatter.parse("23:59:59 03/11/2019"), new BigDecimal(100000), "Apple", "Sweet Apple"));
 
             bidEntityController.createNewBid(new BidEntity(new BigDecimal(5)), c.getId(), ae1.getId());

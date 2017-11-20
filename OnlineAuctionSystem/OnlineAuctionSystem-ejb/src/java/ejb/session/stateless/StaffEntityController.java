@@ -53,7 +53,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         } catch (ConstraintViolationException ex3) {
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
 
     }
@@ -148,7 +148,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         } catch(ConstraintViolationException ex3){
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         }catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
 
         return oldStaff;
@@ -167,7 +167,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         try {
             return (List<StaffEntity>) query.getResultList();
         } catch (Exception ex) {
-            throw new GeneralException("An unexpected exception happens: " + ex.getMessage());
+            throw new GeneralException("An unexpected exception has occured!");
         }
     }
 }

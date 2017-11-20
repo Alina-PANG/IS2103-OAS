@@ -84,10 +84,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        }  catch(ConstraintViolationException ex3){
+        } catch (ConstraintViolationException ex3) {
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
-        }catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+        } catch (Exception ex2) {
+            throw new GeneralException("An unexpected error has occured!");
         }
     }
 
@@ -229,10 +229,10 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        }catch(ConstraintViolationException ex3){
+        } catch (ConstraintViolationException ex3) {
             throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         } catch (Exception ex2) {
-            throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
         return oldAuction;
     }
@@ -254,7 +254,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
             // refund the bid amount but not delete the bids
             List<BidEntity> bidList = ae.getBidEntities();
             for (BidEntity bid : bidList) {
-                if(bid.getAmount().equals(new BigDecimal(-77))){
+                if (bid.getAmount().equals(new BigDecimal(-77))) {
                     continue;
                 }
                 CustomerEntity c = bid.getCustomerEntity();
@@ -308,7 +308,7 @@ public class AuctionEntityController implements AuctionEntityControllerRemote, A
         try {
             return (List<AuctionEntity>) query.getResultList();
         } catch (Exception ex) {
-            throw new GeneralException(ex.getMessage());
+            throw new GeneralException("An unexpected error has occured!");
         }
 
     }
