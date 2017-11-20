@@ -58,8 +58,6 @@ public class ObjectFactory {
     private final static QName _ViewCurrentHighestBidResponse_QNAME = new QName("http://ws.session.ejb/", "viewCurrentHighestBidResponse");
     private final static QName _ViewMyBidInAuction_QNAME = new QName("http://ws.session.ejb/", "viewMyBidInAuction");
     private final static QName _ViewMyBidInAuctionResponse_QNAME = new QName("http://ws.session.ejb/", "viewMyBidInAuctionResponse");
-    private final static QName _ViewWinningBid_QNAME = new QName("http://ws.session.ejb/", "viewWinningBid");
-    private final static QName _ViewWinningBidResponse_QNAME = new QName("http://ws.session.ejb/", "viewWinningBidResponse");
     private final static QName _ViewWonAuctionListings_QNAME = new QName("http://ws.session.ejb/", "viewWonAuctionListings");
     private final static QName _ViewWonAuctionListingsResponse_QNAME = new QName("http://ws.session.ejb/", "viewWonAuctionListingsResponse");
 
@@ -340,22 +338,6 @@ public class ObjectFactory {
      */
     public ViewMyBidInAuctionResponse createViewMyBidInAuctionResponse() {
         return new ViewMyBidInAuctionResponse();
-    }
-
-    /**
-     * Create an instance of {@link ViewWinningBid }
-     * 
-     */
-    public ViewWinningBid createViewWinningBid() {
-        return new ViewWinningBid();
-    }
-
-    /**
-     * Create an instance of {@link ViewWinningBidResponse }
-     * 
-     */
-    public ViewWinningBidResponse createViewWinningBidResponse() {
-        return new ViewWinningBidResponse();
     }
 
     /**
@@ -726,24 +708,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewMyBidInAuctionResponse")
     public JAXBElement<ViewMyBidInAuctionResponse> createViewMyBidInAuctionResponse(ViewMyBidInAuctionResponse value) {
         return new JAXBElement<ViewMyBidInAuctionResponse>(_ViewMyBidInAuctionResponse_QNAME, ViewMyBidInAuctionResponse.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ViewWinningBid }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewWinningBid")
-    public JAXBElement<ViewWinningBid> createViewWinningBid(ViewWinningBid value) {
-        return new JAXBElement<ViewWinningBid>(_ViewWinningBid_QNAME, ViewWinningBid.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ViewWinningBidResponse }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://ws.session.ejb/", name = "viewWinningBidResponse")
-    public JAXBElement<ViewWinningBidResponse> createViewWinningBidResponse(ViewWinningBidResponse value) {
-        return new JAXBElement<ViewWinningBidResponse>(_ViewWinningBidResponse_QNAME, ViewWinningBidResponse.class, null, value);
     }
 
     /**

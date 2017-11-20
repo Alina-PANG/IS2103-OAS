@@ -12,10 +12,10 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import util.exception.DuplicateException;
 import util.exception.GeneralException;
 import util.exception.IncorrectPasswordException;
@@ -50,6 +50,8 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        } catch (ConstraintViolationException ex3) {
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         } catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
@@ -143,7 +145,9 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        } catch (Exception ex2) {
+        } catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 

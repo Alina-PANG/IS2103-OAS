@@ -63,12 +63,11 @@ public class AuctionModule {
 
     private void showList(List<AuctionEntity> list) {
         //  startDate, endDate, false, reservePrice, productName, productDes, new Long(-1), null));
-        System.out.printf("%10s%20s%20s%10s%15s%20s\n", "BID_ID|", "Current Winning Bid|", "Your Bid|", "Status|", "Reserve Price|", "Product Name");
+        System.out.printf("%5s%20s%20s%10s%15s%20s\n", "ID|", "Current Winning Bid|", "Your Bid|", "Status|", "Reserve Price|", "Product Name");
         for (AuctionEntity al : list) {
             try {
-                BidEntity bid = auctionEntityControllerRemote.getWinningBidEntity(al.getId());
-                System.out.printf("%10s%20s%20s%10s%15s%20s\n", bid.getId() + "|", bid.getAmount() + "|", auctionEntityControllerRemote.getMyBidAmount(al.getId(), customer.getId()) + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
-            } catch (AuctionNotFoundException|GeneralException ex) {
+                System.out.printf("%5s%20s%20s%10s%15s%20s\n",  al.getId()+ "|", auctionEntityControllerRemote.getWinningBidAmount(al.getId())+ "|", auctionEntityControllerRemote.getMyBidAmount(al.getId(), customer.getId()) + "|", al.getStatus() + "|", al.getReservePrice() + "|", al.getProductName());
+            } catch (AuctionNotFoundException ex) {
                 System.out.println("An error has occrued: " + ex.getMessage());
             }
         }
@@ -99,7 +98,6 @@ public class AuctionModule {
                     break;
                 } else {
                     System.err.println("[Warning] Invalid input! Please try again!");
-                    viewAuctionListing();
                 }
             }
 
@@ -245,11 +243,11 @@ public class AuctionModule {
             List<BidEntity> bidlist = bidEntityControllerRemote.viewMyBidsInProcess(customer);
             if (!bidlist.isEmpty()) {
                 System.out.println("Below are the auctions that you have placed bids but haven't reached auction ending time yet:");
-                System.out.printf("%5s%25s%20s%35s\n", "ID|", "Auction Item Name|", "Your Bid Amount|", "Current Winning Bid Amount");
+                System.out.printf("%5s%25s%30s%35s\n", "ID|", "Auction Item Name|", "Your Bid Amount|", "Current Winning Bid Amount");
                 for (BidEntity bid : bidlist) {
-                    System.out.printf("%5s%25s%20s%35s\n", bid.getAuctionEntity().getId() + "|",
+                    System.out.printf("%5s%25s%30s%35s\n", bid.getAuctionEntity().getId() + "|",
                             bid.getAuctionEntity().getProductName() + "|",
-                            bid.getAmount() + "|",
+                           (bid.getAmount().equals(new BigDecimal(-77))?"PROXY "+bid.getMaxAmount():bid.getAmount()) + "|",
                             auctionEntityControllerRemote.getWinningBidAmount(bid.getAuctionEntity().getId()));
                 }
                 System.out.print("Do you want to place new bid?('y' or press any key to cancel)\n->");
@@ -314,9 +312,9 @@ public class AuctionModule {
             System.out.println("");
             System.out.println("****** [Customer] Address Selection for Won Auction *******");
 
-            System.out.print("Enter the bid id of the won auction that you want to assign an address (0 for quit)\n->");
-            Long bidid = scanner.nextLong();
-            if (!bidid.equals(new Long(0))) {
+            System.out.print("Enter the id of the won auction that you want to assign an address (0 for quit)\n->");
+            Long aid = scanner.nextLong();
+            if (!aid.equals(new Long(0))) {
                 System.out.println("Your current address list:");
                 List<AddressEntity> addresslist = customerEntityControllerRemote.getAddressByCustomer(customer.getId());
                 if (addresslist.isEmpty()) {
@@ -329,13 +327,14 @@ public class AuctionModule {
                     }
                     System.out.print("Enter id of the address selected for the won auction\n->");
                     Long addressid = scanner.nextLong();
-                    BidEntity bid = bidEntityControllerRemote.setAddressForWinningBid(addressid, bidid);
+                    BidEntity bid = auctionEntityControllerRemote.getWinningBidEntity(aid);
+                    bid = bidEntityControllerRemote.setAddressForWinningBid(addressid, bid.getId());
                     System.out.println("[System] Address updated successfully!");
 
                     viewWonAuction();//refresh the list and check if there is still won auction that does not have an address
                 }
             }
-        } catch (BidNotFoundException | GeneralException ex) {
+        } catch (BidNotFoundException | GeneralException|AuctionNotFoundException ex) {
             System.err.println("[Warning] An error has occured: " + ex.getMessage());
             viewWonAuction();
         } catch (InputMismatchException ex) {

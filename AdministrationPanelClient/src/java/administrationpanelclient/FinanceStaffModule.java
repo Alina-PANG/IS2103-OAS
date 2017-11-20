@@ -7,6 +7,7 @@ package administrationpanelclient;
 
 import ejb.session.stateless.CreditPackageEntityControllerRemote;
 import entity.CreditPackageEntity;
+import entity.CustomerEntity;
 import entity.StaffEntity;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
@@ -157,7 +158,7 @@ public class FinanceStaffModule {
                     break;
                 }
             }
-            creditPackageEntityController.updateCreditPackage(cp);
+            cp = creditPackageEntityController.updateCreditPackage(cp);
             System.out.println("[System] Credit Package with id = " + cp.getId() + ", name: '" + cp.getName() + "' has been updated successfully!");
         } catch (CreditPackageNotFoundException | GeneralException | CreditPackageAlreadyExistException ex) {
             System.err.println("[Warning] An error has occured while creating employee: " + ex.getMessage());

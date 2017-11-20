@@ -122,7 +122,7 @@ public class ProfileModule {
                     String email = scanner.nextLine().trim();
                     System.out.print("Enter current password\n->");
                     String oldpassword = scanner.nextLine().trim();
-                    System.out.print("Enter new password\n->");
+                    System.out.print("Enter new password (more than 6 characters)\n->");
                     String newpassword = scanner.nextLine().trim();
                     System.out.print("Re-enter password\n->");
                     String reenterpassword = scanner.nextLine().trim();
@@ -193,10 +193,11 @@ public class ProfileModule {
                     //creditPackageEntityControllerRemote.addCustomerToCreditPackage(id, customer);
                     //update customer's credit balance
                     BigDecimal addvalue = new BigDecimal(BigInteger.ONE);
-                    addvalue = creditPackageEntityControllerRemote.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num));
+                    addvalue = creditPackageEntityControllerRemote.retrieveCreditPackageById(id).getValue().multiply(BigDecimal.valueOf(num));
                     BigDecimal currentvalue = customer.getCreditBalance();
                     System.out.println("Incremental of credit balance:" + currentvalue.add(addvalue));//debug
                     customer = customerEntityControllerRemote.updateCreditBalance(customer.getId(), currentvalue.add(addvalue));
+                    // addCustomerToCreditPackage(id, customer);
 
                     System.out.println("[System] Your purchase is successful!");
                     System.out.println("Your current credit balance is " + customer.getCreditBalance() + " .");

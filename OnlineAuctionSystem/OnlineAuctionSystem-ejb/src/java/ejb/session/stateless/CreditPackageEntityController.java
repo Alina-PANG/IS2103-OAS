@@ -16,6 +16,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import util.exception.CreditPackageAlreadyExistException;
 import util.exception.CreditPackageNotFoundException;
 import util.exception.GeneralException;
@@ -56,6 +57,8 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
+        }catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
         } catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
@@ -112,7 +115,9 @@ public class CreditPackageEntityController implements CreditPackageEntityControl
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        } catch (Exception ex2) {
+        } catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }

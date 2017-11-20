@@ -4,74 +4,14 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/ProxyWebService/ProxyWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="viewMyBidInAuction">
-<part name="parameters" element="tns:viewMyBidInAuction"/>
-</message>
-<message name="viewMyBidInAuctionResponse">
-<part name="parameters" element="tns:viewMyBidInAuctionResponse"/>
-</message>
-<message name="BidNotFoundException">
-<part name="fault" element="tns:BidNotFoundException"/>
-</message>
-<message name="customerLogin">
-<part name="parameters" element="tns:customerLogin"/>
-</message>
-<message name="customerLoginResponse">
-<part name="parameters" element="tns:customerLoginResponse"/>
-</message>
-<message name="CustomerNotFoundException">
-<part name="fault" element="tns:CustomerNotFoundException"/>
-</message>
-<message name="IncorrectPasswordException">
-<part name="fault" element="tns:IncorrectPasswordException"/>
-</message>
-<message name="CustomerNotPremiumException">
-<part name="fault" element="tns:CustomerNotPremiumException"/>
-</message>
-<message name="getMyBidAmount">
-<part name="parameters" element="tns:getMyBidAmount"/>
-</message>
-<message name="getMyBidAmountResponse">
-<part name="parameters" element="tns:getMyBidAmountResponse"/>
-</message>
-<message name="registration">
-<part name="parameters" element="tns:registration"/>
-</message>
-<message name="registrationResponse">
-<part name="parameters" element="tns:registrationResponse"/>
-</message>
-<message name="CustomerAlreadyPremiumException">
-<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
-</message>
-<message name="viewAuctionListDetails">
-<part name="parameters" element="tns:viewAuctionListDetails"/>
-</message>
-<message name="viewAuctionListDetailsResponse">
-<part name="parameters" element="tns:viewAuctionListDetailsResponse"/>
-</message>
-<message name="AuctionNotFoundException">
-<part name="fault" element="tns:AuctionNotFoundException"/>
-</message>
-<message name="viewAuctionListByName">
-<part name="parameters" element="tns:viewAuctionListByName"/>
-</message>
-<message name="viewAuctionListByNameResponse">
-<part name="parameters" element="tns:viewAuctionListByNameResponse"/>
-</message>
-<message name="viewCreditBalance">
-<part name="parameters" element="tns:viewCreditBalance"/>
-</message>
-<message name="viewCreditBalanceResponse">
-<part name="parameters" element="tns:viewCreditBalanceResponse"/>
-</message>
-<message name="GeneralException">
-<part name="fault" element="tns:GeneralException"/>
-</message>
 <message name="viewAllAuctionListings">
 <part name="parameters" element="tns:viewAllAuctionListings"/>
 </message>
 <message name="viewAllAuctionListingsResponse">
 <part name="parameters" element="tns:viewAllAuctionListingsResponse"/>
+</message>
+<message name="GeneralException">
+<part name="fault" element="tns:GeneralException"/>
 </message>
 <message name="viewWonAuctionListings">
 <part name="parameters" element="tns:viewWonAuctionListings"/>
@@ -97,6 +37,12 @@
 <message name="NotEnoughCreditException">
 <part name="fault" element="tns:NotEnoughCreditException"/>
 </message>
+<message name="CustomerNotFoundException">
+<part name="fault" element="tns:CustomerNotFoundException"/>
+</message>
+<message name="AuctionNotFoundException">
+<part name="fault" element="tns:AuctionNotFoundException"/>
+</message>
 <message name="BidAlreadyExistException">
 <part name="fault" element="tns:BidAlreadyExistException"/>
 </message>
@@ -112,52 +58,61 @@
 <message name="viewCurrentHighestBidResponse">
 <part name="parameters" element="tns:viewCurrentHighestBidResponse"/>
 </message>
-<message name="viewWinningBid">
-<part name="parameters" element="tns:viewWinningBid"/>
+<message name="viewMyBidInAuction">
+<part name="parameters" element="tns:viewMyBidInAuction"/>
 </message>
-<message name="viewWinningBidResponse">
-<part name="parameters" element="tns:viewWinningBidResponse"/>
+<message name="viewMyBidInAuctionResponse">
+<part name="parameters" element="tns:viewMyBidInAuctionResponse"/>
+</message>
+<message name="BidNotFoundException">
+<part name="fault" element="tns:BidNotFoundException"/>
+</message>
+<message name="getMyBidAmount">
+<part name="parameters" element="tns:getMyBidAmount"/>
+</message>
+<message name="getMyBidAmountResponse">
+<part name="parameters" element="tns:getMyBidAmountResponse"/>
+</message>
+<message name="customerLogin">
+<part name="parameters" element="tns:customerLogin"/>
+</message>
+<message name="customerLoginResponse">
+<part name="parameters" element="tns:customerLoginResponse"/>
+</message>
+<message name="IncorrectPasswordException">
+<part name="fault" element="tns:IncorrectPasswordException"/>
+</message>
+<message name="CustomerNotPremiumException">
+<part name="fault" element="tns:CustomerNotPremiumException"/>
+</message>
+<message name="registration">
+<part name="parameters" element="tns:registration"/>
+</message>
+<message name="registrationResponse">
+<part name="parameters" element="tns:registrationResponse"/>
+</message>
+<message name="CustomerAlreadyPremiumException">
+<part name="fault" element="tns:CustomerAlreadyPremiumException"/>
+</message>
+<message name="viewAuctionListByName">
+<part name="parameters" element="tns:viewAuctionListByName"/>
+</message>
+<message name="viewAuctionListByNameResponse">
+<part name="parameters" element="tns:viewAuctionListByNameResponse"/>
+</message>
+<message name="viewCreditBalance">
+<part name="parameters" element="tns:viewCreditBalance"/>
+</message>
+<message name="viewCreditBalanceResponse">
+<part name="parameters" element="tns:viewCreditBalanceResponse"/>
+</message>
+<message name="viewAuctionListDetails">
+<part name="parameters" element="tns:viewAuctionListDetails"/>
+</message>
+<message name="viewAuctionListDetailsResponse">
+<part name="parameters" element="tns:viewAuctionListDetailsResponse"/>
 </message>
 <portType name="ProxyWebService">
-<operation name="viewMyBidInAuction">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionRequest" message="tns:viewMyBidInAuction"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionResponse" message="tns:viewMyBidInAuctionResponse"/>
-<fault message="tns:BidNotFoundException" name="BidNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuction/Fault/BidNotFoundException"/>
-</operation>
-<operation name="customerLogin">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
-<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
-<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
-</operation>
-<operation name="getMyBidAmount">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/getMyBidAmountRequest" message="tns:getMyBidAmount"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/getMyBidAmountResponse" message="tns:getMyBidAmountResponse"/>
-</operation>
-<operation name="registration">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/registrationResponse" message="tns:registrationResponse"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerNotFoundException"/>
-<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/IncorrectPasswordException"/>
-<fault message="tns:CustomerAlreadyPremiumException" name="CustomerAlreadyPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerAlreadyPremiumException"/>
-</operation>
-<operation name="viewAuctionListDetails">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsRequest" message="tns:viewAuctionListDetails"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsResponse" message="tns:viewAuctionListDetailsResponse"/>
-<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetails/Fault/AuctionNotFoundException"/>
-</operation>
-<operation name="viewAuctionListByName">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameRequest" message="tns:viewAuctionListByName"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameResponse" message="tns:viewAuctionListByNameResponse"/>
-<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByName/Fault/AuctionNotFoundException"/>
-</operation>
-<operation name="viewCreditBalance">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceRequest" message="tns:viewCreditBalance"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceResponse" message="tns:viewCreditBalanceResponse"/>
-<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/CustomerNotFoundException"/>
-<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/GeneralException"/>
-</operation>
 <operation name="viewAllAuctionListings">
 <input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAllAuctionListingsRequest" message="tns:viewAllAuctionListings"/>
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAllAuctionListingsResponse" message="tns:viewAllAuctionListingsResponse"/>
@@ -197,112 +152,48 @@
 <output wsam:Action="http://ws.session.ejb/ProxyWebService/viewCurrentHighestBidResponse" message="tns:viewCurrentHighestBidResponse"/>
 <fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCurrentHighestBid/Fault/AuctionNotFoundException"/>
 </operation>
-<operation name="viewWinningBid">
-<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBidRequest" message="tns:viewWinningBid"/>
-<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBidResponse" message="tns:viewWinningBidResponse"/>
-<fault message="tns:BidNotFoundException" name="BidNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/BidNotFoundException"/>
-<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/AuctionNotFoundException"/>
-<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewWinningBid/Fault/GeneralException"/>
+<operation name="viewMyBidInAuction">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionRequest" message="tns:viewMyBidInAuction"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuctionResponse" message="tns:viewMyBidInAuctionResponse"/>
+<fault message="tns:BidNotFoundException" name="BidNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewMyBidInAuction/Fault/BidNotFoundException"/>
+</operation>
+<operation name="getMyBidAmount">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/getMyBidAmountRequest" message="tns:getMyBidAmount"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/getMyBidAmountResponse" message="tns:getMyBidAmountResponse"/>
+</operation>
+<operation name="customerLogin">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginRequest" message="tns:customerLogin"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/customerLoginResponse" message="tns:customerLoginResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotFoundException"/>
+<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/IncorrectPasswordException"/>
+<fault message="tns:CustomerNotPremiumException" name="CustomerNotPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/customerLogin/Fault/CustomerNotPremiumException"/>
+</operation>
+<operation name="registration">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/registrationRequest" message="tns:registration"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/registrationResponse" message="tns:registrationResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerNotFoundException"/>
+<fault message="tns:IncorrectPasswordException" name="IncorrectPasswordException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/IncorrectPasswordException"/>
+<fault message="tns:CustomerAlreadyPremiumException" name="CustomerAlreadyPremiumException" wsam:Action="http://ws.session.ejb/ProxyWebService/registration/Fault/CustomerAlreadyPremiumException"/>
+</operation>
+<operation name="viewAuctionListByName">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameRequest" message="tns:viewAuctionListByName"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByNameResponse" message="tns:viewAuctionListByNameResponse"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListByName/Fault/AuctionNotFoundException"/>
+</operation>
+<operation name="viewCreditBalance">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceRequest" message="tns:viewCreditBalance"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalanceResponse" message="tns:viewCreditBalanceResponse"/>
+<fault message="tns:CustomerNotFoundException" name="CustomerNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/CustomerNotFoundException"/>
+<fault message="tns:GeneralException" name="GeneralException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewCreditBalance/Fault/GeneralException"/>
+</operation>
+<operation name="viewAuctionListDetails">
+<input wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsRequest" message="tns:viewAuctionListDetails"/>
+<output wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetailsResponse" message="tns:viewAuctionListDetailsResponse"/>
+<fault message="tns:AuctionNotFoundException" name="AuctionNotFoundException" wsam:Action="http://ws.session.ejb/ProxyWebService/viewAuctionListDetails/Fault/AuctionNotFoundException"/>
 </operation>
 </portType>
 <binding name="ProxyWebServicePortBinding" type="tns:ProxyWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="viewMyBidInAuction">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="BidNotFoundException">
-<soap:fault name="BidNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="customerLogin">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="IncorrectPasswordException">
-<soap:fault name="IncorrectPasswordException" use="literal"/>
-</fault>
-<fault name="CustomerNotPremiumException">
-<soap:fault name="CustomerNotPremiumException" use="literal"/>
-</fault>
-</operation>
-<operation name="getMyBidAmount">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="registration">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="IncorrectPasswordException">
-<soap:fault name="IncorrectPasswordException" use="literal"/>
-</fault>
-<fault name="CustomerAlreadyPremiumException">
-<soap:fault name="CustomerAlreadyPremiumException" use="literal"/>
-</fault>
-</operation>
-<operation name="viewAuctionListDetails">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="AuctionNotFoundException">
-<soap:fault name="AuctionNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="viewAuctionListByName">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="AuctionNotFoundException">
-<soap:fault name="AuctionNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="viewCreditBalance">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CustomerNotFoundException">
-<soap:fault name="CustomerNotFoundException" use="literal"/>
-</fault>
-<fault name="GeneralException">
-<soap:fault name="GeneralException" use="literal"/>
-</fault>
-</operation>
 <operation name="viewAllAuctionListings">
 <soap:operation soapAction=""/>
 <input>
@@ -405,7 +296,7 @@
 <soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="viewWinningBid">
+<operation name="viewMyBidInAuction">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -416,11 +307,89 @@
 <fault name="BidNotFoundException">
 <soap:fault name="BidNotFoundException" use="literal"/>
 </fault>
+</operation>
+<operation name="getMyBidAmount">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="customerLogin">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="IncorrectPasswordException">
+<soap:fault name="IncorrectPasswordException" use="literal"/>
+</fault>
+<fault name="CustomerNotPremiumException">
+<soap:fault name="CustomerNotPremiumException" use="literal"/>
+</fault>
+</operation>
+<operation name="registration">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
+<fault name="IncorrectPasswordException">
+<soap:fault name="IncorrectPasswordException" use="literal"/>
+</fault>
+<fault name="CustomerAlreadyPremiumException">
+<soap:fault name="CustomerAlreadyPremiumException" use="literal"/>
+</fault>
+</operation>
+<operation name="viewAuctionListByName">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
 <fault name="AuctionNotFoundException">
 <soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
+</operation>
+<operation name="viewCreditBalance">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="CustomerNotFoundException">
+<soap:fault name="CustomerNotFoundException" use="literal"/>
+</fault>
 <fault name="GeneralException">
 <soap:fault name="GeneralException" use="literal"/>
+</fault>
+</operation>
+<operation name="viewAuctionListDetails">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="AuctionNotFoundException">
+<soap:fault name="AuctionNotFoundException" use="literal"/>
 </fault>
 </operation>
 </binding>

@@ -68,10 +68,6 @@
 
 <xs:element name="viewMyBidInAuctionResponse" type="tns:viewMyBidInAuctionResponse"/>
 
-<xs:element name="viewWinningBid" type="tns:viewWinningBid"/>
-
-<xs:element name="viewWinningBidResponse" type="tns:viewWinningBidResponse"/>
-
 <xs:element name="viewWonAuctionListings" type="tns:viewWonAuctionListings"/>
 
 <xs:element name="viewWonAuctionListingsResponse" type="tns:viewWonAuctionListingsResponse"/>
@@ -202,30 +198,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="viewWinningBid">
-<xs:sequence>
-<xs:element name="aid" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewWinningBidResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="BidNotFoundException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="GeneralException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="createProxyBid">
 <xs:sequence>
 <xs:element name="bid" type="tns:bidEntity" minOccurs="0"/>
@@ -268,15 +240,28 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="viewAuctionListDetails">
+<xs:complexType name="GeneralException">
 <xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="viewAuctionListDetailsResponse">
+<xs:complexType name="viewMyBidInAuction">
 <xs:sequence>
-<xs:element name="return" type="tns:auctionEntity" minOccurs="0"/>
+<xs:element name="aid" type="xs:long" minOccurs="0"/>
+<xs:element name="cid" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewMyBidInAuctionResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="BidNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -290,6 +275,52 @@
 
 <xs:complexType name="createSnippingBidResponse">
 <xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListByName">
+<xs:sequence>
+<xs:element name="productName" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListByNameResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListDetails">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAuctionListDetailsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewAllAuctionListings">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="viewAllAuctionListingsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewWonAuctionListings">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="viewWonAuctionListingsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="getMyBidAmount">
@@ -314,53 +345,6 @@
 <xs:complexType name="viewCreditBalanceResponse">
 <xs:sequence>
 <xs:element name="return" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewMyBidInAuction">
-<xs:sequence>
-<xs:element name="aid" type="xs:long" minOccurs="0"/>
-<xs:element name="cid" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewMyBidInAuctionResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:bidEntity" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewAuctionListByName">
-<xs:sequence>
-<xs:element name="productName" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewAuctionListByNameResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewAllAuctionListings">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="viewAllAuctionListingsResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewWonAuctionListings">
-<xs:sequence>
-<xs:element name="id" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="viewWonAuctionListingsResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:auctionEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 

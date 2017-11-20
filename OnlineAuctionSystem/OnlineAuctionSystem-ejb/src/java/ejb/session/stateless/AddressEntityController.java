@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import util.exception.AddressAlreadyExistsException;
 import util.exception.AddressNotFoundException;
 import util.exception.AuctionAlreadyExistException;
@@ -48,7 +49,9 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch (PersistenceException ex) {
             throw new GeneralException("This address has been created before!");
 
-        } catch (Exception ex2) {
+        } catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException(ex2.getMessage());
         }
     }
@@ -96,7 +99,9 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch (PersistenceException ex) {
             throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
 
-        } catch (Exception ex2) {
+        } catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
 
@@ -113,7 +118,9 @@ public class AddressEntityController implements AddressEntityControllerRemote, A
         } catch (PersistenceException ex) {
             throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
 
-        } catch (Exception ex2) {
+        } catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }

@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.CreditPackageNotFoundException;
 import util.exception.CustomerNotFoundException;
@@ -51,7 +52,7 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
             credittransaction.setTransactionTypeEnum(type);//
             credittransaction.setUnitOfPurchase(num);//how many package has the customer purchased
             credittransaction.setCreditPackageEntity(creditPackageEntityControllerLocal.retrieveCreditPackageById(id));
-            credittransaction.setTotalValue(creditPackageEntityControllerLocal.retrieveCreditPackageById(id).getPrice().multiply(BigDecimal.valueOf(num)));
+            credittransaction.setTotalValue(creditPackageEntityControllerLocal.retrieveCreditPackageById(id).getValue().multiply(BigDecimal.valueOf(num)));
 
             em.persist(credittransaction);
             em.flush();
@@ -67,7 +68,10 @@ public class CreditTransactionEntityController implements CreditTransactionEntit
             } else {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
             }
-        } catch (Exception ex2) {
+        } 
+        catch(ConstraintViolationException ex3){
+            throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
+        }catch (Exception ex2) {
             throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
         }
     }

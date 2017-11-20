@@ -145,7 +145,7 @@ public class ProxyWebService {
     @WebMethod(operationName = "viewAllAuctionListings")
     public List<AuctionEntity> viewAllAuctionListings() throws GeneralException {
         System.out.println("******* [OAS Web Service] View All Auction Listings");
-        List<AuctionEntity> aList = auctionEntityController.viewAllAuction();
+        List<AuctionEntity> aList = auctionEntityController.viewAvailableAuctionEntity();
         for (AuctionEntity a : aList) {
             a.setBidEntities(null);
             a.setCustomerEntities(null);

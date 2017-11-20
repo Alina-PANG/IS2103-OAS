@@ -179,12 +179,12 @@ public class MainApp {
 
         System.out.println("");
         System.out.println("******* [OAS System] Change Password *******");
-        System.out.println("Please input your old password: ");
+        System.out.print("Please input your old password: \n->");
         currentPw = sc.nextLine().trim();
         while (!newPw1.equals(newPw2)) {
-            System.out.println("Please input your new password: ");
+            System.out.print("Please input your new password: \n->");
             newPw1 = sc.nextLine().trim();
-            System.out.println("Please input your new password again: ");
+            System.out.print("Please input your new password again:\n-> ");
             newPw2 = sc.nextLine().trim();
 
             if (!newPw1.equals(newPw2)) {

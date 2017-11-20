@@ -24,6 +24,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolationException;
 import util.enumeration.StatusEnum;
 import util.enumeration.TransactionTypeEnum;
 import util.exception.AuctionClosedException;
@@ -115,8 +116,17 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
             c.getBidEntities().add(bid);
             a.getBidEntities().add(bid);
 
-            BidEntity winning = auctionEntityController.getWinningBidEntity(a.getId());
-            if (!winning.getCustomerEntity().getId().equals(cid)) {
+            BidEntity winning;
+            try {
+                winning = auctionEntityController.getWinningBidEntity(a.getId());
+            } catch (Exception ex) {
+                winning = new BidEntity(new BigDecimal(-10));
+            }
+            if (!winning.getAmount().equals(new BigDecimal(-10))) {
+                if (!winning.getCustomerEntity().getId().equals(cid)) {
+                    createBidForProxy(new BidEntity(minPrice), cid, aid);
+                }
+            } else {
                 createBidForProxy(new BidEntity(minPrice), cid, aid);
             }
 
@@ -184,6 +194,8 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 return bid;
             } catch (PersistenceException ex) {
                 throw new GeneralException("An unexpected error has occurred: " + ex.getMessage());
+            } catch (ConstraintViolationException ex3) {
+                throw new GeneralException("Constraint has been violated! There is at least one value does not fulfill requirement!");
             }
             /*catch (Exception ex2) {
                 throw new GeneralException("An unexpected error has occured: " + ex2.getMessage());
@@ -196,7 +208,16 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
         query.setParameter("aid", a.getId());
 
         try {
+            System.out.println("One Proxy Bid");
             BidEntity temp2 = (BidEntity) query.getSingleResult();
+            if (temp2.getMaxAmount().compareTo(minPrice) < 0) {
+                try {
+                    deleteBid(temp2.getId());
+                } catch (BidNotFoundException ex) {
+                    System.out.println("executeProxyBid - one proxy bid - delete");
+                }
+                return;
+            }
             // if input is proxy bid and minPrice exceeds max amount, stop
             System.out.println("One Proxy Bid - Input is a proxy bid");
             if (currentProxy.getAmount().equals(new BigDecimal(-77))) {
@@ -208,7 +229,7 @@ public class BidEntityController implements BidEntityControllerRemote, BidEntity
                 return;
             }
 
-            createNewBid(new BidEntity(minPrice), temp2.getCustomerEntity().getId(), a.getId());
+            createBidForProxy(new BidEntity(minPrice), temp2.getCustomerEntity().getId(), a.getId());
         } catch (NonUniqueResultException ex) {
             System.out.println("Two Proxy Bids");
             List<BidEntity> proxyList = (List<BidEntity>) query.getResultList();
